@@ -1,0 +1,3057 @@
+% !TEX root = main.tex
+%
+%
+\section{Column-finite and row-finite linear programs}\label{sec:regained}
+%
+%In the previous section we saw that weak duality in linear programming extend to the orbit-finite setting,
+%and strong duality does not.
+%In this section we define two natural variations of orbit-finite linear programming,
+%respectively called column-finite and row-finite linear programming and prove duality between them (\Cref{thm:duality}).
+%The techniques developed to show duality also allow us to prove that these two kinds of orbit-finite linear programs are solvable in fixed atom-dimension \ptime (\Cref{thm:col fin ptime,thm:row fin ptime}).
+%This subsection is organised as follows.
+%We start with the definitions of column-finite and row-finite linear programming and state \Cref{thm:duality} which shows that they are dual to each other.
+%Then in \Cref{subsec:orbsum} we develop the theory using which we prove \Cref{thm:duality} in \Cref{subsec:duality proof}.
+%Finally, in \Cref{subsec:col row fin ptime} we show that both column-finite and row-finite linear programs are solvable in fixed-atom dimension \ptime.
+%
+%\begin{definition}\label{def:row col fin}
+%A matrix $\vr{A}\in\lin{B{\times} C}$ is called \emph'def{column-finite} if its column-vectors are finite,
+%i.e.\ $\vr{A}(-,c)\in\flin{B}$ for every $c\in C$.
+%The matrix $\vr{A}\in\lin{B{\times} C}$ is \emph'def{row-finite} if $\transpose{\vr{A}}$ is column-finite.
+%\end{definition}
+%%
+%As opposed to general orbit-finite matrices,
+%well-definedness is not an issue for products of column-finite or row-finite matrices.
+%%
+%\begin{lemma}\label{lem:row fin prod}
+%%Let $D$ be an arbitrary orbit-finite set.
+%%Let $\vr{A}\in\lin{B{\times} C}$ and $\vr{B} : (C{\times} D)\to\R$.
+%%If $\vr{A}$ is row-finite then the product $\vr{A}\cdot\vr{B}$ is well-defined,
+%%and if $\vr{B}$ is also row-finite then $\vr{A}\cdot\vr{B}$ is also row-finite.
+%For matrices $\vr{A}\in\lin{B{\times} C}$ and $\vr{B} : (C{\times} D)\to\R$.
+%If $\vr{A}$ is row-finite then the product $\vr{A}\cdot\vr{B}$ is well-defined,
+%and if $\vr{B}$ is also row-finite then $\vr{A}\cdot\vr{B}$ is also row-finite.
+%\end{lemma}
+%%
+%\begin{proof}[Proof of \Cref{lem:row fin prod}]
+%First we prove $\vr{A}\cdot\vr{B}$ is well-defined.
+%Pick arbitrary ${(b,d)\in (B{\times} D)}$.
+%Then $(\vr{A}\cdot\vr{B})(b,d) = \vr{A}(b,-)\cdot\vr{B}(-,d)$.
+%Since $\vr{A}$ is row-finite, then $\transpose{(\vr{A}(b,-))}$ is finite.
+%By \Cref{lem:fin gen prod} $\vr{A}(b,-)\cdot\vr{B}(-,d)$ is well-defined.
+%Since ${(b,d)\in (B{\times} D)}$ was arbitrarily chosen,
+%this shows $\vr{A}\cdot\vr{B}$ is well defined.
+%
+%Now we show $\vr{A}\cdot\vr{B}$ is row-finite assuming $\vr{B}$ is row-finite.
+%Pick arbitrary $b\in B$.
+%We show $(\vr{A}\cdot\vr{B})(b,-)$ is finite.
+%Let $C'\subseteq C$ be the (necessarily finite) subset of elements of $c\in C$ such that $\vr{A}(b,c)\neq 0$.
+%\[
+%C' = \setof{c\in C}{\vr{A}(b,c)\neq 0}
+%\]
+%For every $c\in C'$ let $D_c$ be the subset of elements of $d\in D$ such that $\vr{B}(c,d)\neq 0$.
+%Since $\vr{B}$ is row-finite, $D_c$ is finite for every $c\in C'$.
+%Let $D' = \cup_{c\in C'} D_c$.
+%Since $C'$ is finite and $D_c$ is finite for every $c\in C'$,
+%the set $D'$ is also finite.
+%We claim $(\vr{A}\cdot\vr{B})(b,d) \neq 0$ only if $d\in D'$.
+%Pick arbitrary $d\in (D\setminus D')$.
+%For $d\in (D\setminus D')$ indeed since $\vr{A}(b,c) \neq 0$ only if $c\in C'$,
+%we have
+%\[
+%(\vr{A}\cdot\vr{B})(b,d) =
+%\sum_{c\in C} \vr{A}(b,c)\cdot\vr{B}(c,d) =
+%\sum_{c\in C'} \vr{A}(b,c)\cdot\vr{B}(c,d)\ ,
+%\]
+%and since $\vr{B}(c,d)\neq 0$ only if $d\in D'$ (assuming $c\in C'$) we have,
+%\[
+%\sum_{c\in C'} \vr{A}(b,c)\cdot\vr{B}(c,d) = 0\ .
+%\]
+%Combining the above equations we get
+%\[
+%(\vr{A}\cdot\vr{B})(b,d) = 0\ .
+%\]
+%Thus $(\vr{A}\cdot\vr{B})(b,d) \neq 0$ only if $d\in D'$,
+%which implies finiteness of \\ $(\vr{A}\cdot\vr{B})(b,-)$.
+%\end{proof}
+%%
+%
+%
+In this and the following sections, we study orbit-finite linear programs that are either column-finite or row-finite.
+That is,
+they are of the form
+\[
+\primalAbc\qquad\qquad\dualAbc
+\]
+where $B$ and $C$ are orbit-finite sets,
+the matrix $\vr{A}\in\lin{B{\times}C}$ is column-finite,
+and the vector $\vr{b}\in\flin{B}$.
+Note that we wrote the column-finite linear program in primal form and the row-finite linear program in the dual form.
+We follow this convention for the rest of the chapter.
+
+These linear programs are better behaved than orbit-finite linear programs.
+Firstly, they satisfy strong duality.
+%
+\begin{theorem}[Strong Duality]\label{thm:col row duality}
+For any primal-dual pair of orbit-finite linear programs, if the primal or the dual is column-finite and the optimum of any of linear programs is finite,
+then it is equal to the optimum of the other.
+\end{theorem}
+%
+Secondly, column-finite and row-finite linear programs are more robust compared to orbit-finite linear programs in general,
+and they admit optimal solutions with small support when their optimum is finite
+(\Cref{thm:col fin opt,thm:row fin opt} below).
+We need a few definitions to state these theorems.
+%
+%\noindent
+%Secondly, they admit optimal solutions whenever their optimum is finite.
+%
+%\begin{theorem}\label{thm:col fin small supp}
+%The optimum of an $S$-supported column-finite linear program of atom dimension $d$ does not change if we restrict the solution to be finite and supported by $S\cup T$ where $T\subseteqfin(\A\setminus S)$ is any subset of size at least $d$.
+%\end{theorem}
+%%
+%\begin{theorem}\label{thm:col fin opt}
+%If the optimum of an $S$-supported column-finite linear program of atom dimension $d$ is finite then,
+%for any $T\subseteqfin(\A\setminus S)$ of size at least $d$
+%it has a finite optimal solution supported by $S\cup T$.
+%\end{theorem}
+%
+\newcommand{\norm}[1]{\lVert #1 \rVert_1}
+\newcommand{\normText}[1]{$\ell^1$-norm}
+\newcommand{\normSp}[1]{\ell^1(#1)}
+%
+\begin{definition}
+Let $P$ be an orbit-finite set.
+For a vector $\vr{x} : P\to\R$, by $\norm{\vr{x}}$ we denote its \defindKey{\normText{}}{$l1norm$},
+i.e.\
+\[
+\norm{\vr{x}} \defeq \sum_{p\in P} |\vr{x}(p)| \ ,
+\]
+where $|\vr{x}(p)|$ denotes the absolute value of $\vr{x}(p)$.
+We write \emphdef{$\norm{\vr{x}} < \infty$} to denote that the sum is finite,
+i.e., converges to a real number.
+Otherwise we write \emphdef{$\norm{\vr{x}} = \infty$}.
+
+Vectors $\vr{x} : P\to\R$ such that $\norm{\vr{x}} < \infty$ forms a vector space (we leave it to the reader to verify the details),
+which we denote by \defindKey{$\normSp{P}$}{$l1set$}.
+\end{definition}
+%
+\begin{remark}
+For every $\vr{v}\in\lin{P}$,
+the set $\setof{\vr{v}(p)}{p\in P}$ of its coefficients is finite,
+and hence $\norm{\vr{v}} < \infty$ if and only if $\vr{v}\in\flin{P}$.
+\end{remark}
+%
+\begin{example}\label{eg:l1 vec}
+For any enumeration $\a_1,\a_2,\dots$ of the atoms,
+the vector $\vr{y} : \otuequiv{2}\to\R$ defined as
+\[
+\vr{y}(\a\b) =
+\begin{cases}
+\frac{1}{2^n} & \text{if $\a = \a_n$ and $\b = \a_{n+1}$ for some $n\in\N$, and}\\
+0 & \text{otherwise}
+\end{cases}
+\]
+is a vector in $\normSp{\otuequiv{2}}$ which is not in $\flin{\otuequiv{2}}$.
+\end{example}
+%
+\begin{lemma}\label{lem:lin prod norm}
+For every orbit-finite set $P$ and vectors $\vr{x}\in\normSp{P}$,
+$\vr{y}\in\lin{P}$ the vector
+\[
+p \mapsto \vr{x}(p)\cdot\vr{y}(p) \ :\  P\to \R
+\]
+is also in $\normSp{P}$.
+\end{lemma}
+%
+\begin{proof}
+Let $R = \max(\setof{|\vr{y}(p)|}{p\in P})$.
+Since $\vr{y}\in\lin{P}$, $R$ is finite.
+Then
+\[
+\sum_{p \in P} |\vr{x}(p)\cdot\vr{y}(p)| 
+\leqslant R\cdot\sum_{p \in P} |\vr{x}(p)| < \infty \ .
+\]
+\end{proof}
+%
+\begin{theorem}\label{thm:col fin opt}
+Consider an $S$-supported column-finite linear program of atom dimension $d$.
+For any $T\subseteqfin(\A\setminus S)$ of size at least $d$:
+\begin{enumerate}
+\item The optimum of the linear program does not change if we restrict the solutions to be finite and supported by $S\cup T$,
+or allow them to be orbit-infinite but of finite \normText{}.
+%\arka{Updated}
+\item If the optimum is finite then it has an optimal solution which is finite and supported by ${S\cup T}$.
+\end{enumerate}
+\end{theorem}
+%
+%\begin{theorem}\label{thm:row fin supp}
+%The optimum of an $S$-supported row-finite linear program does not change if we restrict to solutions supported by $S$.
+%\end{theorem}
+%%
+%%
+%\begin{theorem}\label{thm:row fin opt}
+%If the optimum of an $S$-supported row-finite linear program is finite then,
+%it has a finite optimal solution supported by $S$.
+%\end{theorem}
+%%
+%\begin{theorem}\label{thm:row fin arb sol}
+%The optimum of a row-finite linear program does not change even if we allow the solutions to be orbit-infinite.
+%\end{theorem}
+%%
+%
+\begin{theorem}\label{thm:row fin opt}
+For any $S$-supported row-finite linear program:
+\begin{enumerate}
+\item Its optimum does not change if we restrict the solutions to be supported by $S$, or allow them to be orbit-infinite.
+\item If its optimum is finite then it has an optimal solution supported by $S$.
+\end{enumerate}
+\end{theorem}
+%
+Compare the above theorems with \Cref{ex:no-sol},
+which shows that even solvability of orbit-finite linear programs can change if we allow orbit-infinite solutions,
+and with \Cref{ex:lpmin} which shows orbit-finite linear programs may not have optimal solutions when their optimum is finite.
+%
+%%
+%\begin{remark}
+%The class of row-finite linear programs is a subclass of orbit-finite linear programs.
+%The class of Column-finite linear programs is a subclass of finitary variants of orbit-finite linear programs,
+%which itself can be thought as a subclass of orbit-finite linear programs
+%\arka{add and cite remark}.
+%\end{remark}
+%
+\begin{example}
+%
+We give an example of a column-finite system with a non-trivial orbit-infinite solution with bounded \normText{}.
+
+Pick $\a\in\A$,
+Consider the system
+%
+\begin{equation}\label{eq:l1 sys}
+\lpMax{$\transpose{\idvec{\A}}\cdot\vr{x}$}{
+$\vr{A}\cdot\vr{x} \leqslant \idvec{\a}$ \\
+& $\vr{x} \geqslant \vr{0}$ \\
+& $\vr{x} \in \lin{\otuequiv{2}}$
+}
+\end{equation}
+%
+where columns of the matrices are defined (using \Cref{notation:fin vec}) as
+\[
+\vr{A}(-,\a\b) = \a - \frac{1}{2}\cdot \b  \qquad (\a\b\in\otuequiv{2}) \ .
+\]
+The vector $\vr{y}$ defined in \Cref{eg:l1 vec} is a solution of the above system assuming the enumeration $\a_1,\a_2,\dots$ defining $\vr{y}$ starts from $\a_1 = \a$.
+For any two atoms $\b,\g\neq \a$,
+the vector $\vr{z} = \a\b + \a\g + \frac{1}{2}\cdot(\b\g + \g\b)$ is a finite solution of \eqref{eq:l1 sys} with the same value as $\vr{y}$
+\[
+\transpose{\idvec{\A}}\cdot\vr{y} = \transpose{\idvec{\A}}\cdot\vr{z} = 2 \ .
+\] 
+%
+\end{example}
+%
+\begin{remark}
+Column-finite linear programs are slightly less robust than row-finite linear programs.
+The optimum of a row-finite linear program does not change if we allow its solutions to be orbit-infinite.
+The optimum of a column-finite linear program does not change if we allow its solutions to be orbit-infinite of bounded \normText{}.
+However, even solvability of a column-finite linear program may change if we allow orbit-infinite solutions without the bounded \normText{} restriction.
+
+Recall the system defined in \Cref{ex:Kirchoff}.
+We leave it to the reader to check that this system is column-finite.
+We have shown that this system has no finite solutions.
+\Cref{thm:col fin opt} implies it has neither any orbit-finite solution nor any orbit-infinite solution of bounded \normText{}.
+However, as shown already, it has an orbit-infinite solution.
+Note that the \normText{} of the solution of this system given in \Cref{ex:Kirchoff} is $\infty$.
+\end{remark}
+%
+\section{Proof of strong duality}\label{sec:strong proof}
+%
+In this section we prove \Cref{thm:col row duality,thm:col fin opt,thm:row fin opt}.
+We start by defining five functions and state one \emph{main lemma} for each of them.
+The proofs of above theorems follow almost immediately from these lemmas.
+The proofs of the lemmas appear in later sections.
+
+\fixed{For the remainder of the chapter,
+arbitrarily fix $S\subseteqfin\A$, orbit-finite sets $B$ and $C$ supported by $S$ and a column-finite maximisation problem $\cU$:
+\begin{equation}\label{eq:col fin primal} 
+\primalAbc
+\end{equation}
+\noindent
+where $\vr{A}\in\lin{B{\times}C}$, $\vr{b}\in\flin{B}$ and $\vr{c}\in\lin{C}$,
+and all of them are supported by $S$.
+Fix $d\in\N$ to be the atom-dimension of $\cU$.
+Fix an arbitrary $T\subseteq(\A\setminus S)$ of size at least $d$.}
+%
+\begin{definition}\label{def:orbres}
+For an $S$-supported orbit-finite set $P$ and finite $K\supseteq S$,
+define the \defindS{orbit restriction function} $\defindKey{$\orbres_K$}{$zeta$} : \lin{P}\to\flin{P}$ as
+\[
+(\orbres_K(\vr{x}))(p) =
+\begin{cases}
+\vr{x}(p), & \text{if }\supp{p}\subseteq K, \\
+0,         & \text{otherwise.}
+\end{cases}
+\]
+We write $\orbres(\vr{x})$ to denote $\orbres_{S\cup\supp{\vr{x}}}(\vr{x})$.
+\end{definition}
+%
+For finite $K\supseteq S$,
+the co-domain of $\orbres_K$ is indeed $\flin{P}$ since \ref{lem:supp count} implies that for every vector $\vr{x}\in\lin{P}$, the vector $\orbres_K(\vr{x})$ is finite.
+%
+\begin{lemma}\label{lem:orbres sol}
+For every orbit-finite solution $\vr{x}$ of $\cU$,
+$\orbres(\vr{x})$ is a finite solution of $\cU$
+and $\transpose{\vr{c}}\cdot\orbres(\vr{x}) = \transpose{\vr{c}}\cdot\vr{x}$.
+\end{lemma}
+%
+The above lemma is proven in \Cref{sec:orbres}.
+%
+\begin{definition}\label{def:orbsum vector}
+For an orbit-finite set $P$ supported by $S$, 
+define the \defindS{orbit summation function}
+\[
+\defindKey{$\orbsum{S}$}{$gammaS$} : \ell_1(P) \to \R^{\orbits[S]{P}}
+\]
+as
+\[
+\orbsum{S}(\vr{v}) : (K \in\orbits[S]{P}) \mapsto  \sum_{b\in K} \vr{v}(b)
+\]
+\end{definition}
+%
+\begin{remark}\label{rem:sum L1}
+Theorem 3.55 in \cite{babyRudin} implies that $\orbsum{S}(\vr{x})$ is well-defined for vectors $\vr{x}$ in $\normSp{P}$:
+for any enumeration $p_1,p_2,\dots$ of elements of $P$, the sequence of \emph{partial sums}
+\[
+\sum_{i=1}^n \vr{x}(p_i)
+\]
+converges to a real number, which is independent of the enumeration.
+\end{remark}
+%
+\begin{remark}
+The function $\orbsum{}$ (\Cref{def:orbsum linprog}) which was useful in solving systems of inequalities is a special case of $\orbsum{S}$ with $S=\emptyset$.
+A similar definition (\Cref{def:orbsum ord}) was also used in solving linear equations.
+\end{remark}
+%
+The orbit summation function $\orbsum{S}$ is used to convert column-finite and row-finite linear programs into finite linear programs.
+To do this, we extend it to matrices.
+%
+\begin{definition}\label{def:orbsum matrix}
+For orbit-finite sets $P$ and $Q$ and column-finite matrix $\vr{B}$ in $\lin{P{\times}Q}$,
+all of them supported by $S$,
+define $\orbSum{S}(\vr{B})$ to be the\\
+${\orbits[S]{P}{{\times}}\orbits[S]{Q}}$-matrix with columns
+\defind{}{$gamma$@$\orbSum{S}$}
+\[
+\emphdef{$(\orbSum{S}(\vr{B}))(-,K)$} \defeq \orbsum{S}(\vr{B}(-,q))
+\text{, for some (every) } q\in K \ ,
+\]
+for $K\in \orbits[S]{Q}$.
+\end{definition}
+%
+In \Cref{sec:orbsum} we prove $\orbSum{S}$ is well defined for \mbox{$S$-supported} matrices (\Cref{lem:orbsum matrix well def}),
+and it commutes with matrix multiplication (\Cref{cor:orbsum mat prod}).
+%
+Using $\orbSum{S}$ we get from $\cU$ the linear program \fixed{$\orbSum{S}(\cU)$:
+%
+\begin{equation}\label{eq:finite primal}
+\lpMax{$\orbSum{S}(\transpose{\vr{c}})\cdot \vr{x}$}{
+  $\orbSum{S}(\vr{A})\cdot \vr{x}\leqslant \orbSum{S}(\vr{b})$ \\
+& $\vr{x}\geqslant \vr{0}\ .$}
+\end{equation}
+%
+}
+
+\noindent
+Note that $\orbSum{S}(\vr{b})$ is well-defined since $\vr{b}$ is supported by $S$.
+Since $\vr{b}$ is a column-vector (i.e.\ a matrix with only one column)
+\[
+\orbSum{S}(\vr{b}) = \orbsum{S}(\vr{b}) \ .
+\]
+%
+\begin{lemma}\label{lem:orbsum sol}
+For any solution $\vr{x}\in\normSp{C}$ of $\cU$,
+$\orbsum{S}(\vr{x})$ is a solution of $\orbSum{S}(\cU)$ and
+$\orbSum{S}(\transpose{\vr{c}})\cdot\orbsum{S}(\vr{x}) =
+\transpose{\vr{c}}\cdot\vr{x}$.
+\end{lemma}
+%
+\begin{example}\label{eg:orbsum duality}
+Let $S = \emptyset$.
+Let $\star$ be an equivariant element,
+i.e.\ $\pi(\star)=\star$ for every $\pi\in\aut{\A}$.
+Let $B = \{\star\}\uplus\A$ and $C = \A^2$.
+The set $B$ has two equivariant orbits,
+namely $\{\star\}$ and $\A$,
+and $C$ also has two equivariant orbits,
+namely $\A^{(2)} = \setof{\a\b\in C}{\a\neq\b}$
+and $I = \setof{\a\a}{\a\in\A}$.
+Using \Cref{notation:fin vec}, for every $(\a,\b)\in C$ define $\vr{v}_{\a\b}\in\flin{B}$ as
+\[
+\vr{v}_{\a\b}\defeq
+\begin{cases}
+\a + \b + \star & \text{if }\a\neq\b \\
+\star - \a& \text{otherwise.}
+\end{cases}
+\]
+For every $(\a,\b)\in C$
+we have $\orbsum{S}(\vr{v}_{\a\b})\in\R^{\orbits[S]{B}} = \R^2$ and
+\[
+\orbsum{S}(\vr{v}_{\a\b}) =
+\begin{cases}
+(2,1) & \text{if }\a\neq\b \\
+(-1,1) & \text{otherwise.}
+\end{cases}
+\]
+(assuming that the first and the second coordinate, respectively,
+correspond to the orbits $\A$ and $\{\star\}$).
+Define $\vr{A}$ to be the $(B{\times} C)$ matrix with columns $\vr{A}(-,\a\b) = \vr{v}_{\a\b}$ for $c\in C$.
+Then $\vr{A}$ is a column-finite matrix.
+We have
+\[
+\begin{tabular}{l l}
+
+& \indexcolor{\phantom{...} $\otuequiv{2}$ $\phantom{.....}$ $I$} \\
+
+$\orbSum{S}(\vr{A})\ \ =$
+
+& $
+\begin{bmatrix}
+\phantom{a}2\phantom{a} & \phantom{a}-1\phantom{a} \\
+\phantom{a}1\phantom{a} & \phantom{a.....}1\phantom{a} \\
+\end{bmatrix}
+$
+
+\indexcolor{
+$
+\begin{tabular}{c}
+$\A$ \\
+$\set{\star}$
+\end{tabular}
+$
+}
+
+\end{tabular}
+\]
+Define $\vr{b}\in\flin{B}$ and $\vr{c}\in\lin{C}$ as
+\[
+\vr{b} = \star \quad\text{and}\quad \vr{c} = 2\cdot\idvec{\otuequiv{2}} +\idvec{I}
+\ .
+\]
+Using $\vr{A}$, $\vr{b}$ and $\vr{c}$ we form $\cU$ to be the column-finite linear program
+%
+\begin{equation}\label{eq:primal eg}
+\lpMatPrimal{\vr{A}}{\vr{b}}{\vr{c}}{\vr{x}}{B}{C}
+\end{equation}
+%
+The vector $\vr{b}$ is an equivariant finite vector.
+Hence $\orbSum{S}(\vr{b}) = \orbsum{S}(\vr{b}) = (0,1)$.
+Since $\vr{c}$ is not a finite vector $\orbsum{S}(\vr{c})$ is not well-defined.
+However, following usual convention we consider
+$\transpose{\vr{c}}$ to be a row vector (i.e.\ matrix with only one row),
+and hence it is automatically column-finite.
+Moreover $\transpose{\vr{c}}$ is equivariant.
+Hence $\orbSum{S}(\transpose{\vr{c}})$ is well-defined and is equal to
+\[
+\begin{tabular}{l l}
+& \indexcolor{\phantom{..}$\otuequiv{2}$ \quad $I$} \\
+
+$\orbSum{S}(\transpose{\vr{c}})\ \ =$
+
+& $
+\begin{bmatrix}
+\phantom{.}2\phantom{...} & \phantom{...}1\phantom{.}
+\end{bmatrix}
+\ .
+$
+\end{tabular}
+\]
+%
+Using $\orbSum{S}$ we get the finite linear program
+\[
+\orbSum{S}(\cU) :
+\lpMax{$2\cdot x_1 + x_2$}
+{   $         2\cdot x_1 - x_2 \leqslant 0$ \\
+  & $\phantom{.....}x_1 + x_2 \leqslant 1$}
+\]
+\end{example}
+%
+Recall the definition of $d$ and $T$ fixed in the beginning of this section.
+Also recall \Cref{notation:fin vec}.
+%
+\begin{definition}\label{def:orbdis}
+For an $S$-supported orbit-finite set $P$ of atom dimension at most $d$,
+define the \defindS{semi-orbit distribution function}
+\[
+\defindKey{$\orbdis{S}{T}$}{$deltaST$} : \R^{\orbits[S]{P}}\to \flin{P}
+\]
+as
+\[
+\orbdis{S}{T}(\vr{x}) \defeq
+\sum_{K\in\orbits[S]{P}} \left(
+\frac{\vr{x}(K)}{|K_{S\cup T}|} \cdot \sum_{p\in K_{S\cup T}} p
+\right)
+\]
+where for $K\in\orbits[S]{P}$
+\[
+K_{S\cup T} = \setof{p\in P}{\supp{p}\subseteq S\cup T}
+\]
+\end{definition}
+%
+%\begin{example}\label{ex:ordis}
+%Consider $S=\emptyset$, $B = \otuequiv{2}\cup\A$ and $T \in \binom{\A}{3}$.
+%We have $\orbits[S]{B} = \set{\otuequiv{2},\A}$.
+%Define $\vr{x} : \orbits[S]{B} \to \R$ as
+%\[
+%\vr{x}(\otuequiv{2}) = 1 \qquad \vr{x}(\A) = 2
+%\]
+%Then,
+%\[
+%\orbdis{S}{T}(\vr{x}) =
+%\left(\frac{1}{6} \cdot \sum_{(\a,\b)\in \otufrom{T}{2}} (\a,\b) \right)
+%+
+%\left(\frac{2}{3} \cdot \sum_{\a\in T} \a\right)
+%\]
+%\end{example}
+%
+\begin{lemma}\label{lem:orbdis sol}
+For any solution $\vr{x}$ of $\orbSum{S}(\cU)$,
+$\orbdis{S}{T}(\vr{x})$ is an $(S\cup T)$-supported finite solution of $\cU$ and
+$\transpose{\vr{c}}\cdot\orbdis{S}{T}(\vr{x}) =
+ \orbSum{S}(\transpose{\vr{c}})\cdot\vr{x}$.
+\end{lemma}
+%
+\begin{definition}\label{def:equiv lp}
+Two orbit-finite linear programs are called \defind{equivalent}{equivalence of linear programs} if:
+\begin{enumerate}
+  \item they have the same optimum, and
+  \item in case one of them has an optimal solution then so does the other. 
+\end{enumerate}
+\end{definition}
+%
+An immediate corollary of \Cref{lem:orbsum sol,lem:orbdis sol} is:
+%
+\begin{corollary}\label{cor:col fin solv}
+The linear programs $\cU$ and $\orbSum{S}(\cU)$ are equivalent.
+\end{corollary}
+%
+Now we are ready to prove \Cref{thm:col fin opt} using \Cref{lem:orbsum sol,lem:orbdis sol}.
+The proof of these lemmas will appear in respectively \Cref{sec:orbsum} and \Cref{sec:orbdis}.
+%
+\begin{subsecproof}{Proof of \Cref{thm:col fin opt}}
+The optimum of $\cU$ can only decrease if we restrict to finite solutions supported by $S\cup T$.
+\Cref{lem:orbres sol,lem:orbsum sol,lem:orbdis sol} together imply that for any orbit-finite solution $\vr{x}$ of $\cU$,
+$(\orbdis{S}{T}\circ\orbsum{S})(\orbres(\vr{x}))$ is a finite $(S\cup T)$-supported solution of $\cU$ with
+\[
+\transpose{\vr{c}}\cdot(\orbdis{S}{T}\circ\orbsum{S})(\orbres(\vr{x}))
+= \transpose{\vr{c}}\cdot\vr{x}
+\]
+Hence the optimum of $\cU$ does not change if we restrict to finite $(S\cup T)$-supported solutions.
+
+\Cref{lem:orbsum sol,lem:orbdis sol} together imply that for any solution $\vr{x}$ of $\cU$ in $\normSp{C}$,
+$(\orbdis{S}{T}\circ\orbsum{S})(\vr{x})$ is a finite $(S\cup T)$-supported solution of $\cU$ with
+\[
+\transpose{\vr{c}}\cdot(\orbdis{S}{T}\circ\orbsum{S})(\vr{x})
+= \transpose{\vr{c}}\cdot\vr{x}
+\]
+Hence the optimum of $\cU$ does not change if we allow orbit-infinite solutions in $\normSp{C}$.
+
+
+Now assume the optimum of $\cU$ is finite (say $r\in\R$).
+\Cref{cor:col fin solv} implies the optimum of $\orbSum{S}(\cU)$ is also $r$.
+Finite linear programs admit optimal solutions when their optimums are finite (\cite[Theorem 2.6]{optbook}).
+Let $\vr{z}$ be an optimal solution of $\orbSum{S}(\cU)$.
+Then $\orbdis{S}{T}(\vr{z})$ is a $(S\cup T)$-supported finite solution of $\cU$ with
+\[
+\transpose{\vr{c}}\cdot\orbdis{S}{T}(\vr{z}) = r
+\]
+Since $r$ is the optimum of $\cU$, $\orbdis{S}{T}(\vr{z})$ is also an optimal solution.
+\end{subsecproof}
+%
+\Cref{lem:orbsum sol,lem:orbdis sol}, and the proof of \Cref{thm:col fin opt} using them can be summarised by the following diagram of functions between solution sets of different linear programs.
+All of the functions preserve the value of a solution.
+\[
+\begin{tikzpicture}
+\node (cent) {} ;
+\node (bot)   [below= of cent] {} ;
+\node (top)   [above= of cent] {} ;
+\node (ofsol) [above left= of top]
+{\begin{tabular}{l}
+ orbit-finite \\ solutions of $\cU$
+ \end{tabular}};
+\node (finsol) [above right= of top]
+{\begin{tabular}{l}
+ finite solutions \\ of $\cU$
+ \end{tabular}};
+\node (norm) [right=of cent]
+{\begin{tabular}{l}
+ possibly orbit-infinite \\
+ solutions of $\cU$ of bounded  \\
+ \normText{}
+ \end{tabular}};
+\node (solfin) [below= of bot]
+{\begin{tabular}{l}
+ solutions of $\orbSum{S}(\cU)$
+ \end{tabular}};
+\node (suppsol) [left=of cent]
+{\begin{tabular}{l}
+ $(S\cup T)$-supported \\ finite solutions of $\cU$
+ \end{tabular}}; 
+\draw[thick,->] (ofsol.east) -- (finsol.west) node[midway,above right] {$\orbres$};
+\draw[draw=none] (finsol.south) -- (norm.north) node[midway,sloped] {$\boldsymbol{\subseteq}$};
+\draw[thick,->] (norm.south) -- (solfin.east) node[midway,below right] {$\orbsum{S}$};
+\draw[thick,->] (solfin.west) -- (suppsol.south) node[midway,below left] {$\orbdis{S}{T}$};
+\draw[draw=none] (suppsol.north) -- (ofsol.south) node[midway,sloped] {$\boldsymbol{\subseteq}$};
+\end{tikzpicture}
+\]
+%
+%\[
+%\xymatrix{
+%& \text{orbit-finite solutions of $\cU$} & \\
+%& &\text{finite solutions of $\cU$} \\
+%\text{finite solutions of $\cU$} & &
+%}
+%\]
+%\[
+%\xymatrix{
+%\text{orbit-finite solutions of $\cU$}
+%\ar@{|->}[r]^{\orbsum{S}}
+%& \text{finite solutions of $\cU$}
+%\ar@{|->}[d]^{\orbsum{S}}
+%& \cU \ar@{|->}[d]^{\orbsum{S}} \\
+%& \text{solution of $\orbSum{S}(\cU)$} & \orbsum{S}(\cU)
+%}
+%\]
+%
+\fixed{
+The dual of the column-finite linear program $\cU$ is the row-finite linear program $\transpose{\cU}$:
+%
+\begin{equation}\label{eq:row fin dual}
+\dualAbc
+\end{equation}
+%
+%Since $\cU$ is an arbitrary column-finite maximisation problem,
+%$\transpose{\cU}$ is an arbitrary row-finite minimisation problem.
+The dual of the finite linear program $\orbSum{S}(\cU)$ is the linear program $\transpose{\orbSum{S}(\cU)}$:
+\begin{equation}\label{eq:finite dual}
+\lpMin{$\transpose{\orbSum{S}(\vr{b})}\cdot \vr{y}$}{
+  $\transpose{\orbSum{S}(\vr{A})}\cdot \vr{y}\leqslant
+  \transpose{\orbSum{S}(\transpose{\vr{c}})}$ \\
+& $\vr{y}\geqslant \vr{0}$}
+\end{equation}
+%
+}
+%
+\begin{definition}\label{def:orbrow}
+For an $S$-supported orbit-finite set $P$,
+define the \defindS{orbit distribution function}
+\[
+\defindKey{$\orbrow{S}$}{$deltaS$} : \R^{\orbits[S]{P}}\to\lin{P}
+\]
+as
+\[
+\orbrow{S}(\vr{x}) : p \mapsto \vr{x}(\orbit[S]{p})\ . 
+\]
+\end{definition}
+%
+\begin{lemma}\label{lem:orbrow sol}
+If $\vr{y}$ is a solution of $\transpose{\orbSum{S}(\cU)}$ then,
+$\orbrow{S}(\vr{y})$ is a solution of $\transpose{\cU}$ and
+\[
+\transpose{\vr{b}}\cdot\orbrow{S}(\vr{y}) =
+\transpose{\orbSum{S}(\vr{b})}\cdot\vr{y}
+\]
+\end{lemma}
+%
+Recall the definition of $d$ and $T$ fixed in the beginning of this section.
+%
+\begin{definition}\label{def:orbsmt}
+For an $S$-supported orbit-finite set $P$ of atom-dimension at least $d$,
+define the \defindS{semi-orbit summation function}
+\[
+\defindKey{$\orbsmt{S}{T}$}{$gammaST$} : (P\to\R)\to(\R^{\orbits[S]{P}})
+\]
+as
+\[
+\orbsmt{S}{T}(\vr{v}) :
+(K\in\orbits[S]{D})\mapsto
+\left(\frac{1}{|K_{S\cup T}|} \cdot \sum_{p\in K_{S\cup T}} \vr{v}(p) \right)
+\]
+where for $K\in\orbits[S]{D}$ 
+\[
+K_{S\cup T} = \setof{p\in X}{\text{$p$ is supported by $S\cup T$}} \ .
+\]
+\end{definition}
+%
+\begin{lemma}\label{lem:orbsmt sol}
+If $\vr{y}$ is a solution of $\transpose{\cU}$ then,
+$\orbsmt{S}{T}(\vr{y})$ is a solution of $\transpose{\orbSum{S}(\cU)}$ with
+\[
+\transpose{\vr{b}}\cdot \vr{y} =
+\transpose{\orbSum{S}(\vr{b})}\cdot\orbsmt{S}{T}(\vr{y})
+\]
+\end{lemma}
+%
+As an immediate corollary of \Cref{lem:orbrow sol,lem:orbsmt sol} we get:
+\begin{corollary}\label{cor:row fin solv}
+%
+The linear programs $\transpose{\cU}$ and $\transpose{\orbSum{S}(\cU)}$ are equivalent.
+\end{corollary}
+%
+Now we are ready to prove \Cref{thm:row fin opt} using \Cref{lem:orbrow sol,lem:orbsmt sol}.
+The proof of these lemmas will appear in respectively in \Cref{sec:orbrow} and \Cref{sec:orbsmt}.
+%
+\begin{subsecproof}{Proof of \Cref{thm:row fin opt}}
+The optimum of $\transpose{\cU}$ can only decrease if we allow the solutions to be orbit-infinite and can only increase if we restrict the solutions to be supported by $S$.
+\Cref{lem:orbrow sol,lem:orbsmt sol} together imply that for any solution $\vr{y}$ of $\transpose{\cU}$ (be it orbit-infinite or orbit-finite),
+$(\orbrow{S}\circ\orbsmt{S}{T})(\vr{y})$ is an $S$-supported solution of $\transpose{\cU}$ with
+\[
+\transpose{\vr{b}}\cdot(\orbrow{S}\circ\orbsmt{S}{T})(\vr{y})
+= \transpose{\vr{b}}\cdot\vr{y}
+\]
+Hence the optimum of $\transpose{\cU}$ does not change if either we allow the solutions to be orbit-infinite or we restrict the solutions to be $S$-supported.
+
+Now assume the optimum of $\transpose{\cU}$ is finite (say $r\in\R$).
+\Cref{cor:row fin solv} implies the optimum of $\transpose{\orbSum{S}(\cU)}$ is also $r$.
+Finite linear programs admit optimal solutions when their optimums are finite.
+Let $\vr{z}$ be an optimal solution of $\orbSum{S}(\cU)$.
+Then $\orbrow{S}(\vr{z})$ is an $S$-supported finite solution of $\transpose{\cU}$ with
+\[
+\transpose{\vr{b}}\cdot\orbrow{S}(\vr{z}) = r
+\]
+Since $r$ is the optimum of $\transpose{\cU}$, $\orbrow{S}(\vr{z})$ is also an optimal solution.
+%
+%Due to the arbitrariness of the choice $S\subseteqfin\A$, row-finite linear program $\transpose{\cU}$,
+%this proves \Cref{thm:row fin opt} for row-finite minimisation problems.
+\end{subsecproof}
+%
+\Cref{lem:orbrow sol,lem:orbsmt sol}, and the proof of \Cref{thm:row fin opt} using them can be summarised by the following diagram of functions between solution sets of different linear programs.
+All of the functions preserve the value of a solution.
+\[
+\begin{tikzpicture}
+\node (cent) {} ;
+\node (infsol) [right=of cent]
+{\begin{tabular}{l}
+ (possibly) orbit-infinite\\
+ solutions of $\transpose{\cU}$
+ \end{tabular}};
+\node (solfin) [below=of cent]
+{\begin{tabular}{l}
+ solutions of $\transpose{\orbSum{S}(\cU)}$
+ \end{tabular}};
+\node (suppsol) [left=of cent]
+{\begin{tabular}{l}
+ $S$-supported \\ solutions of $\transpose{\cU}$
+ \end{tabular}};
+\draw[thick,->] (infsol.south) -- (solfin.east) node[midway,below right] {$\orbsmt{S}{T}$};
+\draw[thick,->] (solfin.west) -- (suppsol.south) node[midway,below left] {$\orbrow{S}$};
+\draw[draw=none] (suppsol.east) -- (infsol.west) node[midway] {$\boldsymbol{\subseteq}$};
+\end{tikzpicture}
+\]
+%
+Finally, we are ready to prove \Cref{thm:col row duality}.
+%
+\begin{subsecproof}{Proof of \Cref{thm:col row duality}}
+%
+%We show that if either the primal or dual is column-finite and
+%if the optimum of either of them is finite then, they have the same optimum.
+%We do the proof for the case when the primal is column-finite.
+%The proof for the other case is similar.
+Consider the primal-dual pair ($\cU$, $\transpose{\cU}$).
+\Cref{cor:col fin solv} says that $\cU$ and $\orbSum{S}(\cU)$ have the same optimum.
+Similarly, \Cref{cor:row fin solv} says that $\transpose{\cU}$ and $\transpose{\orbSum{S}(\cU)}$ have the same optimum.
+The pair ($\orbSum{S}(\cU)$, $\transpose{\orbSum{S}(\cU)}$) is a primal-dual pair of finite linear programs.
+Hence if the optimum of any of the linear programs $\cU$ or $\transpose{\cU}$ is finite then using the classical duality theorem we can conclude that the it is equal to the optimum of the other.
+%Since the pair $\cU$-$\transpose{\cU}$ is an arbitrary primal-dual pair of orbit-finite linear program where the primal is column-finite, this finishes the proof of the theorem for the case when the primal is column-finite.
+%The proof of the other case is similar and so we skip it.
+\end{subsecproof}
+%
+\begin{example}\label{eg:orbsum duality cont}
+%
+%\begin{equation}\label{eq:finite primal eg}
+%\lpMax{$\orbSum{S}(\transpose{\vr{c}})\cdot \vr{x}$}{
+%  $\orbSum{S}(\vr{A}) \cdot \vr{x} \leqslant \orbSum{S}(\vr{b})$ \\
+%& $\vr{x} \geqslant \vr{0}$
+%}
+%\end{equation}
+%%
+%Call this $\orbSum{S}(\cU)$.
+%
+Continuing \Cref{eg:orbsum duality},
+fix some $\a_1\b_1\tau_1\in\otuequiv{3}$.
+Define $\vr{x}\in\flin{B}$ as
+\[
+\vr{x} = \frac{1}{9}\cdot\left(2\cdot\a_1\b_1 + \b_1\tau_1
+ + 2\cdot\a_1\a_1 + 3\cdot\b_1\b_1 + \tau_1\tau_1 \right)\ .
+\]
+Then $\vr{x}$ is a non-negative finite solution with value $\frac{4}{3}$, since
+\[
+\vr{A}\cdot\vr{x} = \star = \vr{b},
+\quad\text{and}\quad
+\transpose{\vr{c}}\cdot\vr{x} = \frac{4}{3} \ .
+\]
+We have $\orbsum{S}(\vr{x}) = \left(\frac{1}{3},\frac{2}{3}\right)$.
+Since
+\[
+\orbSum{S}(\vr{A})\cdot\orbsum{S}(\vr{x}) = \left(1,0\right) = \orbSum{S}(\vr{b}),
+\quad\text{and}\quad
+\orbSum{S}(\transpose{\vr{c}})\cdot\orbsum{S}(\vr{x}) = \frac{4}{3}
+\]
+the vector $\orbsum{S}(\vr{x})$ is a non-negative solution of $\orbSum{S}(\cU)$ with value $\frac{4}{3}$.
+Coincidentally it is also an optimal solution,
+and in this case the unique one.
+The atom dimension of $\cU$ is $2$.
+Let $T = \set{\a_1,\b_1}$.
+Then
+\[
+\orbdis{S}{T}(\orbsum{S}(\vr{x})) =
+\frac{1}{6}\cdot\left(\a_1\b_1 + \b_1\a_1\right) + 
+\frac{1}{3}\cdot\left(\a_1\a_1 + \b_1\b_1\right)
+\]
+The vector $\orbdis{S}{T}(\orbsum{S}(\vr{x}))$ is non-negative.
+Furthermore, $\vr{A}\cdot\orbdis{S}{T}(\orbsum{S}(\vr{x})) = \star = \vr{b}$, and ${\transpose{\vr{c}}\cdot\orbdis{S}{T}(\orbsum{S}(\vr{x})) = \frac{4}{3}}$.
+Hence $\orbdis{S}{T}(\orbsum{S}(\vr{x}))$ is a solution of $\cU$ and in this case an optimal one.
+Notice that $\orbdis{S}{T}(\orbsum{S}(\vr{x}))$ uses fewer atoms that $\vr{x}$.
+
+%The dual of the column-finite linear program \eqref{eq:primal eg} is the row-finite linear program
+%\begin{equation}\label{eq:dual eg}
+%\lpMinPrimal{\transpose{(\vr{A})}}{\vr{c}'}{(\vr{b})}{\vr{y}}{C}{B}
+%\end{equation}
+%And the dual of the finite linear program \eqref{eq:finite primal eg} is the linear program
+%\begin{equation}\label{eq:finite dual eg}
+%%\lpMinPrimal{\transpose{\orbSum{S}(\vr{A})}}{\orbSum{S}(\vr{b})}{\orbSum{S}\vr{c}}{\vr{y}}{C}{B}
+%\lpMin{$\transpose{\orbSum{S}(\vr{b}')}\cdot \vr{y}$}{
+%  $\transpose{\orbSum{S}(\vr{A})}\cdot \vr{y} \geqslant \transpose{\orbSum{S}(\transpose{\vr{c}})}$ \\
+%  & $\vr{y} \geqslant \vr{0}$
+%} 
+%\end{equation}
+
+Pick an infinite subset $W\subseteq\A$.
+Define $\vr{y}_W = 3\cdot\star + \idvec{W} + 2\cdot\idvec{(\A\setminus W)}$.
+The vector $\vr{y}_W$ is an orbit-infinite solution of $\transpose{\cU}$ with value $3$. 
+The result $\orbsmt{S}{T}(\vr{y}_W)$ of applying $\orbsmt{S}{T}$ to $\vr{y}_W$ depends on the intersection $\set{\a,\b}\cap W$.
+We focus on the case where $\set{\a,\b}\cap W = \set{\a}$,
+the remaining cases can be dealt with similarly.
+In this case, $\orbsmt{S}{T}(\vr{y}_W) = (\frac{3}{2},3)$ (assuming that the first and the second co-ordinate, respectively,
+corresponds to the orbits $\A$ and $\set{\star}$).
+Dualising $\orbSum{S}(\cU)$ we get
+\[
+\transpose{\orbSum{S}(\cU)} :
+\lpMin{$y_2$}
+{   $2\cdot y_1 + y_2 \geqslant 2$ \\
+  & $\ \, -y_1 + y_2 \geqslant 1$}
+\]
+The vector $\orbsmt{S}{T}(\vr{y}_W)$ is a solution with of $\transpose{\orbSum{S}(\cU)}$ with value $3$.
+Applying $\orbrow{S}$ to $\orbsmt{S}{T}(\vr{y}_W)$ we get
+\[
+\orbrow{S}(\orbsmt{S}{T}(\vr{y}_W)) = 3\cdot\star + \frac{3}{2}\cdot\idvec{\A}
+\] 
+which is an equivariant solution of $\transpose{\cU}$ with value $3$.
+Note that although $\vr{y}_W$ is orbit-infinite,
+but $\orbrow{S}(\orbsmt{S}{T}(\vr{y}_W))$ is equivariant irrespective of $W$.
+\end{example}
+%
+It now remains to demonstrate \Cref{lem:orbres sol,lem:orbsum sol,lem:orbdis sol,lem:orbrow sol,lem:orbsmt sol}.
+Which we do in the following \Cref{sec:orbres,sec:orbsum,sec:orbdis,sec:orbrow,sec:orbsmt}.
+%
+\section{The orbit restriction function}\label{sec:orbres}
+%
+\begin{lemma}\label{lem:orbres lin}
+For any finite $K\supseteq S$,
+$\orbres_K$ is a monotonic linear function.
+\end{lemma}
+%
+\begin{proof}
+Easy.
+\end{proof}
+%
+\begin{lemma}\label{lem:orbres supp}
+For every finite $K\supseteq S$ and vector $\vr{x}$, the vector $\orbres_K(\vr{x})$ is a finite vector supported by $K$.
+\end{lemma}
+%
+\begin{proof}
+Follows from the definition of $\orbres$ (\Cref{def:orbres}) and \Cref{lem:fin vec supp}.
+\end{proof}
+%
+\begin{lemma}\label{lem:orbres fin vec}
+For every finite vector $\vr{x}$, we have $\orbres(\vr{x}) = \vr{x}$.
+\end{lemma}
+%
+\begin{proof}
+Follows from the definition of $\orbres$ (\Cref{def:orbres}) and \Cref{lem:fin vec supp}.
+\end{proof}
+%
+\begin{lemma}\label{lem:orbres mat vec}
+For every $K\supseteqfin S$,
+and every $\vr{x}\in\lin{C}$ supported by $K$ such that both $\transpose{\vr{c}}\cdot\vr{x}$ and $\vr{A}\cdot\vr{x}$ are well-defined,
+we have
+\[
+\transpose{\vr{c}}\cdot\vr{x} = \transpose{\vr{c}}\cdot\orbres_K(\vr{x})
+\quad\text{and}\quad
+\orbres_K(\vr{A}\cdot\vr{x}) = \vr{A}\cdot\orbres_K(\vr{x}) \ .
+\]
+\end{lemma}
+%
+\begin{proof}
+First we show $\transpose{\vr{c}}\cdot\vr{x} = \transpose{\vr{c}}\cdot\orbres_K(\vr{x})$.
+Since $S\subseteq K$, $\vr{c}$ is supported by $K$.
+Now using \Cref{lem:inner product fin} we get
+\begin{equation}\label{eq:orbres 1}
+\transpose{\vr{c}}\cdot\vr{x} =
+\sum_{c\in C_K}\vr{c}(c)\cdot\vr{x}(c) \ ,
+\end{equation}
+where $C_K = \setof{c\in C}{\supp{c}\subseteq K}$.
+By definition of $\orbres_K$ (\Cref{def:orbres}),
+we have $\orbres_K(\vr{x})(c) = \vr{x}(c)$ whenever $c \in C_K$ and $\orbres_K(\vr{x})(c) = 0$ otherwise.
+Hence
+\begin{equation}\label{eq:orbres 2}
+\sum_{c\in C_K}\vr{c}(c)\cdot\vr{x}(c) =
+\sum_{c\in C}\vr{c}(c) \cdot \orbres_K(\vr{x})(c) =
+\transpose{\vr{c}}\cdot\orbres(\vr{x}) \ .
+\end{equation}
+Combining \eqref{eq:orbres 1} and \eqref{eq:orbres 2} we get
+\[
+\transpose{\vr{c}}\cdot\vr{x} = \transpose{\vr{c}}\cdot\orbres_K(\vr{x}) \ .
+\]
+
+Now we show $\orbres_K(\vr{A}\cdot\vr{x}) = \vr{A}\cdot\orbres_K(\vr{x})$.
+Let $B_K = \setof{c\in C}{\supp{c}\subseteq K}$.
+%
+\begin{claim}\label{clm:orbres fin vec}
+Both $\orbres_K(\vr{A}\cdot\vr{x})$ and $\vr{A}\cdot\orbres_K(\vr{x})$ are finite vectors supported by $K$.
+\end{claim}
+%
+\begin{claimproof}
+By \Cref{lem:orbres supp},
+$\orbres_K(\vr{A}\cdot\vr{x})$ is a finite vector supported by $K$.
+The same lemma also implies $\orbres_K(\vr{x})$ is a finite vector supported by $K$.
+Since $\vr{A}$ is supported by $S\subseteq K$,
+$\vr{A}\cdot\orbres_K(\vr{x})$ is also supported by $K$.
+Since $\vr{A}$ is column-finite,
+\Cref{cor:col fin prod} implies $\vr{A}\cdot\orbres(\vr{x})$ is also a finite vector.
+\end{claimproof}
+%
+Let $B_K = \setof{c\in C}{\supp{c}\subseteq K}$.
+\Cref{clm:orbres fin vec} and \Cref{lem:fin vec supp} together imply that
+\[
+\dom{\orbres_K(\vr{A}\cdot\vr{x})},
+\dom{\vr{A}\cdot\orbres_K(\vr{x})} \subseteq B_K \ .
+\]
+Hence to show $\orbres_K(\vr{A}\cdot\vr{x})$ and $\vr{A}\cdot\orbres_K(\vr{x})$ are equal it is enough to show that they agree on $B_K$.
+
+Pick $b\in B_K$.
+By definition of $\orbres_K$, we get
+%
+\begin{equation}\label{eq:orbres 3}
+\orbres_K(\vr{A}\cdot\vr{x})(b) = (\vr{A}\cdot\vr{x})(b)
+= \vr{A}(b,-)\cdot\vr{x}\ .
+\end{equation}
+%
+Both $\vr{A}$ and $\vr{x}$ are supported by $K$.
+Hence, using \ref{lem:row col supp} we get that the row $\vr{A}(b,-)$ is also supported by $K$.
+Recall that in the beginning of the proof we defined $C_K \subseteq C$ as
+\[
+C_K = \setof{c\in C}{\supp{c}\subseteq K} \ .
+\]
+Applying \Cref{lem:inner product fin} we get
+%
+\begin{equation}\label{eq:orbres 4}
+\vr{A}(b,-)\cdot\vr{x} = \sum_{c\in C_K} \vr{A}(b,c)\cdot\vr{x}(c) \ .
+\end{equation}
+%
+By definition of $\orbres_K$,
+the vector $\orbres_K(\vr{x})$ is $0$ outside $C_K$.
+Hence,
+%
+\begin{equation}\label{eq:orbres 5}
+\sum_{c\in C_K} \vr{A}(b,c)\cdot\vr{x}(c)
+=
+\sum_{c\in C} \vr{A}(b,c)\cdot\orbres_K(\vr{x})(c) = (\vr{A}\cdot\orbres_K(\vr{x}))(b)\ .
+\end{equation}
+%
+Combining \eqref{eq:orbres 3}-\eqref{eq:orbres 5} we get
+\[
+\orbres_K(\vr{A}\cdot\vr{x})(b) = (\vr{A}\cdot\orbres_K(\vr{x}))(b) \ ,
+\]
+which finishes the proof.
+\end{proof}
+%
+Finally we are ready to prove \Cref{lem:orbres sol}.
+%
+\begin{proof}[Proof of \Cref{lem:orbres sol}]
+Pick an orbit-finite solution $\vr{x}$ of $\cU$.
+Let $K = S\cup \supp{\vr{x}}$.
+By definition, $\orbres(\vr{x}) = \orbres_K(\vr{x})$.
+Clearly $\orbres_K(\vr{x})\geqslant\vr{0}$.
+Using \Cref{lem:orbres mat vec} we get $\transpose{\vr{c}}\cdot\vr{x} = \transpose{\vr{c}}\cdot\orbres_K(\vr{x})$.
+We also have
+%
+\begin{align*}
+   \vr{A}\cdot\orbres_K(\vr{x})
+&= \orbres_K(\vr{A}\cdot\vr{x}) & \text{\Cref{lem:orbres mat vec}}\ \\
+&\leqslant \orbres_K(\vr{b})            & \text{\Cref{lem:orbres lin}}\ \\
+&= \vr{b}                       & \text{\Cref{lem:orbres fin vec},} \\
+\end{align*}
+%
+which finishes the proof.
+\end{proof}
+%
+\section{The orbit summation function}\label{sec:orbsum}
+%
+In this section we present some lemmas regarding the orbit summation function $\orbsum{S}$ and prove \Cref{lem:orbsum sol} using them.
+%
+%\begin{lemma}\label{lem:cod orbsum S supp}
+%Every element in $\R^{\orbits[S]{D}}$ is supported by $S$.
+%\end{lemma}
+%%
+%\begin{proof}
+%Pick arbitrary $\vr{v}\in\R^{\orbits[S]{D}}$, $\pi\in\aut[S]{\A}$ and $K\in\orbit[S]{D}$.
+%We have $\pi^{-1}(K) = K$.
+%Using this and \Cref{lem:perm fun}
+%\[
+%\pi(\vr{v})(K) = \vr{v}(\pi^{-1}(K)) = \vr{v}(K) \ .
+%\]
+%\end{proof}
+%
+
+\begin{lemma}\label{lem:cod orbsum S supp}
+For any orbit-finite set $P$ supported by $S$,
+every element in $\R^{\orbits[S]{P}}$ is supported by $S$.
+\end{lemma}
+%
+\begin{proof}
+Pick arbitrary $\vr{v}\in\R^{\orbits[S]{P}}$, $\pi\in\aut[S]{\A}$ and $K\in\orbit[S]{P}$.
+Using \ref{lem:perm orb aut} we get $\pi^{-1}(K) = K$.
+Applying \Cref{lem:perm fun} we conclude
+\[
+\pi(\vr{v})(K) = \vr{v}(\pi^{-1}(K)) = \vr{v}(K) \ .
+\]
+\end{proof}
+%
+Recall the definition of $\orbsum{S}$ (\Cref{def:orbsum vector}).
+%
+\begin{lemma}\label{lem:orbsum prop}
+The function $\orbsum{S}$ % : \flin{D} \to \R^{\orbits[S]{D}}$
+is an $S$-supported monotonic linear map.
+\end{lemma}
+%
+\begin{proof}
+Linearity and monotonicity of $\orbsum{S}$ follows easily from its definition.
+We focus on proving that it is supported by $S$.
+
+Let $P$ be an arbitrary orbit-finite set supported by $S$.
+Pick arbitrary $\vr{v}\in\normSp{P}$ and $\pi\in\aut[S]{\A}$.
+For any $K\in\orbits[S]{P}$% using \ref{lem:perm orb aut} we get
+\begin{align*}
+\orbsum{S}(\pi(\vr{v}))(K) & =
+\sum_{p\in K} \pi(\vr{v})(p) &  \\
+& = \sum_{p\in K} \vr{v}(\pi^{-1}(p)) &  (\text{\Cref{lem:perm fun}})\\
+& = \sum_{p\in K} \vr{v}(p) & (\text{\ref{lem:perm orb aut}})\\
+&= \orbsum{S}(\vr{v})(K) & \ .\\
+\end{align*}
+Hence $\orbsum{S}(\pi(\vr{v})) = \orbsum{S}(\vr{v})$.
+Now using \Cref{lem:cod orbsum S supp} we get  $\orbsum{S}(\vr{v}) = \pi(\orbsum{S}(\vr{v}))$.
+Hence $\orbsum{S}(\pi(\vr{v})) = \pi(\orbsum{S}(\vr{v}))$.
+Since $\pi\in\aut[S]{\A}$ was chosen arbitrarily, \Cref{lem:perm im S supp} now implies $\orbsum{S}$ is supported by $S$.
+\end{proof}
+%
+\begin{lemma}\label{lem:orbsum matrix well def}
+The function $\orbSum{S}$ is well-defined for $S$-supported column-finite matrices.
+%For any $L\in\orbits[S]{E}$ and $c,c'\in L$
+%\[
+%\orbsum{S}(\vr{B}(-,c)) = \orbsum{S}(\vr{B}(-,c'))
+%\]
+%
+\end{lemma}
+%
+\begin{proof}
+%
+Pick orbit-finite sets $P$ and $Q$ and column-finite matrix $\vr{B}\in\lin{P{\times}Q}$,
+all of them supported by $S$.
+We show for any two elements $q$ and $q'$ in the same $S$-orbit of $Q$.
+\[
+\orbsum{S}(\vr{B}(-,q)) = \orbsum{S}(\vr{B}(-,q'))\ .
+\]
+%
+
+Pick such $q,q'\in Q$ arbitrarily.
+Since they are in the same $S$-orbit,
+there exists $\pi\in\aut[S]{\A}$ such that $\pi(q)=q'$.
+Using \Cref{lem:cod orbsum S supp} we get
+\[
+\orbsum{S}(\vr{B}(-,q)) = \pi(\orbsum{S}(\vr{B}(-,q))) \ .
+\]
+Since $\orbsum{S}$ is supported by $S$ (\Cref{lem:orbsum prop}),
+from \Cref{lem:perm im S supp} it follows that
+\[
+\pi(\orbsum{S}(\vr{B}(-,q))) = \orbsum{S}(\pi(\vr{B}(-,q))) \ .
+\]
+%
+The matrix $\vr{B}$ is assumed to be supported by $S$.
+Using \ref{lem:perm mat row} we conclude
+\[
+\orbsum{S}(\pi(\vr{B}(-,q))) = \orbsum{S}(\vr{B}(-,\pi(q)))
+= \orbsum{S}(\vr{B}(-,q'))\ .
+\]
+As a consequence of the above equalities we get
+\[
+\orbsum{S}(\vr{B}(-,q)) = \orbsum{S}(\vr{B}(-,q')) \ .
+\]
+\end{proof}
+%
+%As we promised,
+%now we show that this definition indeed achieves what we intended it to.
+%%
+%\arka{actually this lemma is superfluous now}
+%
+%\begin{lemma}\label{lem:orbsum matrix}
+%For a column-finite $B{\times} C$-matrix $\vr{A}$ supported by $S$
+%\[
+%\orbsum{S}({\setof{\vr{A}(-,c)}{c\in C}}) =
+%\setof{(\orbSum{S}(\vr{A}))(-,L)}{L\in \orbits[S]{C}}
+%\]
+%\end{lemma}
+%%
+%\begin{proof}
+%\[
+%\begin{aligned}
+%  & \orbsum{S}({\setof{\vr{A}(-,c)}{c\in C}}) \\
+%= & \setof{\orbsum{S}(\vr{A}(-,c))}{c\in C} \\
+%= & \setof{(\orbSum{S}(\vr{A}))(-,\orbit[S]{c})}{c\in C} \\
+%= & \setof{(\orbSum{S}(\vr{A}))(-,L)}{L\in \orbits[S]{C}}
+%\end{aligned}
+%\]
+%\end{proof}
+%
+%\begin{lemma}\label{lem:orbsum mat vec}
+%For any $S$-supported column-finite matrix $\vr{B}\in\lin{D{\times}C}$ and vector $\vr{x}\in\normSp{C}$ we have
+%$\orbsum{S}(\vr{B}\cdot\vr{x}) = \orbSum{S}(\vr{B})\cdot\orbsum{S}(\vr{x})$.
+%\end{lemma}
+%
+\begin{lemma}\label{lem:orbsum mat vec}
+For any vector $\vr{x}\in\normSp{C}$ we have
+$\orbsum{S}(\vr{A}\cdot\vr{x}) = \orbSum{S}(\vr{A})\cdot\orbsum{S}(\vr{x})$
+and
+$\transpose{\vr{c}}\cdot\vr{x} = \orbSum{S}(\transpose{\vr{c}})\cdot\orbsum{S}(\vr{x})$.
+\end{lemma}
+%
+\begin{proof}
+Pick $\vr{x}\in\normSp{C}$.
+We prove $\orbsum{S}(\vr{A}\cdot\vr{x}) = \orbSum{S}(\vr{A})\cdot\orbsum{S}(\vr{x})$.
+The proof of $\transpose{\vr{c}}\cdot\vr{x} = \orbSum{S}(\transpose{\vr{c}})\cdot\orbsum{S}(\vr{x})$ is similar.
+
+Pick arbitrary $K\in\orbits[S]{B}$.
+We show
+\[
+\orbsum{S}(\vr{A}\cdot\vr{x})(K) = (\orbSum{S}(\vr{A})\cdot\orbsum{S}(\vr{x}))(K)
+\ .
+\]
+The following sequence of equations finish the proof
+\begin{align*}
+&& \orbsum{S}(\vr{A}\cdot\vr{x})(K) =
+&  \sum_{b\in K} (\vr{A}\cdot\vr{x})(b)
+& \text{(\Cref{def:orbsum vector})} \\
+&& =
+& \sum_{b\in K}\sum_{c\in C}\vr{A}(b,c)\cdot\vr{x}(c)
+& \\
+&& =
+& \sum_{b\in K}\sum_{M\in\orbits[S]{C}}\sum_{c\in M}\vr{A}(b,c)\cdot\vr{x}(c)
+& \\
+&& =
+&\sum_{M\in\orbits[S]{C}}
+ \sum_{c\in M}\vr{x}(c)\cdot\left(
+ \sum_{b\in K}\vr{A}(b,c)\right)
+& \text{(rearrangement)} \\
+&& =
+& \sum_{M\in\orbits[S]{C}}
+  \sum_{c\in M}\vr{x}(c)\cdot\orbSum{S}(\vr{A})(K,M)
+& \text{(\Cref{def:orbsum matrix})}\\
+&& =
+& \sum_{M\in\orbits[S]{C}}\orbSum{S}(\vr{A})(K,M)\cdot
+  \sum_{c\in M}\vr{x}(c)
+& \text{(rearrangement)} \\
+&& =
+& \sum_{M\in\orbits[S]{C}}\orbSum{S}(\vr{A})(K,M)\cdot\orbsum{S}(\vr{x})(M)
+& \text{(\Cref{def:orbsum vector})}\\
+&& =
+& \ (\orbSum{S}(\vr{A})\cdot\orbsum{S}(\vr{x}))(K)\ . \\
+\end{align*}
+Note that we can rearrange the sums freely due to \Cref{lem:lin prod norm} and 
+\Cref{rem:sum L1}.
+%\cite[Theorem 3.55]{babyRudin}.
+\end{proof}
+%
+The following lemma is not used in our current context.
+But we believe it is a fundamental result and therefore worth stating.
+\begin{lemma}\label{cor:orbsum mat prod}
+The function $\orbSum{S}$ commutes with matrix multiplication.
+%For $S$-supported column-finite matrices $\vr{B}\in\lin{D{\times}E}$ and $\vr{C}\in\lin{E{\times}F}$ we have
+%$\orbSum{S}(\vr{B}\cdot\vr{C}) = \orbSum{S}(\vr{B})\cdot\orbSum{S}(\vr{C})$.
+\end{lemma}
+%
+\begin{proof}%[Proof of \Cref{cor:orbsum mat prod}]
+Pick arbitrary orbit-finite sets $P$, $Q$ and $R$,
+and column-finite matrices $\vr{B}\in\lin{P{\times}Q}$ and $\vr{C}\in\lin{Q{\times}R}$, all supported by $S$.
+We prove that $\orbSum{S}(\vr{B}\cdot\vr{C}) = \orbSum{S}(\vr{B})\cdot\orbSum{S}(\vr{C})$.
+
+Let $L$ be an arbitrary $S$-orbit of $R$.
+We show
+\[
+(\orbSum{S}(\vr{B}\cdot\vr{C}))(-,L) =
+(\orbSum{S}(\vr{B})\cdot\orbSum{S}(\vr{C}))(-,L)
+\]
+Let $r$ be an arbitrary element of $L$.
+\begin{align*}
+   & (\orbSum{S}(\vr{B}\cdot\vr{C}))(-,L)
+   & \\
+=\ & \orbsum{S}((\vr{B}\cdot\vr{C})(-,r))
+   & \text{(\Cref{def:orbsum matrix})} \\
+=\ & \orbsum{S}(\vr{B}\cdot\vr{C}(-,r))
+   & \\
+=\ & \orbSum{S}(\vr{B})\cdot\orbsum{S}(\vr{C}(-,r))
+   & \text{(\Cref{lem:orbsum mat vec})} \\
+=\ & \orbSum{S}(\vr{B})\cdot(\orbSum{S}(\vr{C}))(-,L)
+   & \text{(\Cref{def:orbsum matrix})} \\
+=\ & (\orbSum{S}(\vr{B})\cdot\orbSum{S}(\vr{C}))(-,L) \ .
+   &  \\
+\end{align*}
+\end{proof}
+%
+%\begin{corollary}\label{cor:orbsum prod}
+%For any $\vr{x}\in\normSp{C}$ we have
+%$\orbSum{S}(\transpose{\vr{c}})\cdot\orbsum{S}(\vr{x})
+%=\transpose{\vr{c}}\cdot\vr{x}$.
+%\end{corollary}
+%%
+%\begin{proof}
+%Assuming $E = C$ and $D$ to be a singleton, from \Cref{lem:orbsum mat vec} we get
+%$\orbSum{S}(\transpose{\vr{c}})\cdot\orbsum{S}(\vr{x})=
+%\orbSum{S}(\transpose{\vr{c}}\cdot\vr{x})$.
+%But $\transpose{\vr{c}}\cdot\vr{x}$ is a just a number,
+%so it is safe to write
+%$\orbSum{S}(\transpose{\vr{c}}\cdot\vr{x}) = \transpose{\vr{c}}\cdot\vr{x}$.
+%\end{proof}
+%
+%\begin{lemma}\label{lem:orbsum ptime}
+%The function $\orbSum{S}$ is computable in \exptime{} and in \ptime{} in fixed atom-dimension.
+%\end{lemma}
+%%
+%\arka{TODO: cite representation given in \Cref{ch:equations}}
+%%
+%\begin{proof}[Proof of \Cref{lem:orbsum ptime}]
+%The dimension of $\orbSum{S}(\vr{A})$ is $\orbits[S]{B}{\times}\orbits[S]{C}$,\\
+%which is polynomial in the size of the standard representation of $\vr{A}$.
+%Hence, it is enough to show that every entry of $\orbSum{S}(\vr{A})$ can be computed in \fadp.
+%Pick arbitrary $(K,L)\in\orbits[S]{B}{\times}\orbits[S]{C}$.
+%Say $b$ and $c$ are respectively the representative elements of $X$ and $Y$ in the standard representation of $\vr{A}$.
+%We want to compute
+%\[
+%\orbSum{S}(\vr{A})(K,L) = \sum_{b'\in K} \vr{A}(b',c) \ .
+%\]
+%Let $K'\subseteq K$ be the set of elements in $K$ which are supported by ${(S\cup\supp{c})}$.
+%\Cref{lem:col fin supp} implies
+%\[
+%\setof{b'\in K}{\vr{A}(b',c)\neq 0}\subseteq K' \ .
+%\]
+%Hence it is enough to compute $\sum_{b'\in K'} \vr{A}(b',c)$.
+%We have two cases:
+%%
+%\paragraph{(Case 1: $|\supp{b}\setminus S| > |\supp{c}\setminus S|$)}
+%%
+%In this case, \Cref{lem:pick elem supp} implies $K'$ is empty.
+%Hence $\sum_{b'\in K'} \vr{A}(b',c) = 0$.
+%%
+%\paragraph{(Case 2: $|\supp{b}\setminus S| \leqslant |\supp{c}\setminus S|$)}
+%%
+%In this case, we can compute some $b'\in K'$ using \Cref{lem:pick elem supp}.
+%By \Cref{lem:supp aut T} we get
+%\[
+%K' = \aut{\supp{c}\setminus S}\cdot\set{b'} \ .
+%\]
+%Let $d$ be the atom-dimension of $\vr{A}$.
+%Then $|\aut{\supp{c}\setminus S}|\leqslant d!$.
+%Hence, using \Cref{lem:apply perm fadp,lem:eq check fadp} we can compute $K'$ in \fadp{}. 
+%For every $b'\in K'$ we can compute $\vr{A}(b',c)$ in \fadp{} (\Cref{lem:matrix query ptime}).
+%\arka{remove \fadp{}}
+%Hence we can also compute $\sum_{b'\in K'} \vr{A}(b',c)$ in \fadp{}.
+%%
+%\end{proof}
+%
+\begin{subsecproof}{Proof of \Cref{lem:orbsum sol}}
+%\begin{proof}
+Consider an arbitrary solution $\vr{x}\in\normSp{C}$ of $\cU$.
+By monotonicity of $\orbsum{S}$ (\Cref{lem:orbsum prop}), $\orbsum{S}(\vr{x})$ is non-negative.
+Applying \Cref{lem:orbsum mat vec} we get
+%
+\begin{equation}\label{eq:orbsum sol 1}
+\orbSum{S}(\vr{A})\cdot\orbsum{S}(\vr{x}) =
+\orbsum{S}(\vr{A}\cdot\vr{x}) \ .
+\end{equation}
+%
+Since $\vr{A}\cdot\vr{x}\leqslant\vr{b}$,
+again using monotonicity of $\orbsum{S}$ (\Cref{lem:orbsum prop}) we get
+%
+\begin{equation}\label{eq:orbsum sol 2}
+\orbsum{S}(\vr{A}\cdot\vr{x}) \leqslant \orbsum{S}(\vr{b}) \ .
+\end{equation}
+Combining equation \eqref{eq:orbsum sol 1} with inequality \eqref{eq:orbsum sol 2} we get
+\[
+\orbSum{S}(\vr{A})\cdot\orbsum{S}(\vr{x}) \leqslant
+\orbsum{S}(\vr{b}) = \orbSum{S}(\vr{b})\ .
+\]
+Hence, $\orbsum{S}(\vr{x})$ is a solution of $\orbSum{S}(\cU)$.
+Finally another use of \Cref{lem:orbsum mat vec} gives us
+$
+\orbSum{S}(\transpose{\vr{c}})\cdot\orbsum{S}(\vr{x}) =
+\transpose{\vr{c}}\cdot\vr{x}
+$.
+%\end{proof}
+\end{subsecproof}
+%
+\section{The semi-orbit distribution function}\label{sec:orbdis}
+In this section we present some lemmas regarding the semi-orbit distribution function $\orbdis{S}{T}$,
+and prove \Cref{lem:orbdis sol} using them.
+Recall the definition of $\orbdis{S}{T}$ (\Cref{def:orbdis}).
+Immediately from the definition we get:
+%
+\begin{lemma}\label{lem:orbdis lin}
+The function $\orbdis{S}{T}$ %: \R^{\orbits[S]{D}}\to\flin{D}$
+is a monotonic linear map.
+\end{lemma}
+%
+Recall the definition of $\aut[S\cup\set{T}]{\A}$ given in \Cref{notation:aut set T}.
+%
+\begin{definition}\label{def:supp S T}
+A set $x$ is said to be \defindS{supported by ${S\cup\{T\}}$} if $\pi(x) = x$ for any $\pi\in\aut[S\cup\set{T}]{\A}$.
+%is supported by $S\cup T$ and is invariant under $\aut{T}$ (recall \Cref{notation:aut set T}), i.e.
+%\[
+%\pi(x) = x
+%\ \ \text{for all}\ \
+%\pi\in\aut{T}\ .
+%\]
+\end{definition}
+%
+\begin{remark}
+\Cref{def:set T supp}, which was useful in solving orbit-finite linear programs is a special case of the above definition. 
+\end{remark}
+%
+\begin{lemma}\label{lem:supp S implies S T}
+If a set $x$ is supported by $S$ then it is also supported by $(S\cup\set{T})$.
+\end{lemma}
+%
+\begin{proof}
+Follows from the fact that
+$\aut[S\cup\set{T}]{\A}\subseteq \aut[S]{\A}$.
+\end{proof}
+%
+\begin{lemma}\label{lem:orbdis supp}
+%Any vector in the image of $\orbdis{S}{T}$ is finite and supported by $S\cup\set{T}$.
+%
+%\arka{Which formulation is better}
+%
+For any orbit-finite set $P$ supported by $S$ and $\vr{x}\in\R^{\orbits[S]{P}}$, the vector $\orbdis{S}{T}(\vr{x})$ is finite and is supported by ${S\cup\set{T}}$.
+\end{lemma}
+%
+\begin{proof}
+First we show $\orbdis{S}{T}(\vr{x})$ is supported by $S\cup T$.
+For $K\in\orbits[S]{P}$ define
+\[
+K_{S\cup T} = \setof{p\in P}{\supp{p}\subseteq (S\cup T)} \ . 
+\]
+The vector $(\orbdis{S}{T}(\vr{x}))(p)\neq 0$ only if $p\in K_{S\cup T}$ for some $K\in\orbits[S]{P}$.
+%\ref{lem:supp count} implies that for every $K\in\orbits[S]{P}$,
+%the set $K_{S\cup T}$ is finite.
+%Hence  $\orbdis{S}{T}(\vr{x})$ is also a finite vector.
+%By definition, every element of $K_{S\cup T}$ is supported by $S\cup T$.
+Applying \Cref{lem:fin vec supp} we conclude $\orbdis{S}{T}(\vr{x})$ is supported by $S\cup T$.
+
+Pick arbitrary $\tau\in\aut[S\cup\set{T}]{\A}$.
+We prove $\tau(\orbdis{S}{T}(\vr{x})) = \orbdis{S}{T}(\vr{x})$.
+There exists $\sigma\in\aut[S\cup T]{\A}$ and $\pi\in\aut{T}$ (recall \Cref{notation:aut set T}) such that $\tau = \pi\circ\sigma$.
+We have proved that $\orbdis{S}{T}(\vr{x})$ is supported by $S\cup T$.
+Hence $\sigma(\orbdis{S}{T}(\vr{x})) = \orbdis{S}{T}(\vr{x})$.
+To finish the proof we show
+$\pi(\orbdis{S}{T}(\vr{x})) = \orbdis{S}{T}(\vr{x})$.
+Recall \Cref{notation:fin vec}.
+Since addition of vectors commutes with the action of automorphims (\Cref{lem:perm add mult}),
+we get
+\begin{equation}\label{eq:orbdis supp 4}
+\pi(\orbdis{S}{T}(\vr{x})) =
+\left(
+\sum_{K\in\orbits[S]{P}}
+\frac{\vr{x}(K)}{|K_{S\cup T}|} \cdot \sum_{p\in K_{S\cup T}} \pi(p)
+\right)
+\end{equation}
+\ref{lem:supp aut T} implies that $\pi(K_{S\cup T}) = K_{S\cup T}$.
+Then $\pi$ induces a permutation of $K_{S\cup T}$ (with $\pi^{-1}$ inducing the inverse permutation).
+Hence
+\begin{equation}\label{eq:orbdis supp 5}
+\sum_{p\in K_{S\cup T}} \pi(p) = \sum_{p\in K_{S\cup T}} p
+\end{equation}
+Using equations \eqref{eq:orbdis supp 4} and \eqref{eq:orbdis supp 5} we conclude
+\[
+\pi(\orbdis{S}{T}(\vr{x}))
+=
+\left(
+\sum_{K\in\orbits[S]{P}}
+\frac{\vr{x}(K)}{|K_{S\cup T}|} \cdot \sum_{p\in K_{S\cup T}} p
+\right)
+= \orbdis{S}{T}(\vr{x})
+\]
+%Since $\pi\in\aut{T}$ was arbitrarily chosen,
+%%this proves for any $\pi\in\aut{T}$ we have
+%%$(\pi\circ\orbdis{S}{T})(\vr{x}) = \vr{x}$.
+%%Since $\vr{x}\in\R^{\orbits[S]{B}}$ was arbitrarily chosen,
+%this finishes the proof of the lemma.
+\end{proof}
+%
+\begin{lemma}\label{lem:orbsum orbdis inv}
+$\orbsum{S}\circ\orbdis{S}{T} = \id$.
+\end{lemma}
+%
+\begin{proof}
+The proof is an easy application of the definitions of $\orbsum{S}$ and $\orbdis{S}{T}$ and is left to the reader.
+%Pick arbitrary orbit-finite set $D$ and vector $\vr{x}\in\R^{\orbits[S]{D}}$.
+%We show $(\orbsum{S}\circ\orbdis{S}{T})(\vr{x}) = \vr{x}$.
+%Using the definition of $\orbdis{S}{T}(\vr{x})$
+%\begin{equation}\label{eq:orbsum orbsum inv 1}
+%\orbdis{S}{T}(\vr{x}) =
+%\sum_{K\in\orbits[S]{D}}\left(
+%\frac{\vr{x}(K)}{|K_{S\cup T}|} \cdot \sum_{b\in K_{S\cup T}} b
+%\right)\ ,
+%\end{equation}
+%where for $K\in\orbits[S]{D}$ the set
+%\[
+%K_{S\cup T} = \setof{b\in K}{\supp{b}\subseteq S\cup T} \ .
+%\]
+%Pick arbitrary $K\in\orbits[S]{D}$.
+%For $b\in D$ we have $((\orbdis{S}{T}(\vr{x}))(b))(K) = 1$ if $b\in K$,
+%otherwise $((\orbdis{S}{T}(\vr{x}))(b))(K) = 0$.
+%Now applying linearity of $\orbsum{S}$ (\Cref{lem:orbsum prop}) to equation \eqref{eq:orbsum orbsum inv 1} we get
+%\[
+%(\orbsum{S}(\orbdis{S}{T}(\vr{x})))(K) = 
+%\frac{\vr{x}(K)}{|K_{S\cup T}|} \cdot |K_{S\cup T}| = \vr{x}(K) \ .
+%\]
+%Since $K\in\orbits[S]{D}$ was chosen arbitrarily this proves
+%\[
+%\orbsum{S}(\orbdis{S}{T}(\vr{x})) = \vr{x} \ .
+%\]
+\end{proof}
+%
+\begin{lemma}\label{lem:orbdis orbsum inv}
+%For any vector $\vr{x}\in\flin{D}$ supported by ${(S\cup\set{T})}$
+For any $S$-supported orbit-finite set $P$ and $(S\cup\set{T})$-supported finite vector $\vr{x}\in\flin{P}$
+\[
+(\orbdis{S}{T}\circ\orbSum{S})(\vr{x}) = \vr{x} \ .
+\]
+\end{lemma}
+%
+\begin{proof}%[Proof of \Cref{lem:orbdis orbsum inv}]
+Pick arbitrary $p\in P$.
+We show
+\[
+((\orbdis{S}{T}\circ\orbsum{S})(\vr{x}))(p) = \vr{x}(p)
+\]
+We split the proof into two cases.
+
+\paragraph{(Case 1: $p$ is not supported by $S\cup T$)}
+The vector $\vr{x}$ is a finite vector supported by $S\cup T$.
+\Cref{lem:orbdis supp} implies $(\orbdis{S}{T}\circ\orbsum{S})(\vr{x})$ is also a finite vector supported by $S\cup T$.
+Applying \Cref{lem:fin vec supp}
+\[
+((\orbdis{S}{T}\circ\orbsum{S})(\vr{x}))(p) = 0 = \vr{x}(p)
+\]
+
+\paragraph{(Case 2: $p$ is supported by $S\cup T$)}
+For $K\in\orbit[S]{P}$ define $K_{S\cup T}$ as done in \Cref{def:orbdis}.
+Expanding the expression $(\orbdis{S}{T}\circ\orbsum{S})(\vr{x})$ using the definition of $\orbsum{S}$ and $\orbdis{S}{T}$ (\Cref{def:orbsum vector,def:orbdis})
+\[
+(\orbdis{S}{T}\circ\orbsum{S})(\vr{x}) =
+\sum_{K\in\orbits[S]{P}}
+\frac{(\orbsum{S}(\vr{x}))(K)}{|K_{S\cup T}|} \cdot
+\left(
+\sum_{p'\in K_{S\cup T}} p'
+\right)
+\]
+Let $L = \orbit[S]{p}$.
+Since $p$ is supported by $S\cup T$, we have $p\in L_{S\cup T}$.
+Hence
+\[
+((\orbdis{S}{T}\circ\orbsum{S})(\vr{x}))(p) =
+\frac{(\orbsum{S}(\vr{x}))(L)}{|L_{S\cup T}|}
+\]
+To finish the proof we need to show
+\[
+\vr{x}(p) = \frac{(\orbsum{S}(\vr{x}))(L)}{|L_{S\cup T}|}
+\]
+%
+\begin{claim}\label{clm:lem:orbdis orbsum inv}
+For any $p'\in L_{S\cup T}$ we have $\vr{x}(p) = \vr{x}(p')$.
+\end{claim}
+%
+\begin{claimproof}
+Pick arbitrary $p'\in L_{S\cup T}$.
+Using \ref{lem:supp aut T} we can find $\pi\in\aut{T}$ such that $\pi(p) = p'$.
+Since $\vr{x}$ is assumed to be supported by $(S\cup\set{T})$, we have
+\[
+\pi^{-1}(\vr{x}) = \vr{x}
+\]
+Using \Cref{lem:perm fun} we get
+\[
+\vr{x}(p') = \vr{x}(\pi(p)) =
+\pi(\pi^{-1}(\vr{x}))(\pi(p)) =
+(\pi^{-1}(\vr{x}))(p) = \vr{x}(p)
+\]
+This finishes the proof of the claim.
+\end{claimproof}
+%
+\Cref{lem:supp S implies S T} implies $\vr{x}$ is supported by $S\cup T$.
+Hence, if $\vr{x}(p')\neq 0$ for some $p'\in L$ then $p'\in L_{S\cup T}$.
+This implies
+\[
+  \sum_{p'\in L_{S\cup T}} \vr{x}(p')
+= \sum_{p'\in L} \vr{x}(p')
+= (\orbsum{S}(\vr{x}))(L)
+\]
+Now \Cref{clm:lem:orbdis orbsum inv} implies
+\[
+\vr{x}(p) = \frac{(\orbsum{S}(\vr{x}))(L)}{|L_{S\cup T}|}
+\]
+which finishes the proof for this case and also of the lemma.
+\end{proof}
+%
+\begin{lemma}\label{lem:orbdis mat vec}
+%For any $S$-supported column-finite matrix $\vr{B}\in\lin{D{\times}C}$ and vector ${\vr{x}\in\R^{\orbits[S]{C}}}$
+%\[
+%\vr{B}\cdot\orbdis{S}{T}(\vr{x}) =
+%\orbdis{S}{T}(\orbSum{S}(\vr{B})\cdot\vr{x})
+%\]
+For every vector ${\vr{x}\in\R^{\orbits[S]{C}}}$
+\[
+\vr{A}\cdot\orbdis{S}{T}(\vr{x}) =
+\orbdis{S}{T}(\orbSum{S}(\vr{A})\cdot\vr{x})
+\quad\text{and}\quad
+\transpose{\vr{c}}\cdot\orbdis{S}{T}(\vr{x}) =
+\orbSum{S}(\transpose{\vr{c}})\cdot\vr{x} \ .
+\]
+\end{lemma}
+%
+\begin{proof}
+We prove $\vr{A}\cdot\orbdis{S}{T}(\vr{x}) = \orbdis{S}{T}(\orbSum{S}(\vr{A})\cdot\vr{x})$,
+and leave it to the reader to verify that
+$\transpose{\vr{c}}\cdot\orbdis{S}{T}(\vr{x}) =
+\orbSum{S}(\transpose{\vr{c}})\cdot\vr{x}$.
+
+\begin{claim}\label{clm:orbdis mat vec}
+The vector $\vr{A}\cdot\orbdis{S}{T}(\vr{x})$ is supported by $S\cup\set{T}$.
+\end{claim}
+%
+\begin{claimproof}
+%
+Pick arbitrary $\tau\in\aut[S\cup\set{T}]{\A}$.
+We show $\tau(\vr{A}\cdot\orbdis{S}{T}(\vr{x})) = \vr{A}\cdot\orbdis{S}{T}(\vr{x})$.
+There exists $\sigma\in\aut[S\cup T]{\A}$ and $\pi\in\aut{T}$ such that
+\[
+\tau = \pi \circ \sigma \ .
+\]
+
+First we show $\sigma(\vr{A}\cdot\orbdis{S}{T}(\vr{x})) = \vr{A}\cdot\orbdis{S}{T}(\vr{x})$.
+The matrix $\vr{A}$ is supported by $S$ and hence also by $S\cup T$.
+\Cref{lem:orbdis supp} implies that the vector $\orbdis{S}{T}(\vr{x})$ is supported by $S\cup T$.
+Using the fact that automorphisms commute with matrix multiplication (\ref{lem:mult equiv}) we get
+\[
+\sigma(\vr{A} \cdot        \orbdis{S}{T}(\vr{x})) =
+\sigma(\vr{A})\cdot \sigma(\orbdis{S}{T}(\vr{x})) =
+       \vr{A} \cdot        \orbdis{S}{T}(\vr{x}) \ .
+\]
+
+Now we show that
+\[
+\pi(\vr{A}\cdot\orbdis{S}{T}(\vr{x})) = \vr{A}\cdot\orbdis{S}{T}(\vr{x}) \ .
+\]
+Since $\aut{T}\subseteq\aut[S]{\A}$ and $\vr{A}$ is supported by $S$ we have
+$\pi(\vr{A}) = \vr{A}$.
+The vector $\orbdis{S}{T}(\vr{x})$ is supported by $S\cup\set{T}$ (\Cref{lem:orbdis supp}).
+Hence
+\[
+\pi(\orbdis{S}{T}(\vr{x})) = \orbdis{S}{T}(\vr{x}) \ .\
+\]
+Applying \ref{lem:mult equiv} again we get
+\[
+\pi(\vr{A} \cdot    \orbdis{S}{T}(\vr{x})) =
+\pi(\vr{A})\cdot\pi(\orbdis{S}{T}(\vr{x})) =
+    \vr{A} \cdot    \orbdis{S}{T}(\vr{x}) \ .
+\]
+\end{claimproof}
+%
+Since $\orbdis{S}{T}\circ\orbsum{S}$ acts as identity on $S\cup\set{T}$-supported vectors (\Cref{lem:orbdis orbsum inv}),
+the above claim gives us
+%
+\begin{equation}\label{eq:orbdis mat vec 1}
+\vr{A}\cdot\orbdis{S}{T}(\vr{x}) =
+(\orbdis{S}{T}\circ\orbsum{S})(\vr{A}\cdot\orbdis{S}{T}(\vr{x})) \ .
+\end{equation}
+%
+Applying \Cref{lem:orbsum mat vec} we get
+\begin{equation}\label{eq:orbdis mat vec 2}
+(\orbdis{S}{T}\circ\orbsum{S})(\vr{A}\cdot\orbdis{S}{T}(\vr{x})) =
+\orbdis{S}{T}(\orbSum{S}(\vr{A})\cdot(\orbsum{S}\circ\orbdis{S}{T})(\vr{x})) \ .
+\end{equation}
+Since $\orbsum{S}\circ\orbdis{S}{T} = \id{}$ (\Cref{lem:orbsum orbdis inv}),
+we have
+$(\orbsum{S}\circ\orbdis{S}{T})(\vr{x}) = \vr{x}$.
+Hence
+\begin{equation}\label{eq:orbdis mat vec 3}
+  \orbdis{S}{T}(\orbSum{S}(\vr{A})\cdot(\orbsum{S}\circ\orbdis{S}{T})(\vr{x}))
+= \orbdis{S}{T}(\orbSum{S}(\vr{A})\cdot\vr{x}) \ .
+\end{equation}
+Combining equations
+\eqref{eq:orbdis mat vec 1},
+\eqref{eq:orbdis mat vec 2} and
+\eqref{eq:orbdis mat vec 3}
+we get
+\[
+  \vr{A}\cdot\orbdis{S}{T}(\vr{x})
+= \orbdis{S}{T}(\orbSum{S}(\vr{A})\cdot\vr{x})\ ,
+\]
+which finishes the proof of lemma.
+\end{proof}
+%
+%Putting $\vr{B} = \transpose{\vr{c}}$ we get:
+%%
+%\begin{corollary}\label{cor:orbdis prod}
+%For any $\vr{x}\in\R^{\orbits[S]{C}}$ we have
+%$\transpose{\vr{c}}\cdot\orbdis{S}{T}(\vr{x}) =
+%\orbSum{S}(\transpose{\vr{c}})\cdot\vr{x}$.
+%\end{corollary}
+%%
+%\begin{proof}
+%Using \Cref{lem:orbdis mat vec} we get
+%\[
+%\transpose{\vr{c}}\cdot\orbdis{S}{T}(\vr{x}) =
+%\orbdis{S}{T}(\orbSum{S}(\transpose{\vr{c}})\cdot\vr{x})
+%\]
+%Since $B$ is a singleton, the vector $\orbdis{S}{T}(\orbSum{S}(\transpose{\vr{c}})\cdot\vr{x})$ is one dimensional,
+%and can be replaced with the number $\orbSum{S}(\transpose{\vr{c}})\cdot\vr{x}$.
+%\end{proof}
+%
+\begin{subsecproof}{Proof of \Cref{lem:orbdis sol}}
+Pick a solution $\vr{x}$ of $\orbSum{S}(\cU)$.
+We have to show $\orbdis{S}{T}(\vr{x})$ is a $(S\cup T)$-supported solution of $\cU$ such that
+\[
+\transpose{\vr{c}}\cdot\orbdis{S}{T}(\vr{x}) = \orbSum{S}(\transpose{\vr{c}})\cdot\vr{x} \ .
+\]
+\Cref{lem:orbdis mat vec} gives us $
+\transpose{\vr{c}}\cdot\orbdis{S}{T}(\vr{x}) =
+\orbSum{S}(\transpose{\vr{c}})\cdot\vr{x}$.
+\Cref{lem:orbdis supp} implies $\orbdis{S}{T}(\vr{x})$ is a finite vector supported by $S\cup T$.
+It remains to show $\orbdis{S}{T}(\vr{x})$ is a solution of $\cU$.
+
+Because $\vr{x}$ is a solution of $\orbSum{S}(\cU)$ it is non-negative and
+\[
+\orbSum{S}(\vr{A}) \cdot\vr{x}\leqslant \orbSum{S}(\vr{b}) \ .
+\]
+Using \Cref{lem:orbdis mat vec} we conclude $\orbdis{S}{T}(\vr{x})$ is non-negative as well.
+Now \Cref{lem:orbdis mat vec,lem:orbdis lin} gives us
+%
+\begin{equation}\label{eq:orbdis leq}
+\vr{A}\cdot\orbdis{S}{T}(\vr{x}) = 
+\orbdis{S}{T}(\orbSum{S}(\vr{A})\cdot\vr{x})
+\leqslant \orbdis{S}{T}(\orbSum{S}(\vr{b})) \ .
+\end{equation}
+%
+The vector $\vr{b}$ is supported by $S$ and hence also by $S\cup\set{T}$.
+Using \Cref{lem:orbdis orbsum inv} we conclude $\orbdis{S}{T}(\orbSum{S}(\vr{b})) = \vr{b}$.
+Along with \eqref{eq:orbdis leq}, this implies $\vr{A}\cdot\orbdis{S}{T}(\vr{x}) \leqslant \vr{b}$ and finishes the proof.
+%
+\end{subsecproof}
+%
+\section{The orbit distribution function}\label{sec:orbrow}
+%
+%\begin{lemma}
+%For any vector $\vr{x}$ the vector $\orbrow{S}(\vr{x})$ is supported by $S$.
+%\end{lemma}
+%%
+%\begin{proof}
+%Immediate from the definition of $\orbrow{S}$.
+%\end{proof}
+%
+In this section we present some lemmas regarding the orbit distribution function $\orbrow{S}$,
+and prove \Cref{lem:orbrow sol} using them.
+Immediately from the definition of the orbit distribution function $\orbrow{S}$ we get:
+%
+\begin{lemma}\label{lem:orbrow lin}
+The function $\orbrow{S}$ % : \R^{\orbits[S]{D}} \to \lin{D}$
+is a monotonic linear function.
+\end{lemma}
+%
+\begin{lemma}\label{lem:orbrow mat vec}
+For any vector $\vr{y}\in\R^{\orbits[S]{B}}$
+\[
+\transpose{\vr{A}}\cdot\orbrow{S}(\vr{y}) =
+\orbrow{S}(\transpose{\orbSum{S}(\vr{A})}\cdot\vr{y})
+\quad\text{and}\quad
+\transpose{\vr{b}}\cdot\orbrow{S}(\vr{y}) =
+\transpose{\orbSum{S}(\vr{b})}\cdot\vr{y} \ .
+\]
+\end{lemma}
+%
+\begin{proof}
+We prove the first equality, the proof of the second is left as an exercise.
+
+Pick arbitrary $c\in C$.
+Let $L = \orbit[S]{c}$.
+We have the following sequence of equations proving 
+$(\transpose{\vr{A}}\cdot\orbrow{S}(\vr{y}))(c) =
+(\orbrow{S}(\orbSum{S}(\vr{A})\cdot\vr{y}))(c)$.
+%
+\begin{align*}
+%       & (\transpose{\vr{A}}\cdot(\orbrow{S}(\vr{y})))(c)                    \\
+       & (\transpose{\vr{A}}\cdot(\orbrow{S}(\vr{y})))(c) \\
+=\quad & \sum_{b\in B} \transpose{\vr{A}}(c,b)\cdot(\orbrow{S}(\vr{y}))(b)   \\
+=\quad & \sum_{b\in B} \vr{A}(b,c)\cdot(\orbrow{S}(\vr{y}))(b)               \\
+=\quad & \sum_{K\in \orbits[S]{B}}
+         \sum_{b\in K} \vr{A}(b,c)\cdot\vr{y}(K)
+       & \text{(\Cref{def:orbrow})}                           \\
+=\quad & \sum_{K\in \orbits[S]{B}}\vr{y}(K)\cdot
+         \sum_{b\in K} \vr{A}(b,c)     & \text{(rearrangement)}          \\
+=\quad & \sum_{K\in \orbits[S]{B}}\vr{y}(K)\cdot \orbSum{S}(\vr{A})(K,L)  
+       & \text{(\Cref{def:orbsum matrix})}   \\
+=\quad & \sum_{K\in \orbits[S]{B}}
+         \transpose{\orbSum{S}(\vr{A})}(L,K)\cdot\vr{y}(K)  
+                          \\
+=\quad & (\orbSum{S}(\vr{A})\cdot\vr{y})(L)                                  \\
+=\quad & (\orbrow{S}(\orbSum{S}(\vr{A})\cdot\vr{y}))(c) \ .
+\end{align*}
+\end{proof}
+%
+%For the special case when $D$ is singleton we get:
+%
+%\begin{corollary}\label{cor:orbrow prod}
+%For any vector $\vr{y}\in\R^{(\orbits[S]{B})}$
+%\[
+%\transpose{\vr{b}}\cdot\orbrow{S}(\vr{y}) =
+%\transpose{\orbSum{S}(\vr{b})}\cdot\vr{y}
+%\]
+%\end{corollary}
+%
+\begin{subsecproof}{Proof of \Cref{lem:orbrow sol}}
+Observing that $\orbrow{S}(\transpose{\orbSum{S}(\transpose{\vr{c}})}) = \vr{c}$,
+this lemma can be proven using \Cref{lem:orbrow lin,lem:orbrow mat vec} in the same way that \Cref{lem:orbsum sol} is proven using \Cref{lem:orbsum prop,lem:orbsum mat vec}.
+\end{subsecproof}
+%
+\section{The semi-orbit summation function}\label{sec:orbsmt}
+%
+In this section we present some lemmas regarding the semi-orbit summation function $\orbsmt{S}{T}$,
+and prove \Cref{lem:orbsmt sol} using them.
+%
+\begin{lemma}\label{lem:orbsmt lin supp}
+The function $\orbsmt{S}{T}$ %: (D\to\R)\to\R^{\orbits[S]{D}}$
+is a $(S\cup\set{T})$-supported monotonic linear map.
+\end{lemma}
+%
+\begin{proof}
+Left to the reader.
+\end{proof}
+%
+\begin{lemma}\label{lem:orbrow orbsmt inv}
+For any $S$-supported vector $\vr{y}$ we have %\in\lin{C}$
+$
+(\orbrow{S}\circ\orbsmt{S}{T})(\vr{y}) = \vr{y}
+$.
+\end{lemma}
+%
+\begin{proof}%[Proof of \Cref{lem:orbrow orbsmt inv}]
+Follows from the definitions of $\orbrow{S}$ and $\orbsmt{S}{T}$ and left to the reader.
+\end{proof}
+%
+\begin{lemma}\label{lem:orbsmt orbsum}
+For any orbit-finite set $P$ and vector $\vr{y}\in\lin{P}$,
+both supported by $S$ %\in\lin{B}$
+\[
+\transpose{(\orbsmt{S}{T}(\vr{y}))} = \orbSum{S}(\transpose{\vr{y}}) \ .
+\]
+\end{lemma}
+%
+\begin{proof}%[Proof of \Cref{lem:orbsmt orbsum}]
+Using the same notation as \Cref{def:orbsmt} let
+\[
+K_{S\cup T} = \setof{p\in K}{\supp{p}\subseteq S\cup T}
+\]
+We have
+\begin{align*}
+       & (\orbsmt{S}{T}(\vr{y}))(K) \\
+=\quad & \frac{1}{|K_{S\cup T}|} \cdot
+         \left(
+         \sum_{p\in K_{S\cup T}} \vr{y}(p)
+         \right) \\
+=\quad & \frac{1}{|K_{S\cup T}|} \cdot
+         \left(
+         \sum_{p\in K_{S\cup T}} \vr{y}(K)
+         \right) \quad\text{(recall \Cref{lem:const dom})}\\
+=\quad & \vr{y}(K) \\
+=\quad & \transpose{(\orbSum{S}(\transpose{\vr{y}}))}(K)
+\end{align*}
+%
+This finishes the proof of the lemma. 
+%
+\end{proof}
+%
+\begin{lemma}\label{lem:orbsmt aut T}
+For every $S$-supported orbit-finite set $P$, vector $\vr{y}:P\to\R$,
+$K\in\orbits[S]{P}$ and $(S\cup T)$-supported element $p\in K$,
+\[
+(\orbsmt{S}{T}(\vr{y}))(K) =
+\left(
+\frac{1}{|\aut{T}|} \cdot
+\sum_{\pi\in\aut{T}} \pi(\vr{y})
+\right)(p) \ .
+\]
+\end{lemma}
+%
+\begin{proof}%[Proof of \Cref{lem:orbsmt aut T}]
+Define $K_{S\cup T}$ as done inside the definition of $\orbsmt{S}{T}$
+(\Cref{def:orbsmt}).
+We have
+\[
+(\orbsmt{S}{T}(\vr{y}))(K) =
+\frac{1}{|K_{S\cup T}|}\cdot\sum_{p\in K_{S\cup T}} \vr{y}(p)
+\]
+Let
+\[
+\vr{z} = \frac{1}{|\aut{T}|} \cdot \sum_{\pi\in\aut{T}} \pi(\vr{y})
+\]
+Then
+\begin{align*}
+%       & \vr{z}(b) & \\
+\vr{z}(p)=\quad & \left(
+         \frac{1}{|\aut{T}|} \cdot \sum_{\pi\in\aut{T}} \pi(\vr{y})
+         \right)(p) & \\
+=\quad & \frac{1}{|\aut{T}|} \cdot \sum_{\pi\in\aut{T}} (\pi(\vr{y}))(p) & \\
+=\quad & \frac{1}{|\aut{T}|} \cdot \sum_{\pi\in\aut{T}} \vr{y}(\pi^{-1}(p)) \ . &
+\text{(\Cref{lem:perm fun})}
+\end{align*}
+%
+Using \ref{lem:supp aut T} we get
+\begin{align*}
+       & \frac{1}{|\aut{T}|} \cdot \sum_{\pi\in\aut{T}} \vr{y}(\pi^{-1}(p)) & \\
+=\quad & \frac{1}{|\aut{T}|} \cdot \left(\sum_{p'\in K_{S\cup T}} 
+         \left|\setof{\pi\in\aut{T}}{\pi^{-1}(p) = p'}\right|\cdot
+         \vr{y}(p') \right) & \\
+=\quad & \frac{1}{|\aut{T}|} \cdot \left(\sum_{p'\in K_{S\cup T}} 
+         \left|\setof{\pi\in\aut{T}}{\pi(p') = p}\right|\cdot
+         \vr{y}(p') \right) & \\
+\end{align*}
+%
+Hence
+\[
+\vr{z}(p) = \frac{1}{|\aut{T}|} \cdot \left(\sum_{p'\in K_{S\cup T}} 
+         \left|\setof{\pi\in\aut{T}}{\pi(p') = p}\right|\cdot
+         \vr{y}(p') \right)
+\]
+%
+To finish the proof we show that for every $b'\in K_{S\cup T}$
+\[
+\left|\setof{\pi\in\aut{T}}{\pi(p') = p}\right| = \frac{|\aut{T}|}{|K_{S\cup T}|}
+\]
+For $p'\in K_{S\cup T}$ let $W_{p'} = \setof{\pi\in\aut{T}}{\pi(p') = p}$.
+Then $\aut{T}$ is the disjoint union of the sets $W_{p'}$ for $p'$.
+Hence
+\begin{equation}\label{eq:orbsmt aut T 1}
+|\aut{T}| = \sum_{p'\in K_{S\cup T}} |W_{p'}|
+\end{equation}
+Pick any $p'\in K_{S\cup T}$.
+\ref{lem:supp aut T} implies that there exists $\sigma\in\aut{T}$ be such that $\sigma(p') = p$.
+Then $\pi\mapsto (\sigma\circ\pi)$ is a bijection from $W_{p'}$ to $W_p$ with $\pi\mapsto (\sigma^{-1}\circ\pi)$ being its inverse.
+Since $p'$ is an arbitrary element of $K_{S\cup T}$,
+this implies for every $p'\in K_{S\cup T}$ we have $|W_{p'}| = |W_p|$.
+Which together with equation \eqref{eq:orbsmt aut T 1} imply that for every $p'\in K_{S\cup T}$
+\[
+|W_{p'}| = \frac{|\aut{T}|}{|K_{S\cup T}|}
+\]
+This finishes the proof of the lemma.
+\end{proof}
+%
+\begin{lemma}\label{lem:orbsmt mat vec}
+For every vector $\vr{y} : B\to\R$
+\[
+\transpose{\orbSum{S}(\vr{A})}\cdot\orbsmt{S}{T}(\vr{y}) =
+\orbsmt{S}{T}(\transpose{\vr{A}}\cdot\vr{y})
+\quad\text{and}\quad
+\transpose{\orbSum{S}(\vr{b})}\cdot\orbsmt{S}{T}(\vr{y}) =
+\transpose{\vr{b}}\cdot\vr{y} \ .
+\]
+\end{lemma}
+%
+\begin{proof}[Proof of \Cref{lem:orbsmt mat vec}]
+%
+We prove $\transpose{\orbSum{S}(\vr{A})}\cdot\orbsmt{S}{T}(\vr{y}) =
+\orbsmt{S}{T}(\transpose{\vr{A}}\cdot\vr{y})$,
+the proof of $\transpose{\orbSum{S}(\vr{b})}\cdot\orbsmt{S}{T}(\vr{y}) =
+\transpose{\vr{b}}\cdot\vr{y}$ is left as an exercise.
+
+Pick arbitrary $L\in\orbits[S]{C}$.
+Using \ref{lem:pick elem supp} pick $c\in L$ supported by $S\cup T$.
+%
+\begin{align*}
+       & (\orbsmt{S}{T}(\transpose{\vr{A}}\cdot\vr{y}))(L)
+       & \\
+=\ & \frac{1}{|\aut{T}|} \cdot
+         \left(
+         \sum_{\pi\in\aut{T}}\pi(\transpose{\vr{A}}\cdot\vr{y})
+         \right)(c)
+       & \text{(\Cref{lem:orbsmt aut T})} \\
+=\ & \frac{1}{|\aut{T}|} \cdot
+         \left(
+         \sum_{\pi\in\aut{T}}\pi(\transpose{\vr{A}})\cdot\pi(\vr{y})
+         \right)(c)
+       & \text{(\ref{lem:mult equiv})} \\
+=\ & \frac{1}{|\aut{T}|} \cdot
+         \left(
+         \sum_{\pi\in\aut{T}}\transpose{\vr{A}}\cdot\pi(\vr{y})
+         \right)(c)
+       & \text{($\vr{A}$ is $S$-supported)} \\
+=\ & \left(
+         \transpose{\vr{A}}\cdot
+         \frac{1}{|\aut{T}|} \cdot
+         \left(
+         \sum_{\pi\in\aut{T}}\pi(\vr{y})
+         \right)
+         \right)(c)
+       & \\
+=\ & \sum_{b\in B}
+         \transpose{\vr{A}}(c,b)\cdot
+         \left(
+         \frac{1}{|\aut{T}|}
+         \cdot
+         \left(
+         \sum_{\pi\in\aut{T}}\pi(\vr{y})
+         \right)
+         \right)
+         (b)
+       & \\
+=\ & \sum_{b\in B}
+         \transpose{\vr{A}}(c,b)\cdot
+         (\orbsmt{S}{T}(\vr{y}))(\orbit[S]{b})
+       & \text{(\Cref{lem:orbsmt aut T})} \\
+=\ & \sum_{K\in\orbits[S]{B}}
+         (\orbsmt{S}{T}(\vr{y}))(K)\cdot
+         \sum_{b\in K} \vr{A}(b,c)
+       & \text{(rearrangement)} \\
+=\ & \sum_{K\in\orbits[S]{B}}
+         (\orbsmt{S}{T}(\vr{y}))(K)\cdot\orbSum{S}(\vr{A})(K,L)
+       & \text{(\Cref{def:orbsum matrix})} \\
+=\ & (\transpose{\orbSum{S}(\vr{A})}\cdot\orbsmt{S}{T}(\vr{y}))(L) \ .
+       &              
+\end{align*}
+%
+This finishes the proof.
+%%
+%\begin{claim}\label{clm:orbsmt sol 1}
+%The vector $\vr{z}$ defined as
+%\[
+%\vr{z} = \frac{1}{|\aut{T}|}\cdot\left(
+%\sum_{\pi\in\aut{T}} \pi(\vr{y})
+%\right)
+%\]
+%is a solution of $\transpose{\cU}$ with
+%\[
+%\transpose{\vr{b}}\cdot\vr{y} =
+%\transpose{\vr{b}}\cdot\vr{z} 
+%\]
+%\end{claim}
+%%
+%\begin{claimproof}[Proof of \Cref{clm:orbsmt sol 1}]
+%First we show that for every $\pi\in\aut{T}$, the vector $\pi(\vr{y})$ is also a solution of $\transpose{\cU}$ with
+%$\transpose{\vr{b}}\cdot\pi(\vr{y}) = \transpose{\vr{b}}\cdot\vr{y}$.
+%Pick arbitrary $\pi\in\aut{T}$.
+%Since $\vr{b}$ is a finite vector, the product
+%$\transpose{\vr{b}}\cdot\pi(\vr{y})$ is well defined.
+%Since $\vr{y}$ is non-negative,
+%$\pi(\vr{y})$ is also non-negative for every $\pi\in\aut{T}$.
+%The sets $S$ and $T$ are disjoint.
+%Hence, $\aut{T}\subseteq\aut[S]{\A}$.
+%The matrix $\vr{A}$ and the vectors $\vr{b}$ and $\vr{c}$ are both supported by $S$.
+%Hence,
+%$\pi(\transpose{\vr{A}}) = \transpose{\pi(\vr{A})} = \transpose{\vr{A}}$,
+%$\pi(\vr{b}) = \vr{b}$, and $\pi(\vr{c}) = \vr{c}$.
+%Using this fact and applying \mbox{\Cref{lem:mult equiv}} we get
+%\[
+%\transpose{\vr{A}}\cdot\pi(\vr{y}) = \pi(\transpose{\vr{A}})\cdot\pi(\vr{y}) = \pi(\transpose{\vr{A}}\cdot\vr{y})
+%\geqslant \pi(\vr{c}) = \vr{c}
+%\]
+%and
+%\[
+%\transpose{\vr{b}}\cdot\pi(\vr{y})
+%= \pi(\transpose{\vr{b}})\cdot\pi(\vr{y}) = \transpose{\vr{b}}\cdot\vr{y}
+%\]
+%Since $\pi\in\aut{T}$ was chosen arbitrarily,
+%this shows for every $\pi\in\aut{T}$, the vector $\pi(\vr{y})$ is also a solution of $\transpose{\cU}$ with 
+%$\transpose{\vr{b}}\cdot\pi(\vr{y}) = \transpose{\vr{b}}\cdot\vr{y}$.
+%
+%Since $\vr{b}$ is a finite vector, the product $\transpose{\vr{b}}\cdot\vr{z}$ is well defined.
+%The vector $\vr{z}$ is a convex combination of the vectors in the finite set
+%\[
+%\setof{\pi(\vr{y})}{\pi\in\aut{T}}
+%\]
+%Hence $\vr{z}$ is non-negative,
+%$\transpose{\vr{A}}\cdot\vr{z}\geqslant\vr{c}$ and
+%$\transpose{\vr{b}}\cdot\vr{z} = \transpose{\vr{b}}\cdot\vr{y}$.
+%This finishes the proof.
+%\end{claimproof}
+%%
+%\begin{claim}\label{clm:orbsmt sol}
+%For any $b\in B$ supported by $S\cup T$
+%\[
+%\vr{z}(b) = (\orbsmt{S}{T}(\vr{y}))(\orbit[S]{b})
+%\]
+%\end{claim}
+%%
+%\begin{claimproof}
+%Pick arbitrary $b\in B$ supported by $S\cup T$.
+%\Cref{lem:sum aut T} implies
+%\[
+%\vr{z}(b) = \frac{1}{|\aut{T}\cdot b|}\sum_{b'\in \aut{T}\cdot b} \vr{b'} 
+%\]
+%%
+%Let $K = \orbit[S]{b}$.
+%%
+%\end{claimproof}
+\end{proof}
+%
+\begin{subsecproof}{Proof of \Cref{lem:orbsmt sol}}
+This lemma follows from \Cref{lem:orbsmt lin supp,lem:orbsmt orbsum,lem:orbsmt mat vec} in the same way that \Cref{lem:orbdis sol} follows from \Cref{lem:orbdis lin,lem:orbdis supp,lem:orbdis orbsum inv,lem:orbdis mat vec}.
+Note that we do not need a counterpart of \Cref{lem:orbdis supp} since unlike in the proof \Cref{lem:orbdis sol},
+where we had to show that $\orbdis{S}{T}(\vr{x})$ is supported by $S\cup T$,
+in \Cref{lem:orbsmt sol} we do not have to prove any similar assertion regarding $\orbsmt{S}{T}(\vr{y})$.
+%
+\end{subsecproof}
+%
+%\section{Solvability of column-and row-finite systems} 
+%%
+%\arka{Maybe no need for this section}
+%
+\section
+[Do orbit-finite LP\MakeLowercase{s} approximate large LP\MakeLowercase{s}?]
+{Do orbit-finite linear programs approximate large finite linear programs?}
+\label{sec:approx}
+%
+In this section we try to address the question raised in \Cref{sec:intro approx}.
+Consider $S\subseteqfin \A$ and orbit-finite sets $B$ and $C$ supported by $S$.
+Let $\cU$ be an orbit-finite linear program
+\[
+\primalAbc 
+\]
+%
+where $\vr{A}\in\lin{B\times C}$, $\vr{b}\in\lin{B}$ and $\vr{c}\in\lin{C}$.
+For any finite set $T\subseteqfin\A\setminus S$ let $B_{S\cup T}$ and $C_{S\cup T}$ be the subsets of elements respectively of $B$ and $C$,
+which are supported by $S\cup T$.
+Removing all variables indexed by elements outside $C_{S\cup T}$ and considering only the equalities indexed by $B_{S\cup T}$ we get a finite linear program.
+Call this $\cU_{S\cup T}$.
+Note that the function $T\mapsto \cU_{S\cup T}$ is $S$-supported.
+For $n\in\N$,
+we say $\cU$ is a \defindS{good approximation}, if there exists $n\in\N$ such that for all $T\subseteqfin\A\setminus S$ of size at least $n$,
+the linear programs $\cU_{S\cup T}$ and $\cU$ are equivalent (\Cref{def:equiv lp}).
+The \defindS{approximation degree} of $\cU$ is the smallest such $n$.
+
+Orbit-finite systems are not always good approximations even if we ignore the objective function and focus on just the solvability of the constraints.
+We illustrate this with the following example.
+%
+\begin{example}
+Let $\star$ be an equivariant element,
+i.e.\ $\pi(\star) = \star$ for all $\pi$ in $\aut{\A}$.
+Let $\cU$ be the following system of inequalities with variables
+$\setof{\vr{x}(\a)}{\a\in\A}$:
+\begin{equation}\label{eg:not approx}
+  \begin{aligned}
+    \sum_{\a \in \A\setminus\set{\b}} \vr{x}(\a) & \leqslant  1 \quad (\b \in \A) \\
+    \sum_{\a\in\A} \vr{x}(\a) & > 1 \ .
+  \end{aligned}  
+\end{equation}
+We prove that $\cU_{S\cup T}$ is solvable for every $T\subseteqfin \A$ of size at least $2$,
+but $\cU$ is unsolvable,
+even of we allow orbit-infinite solutions.
+
+Pick $T\subseteqfin \A$ of size at least $2$.
+The system $\cU_{S\cup T}$ contains the following inequalities:
+\[
+  \begin{aligned}
+    \sum_{\a \in T\setminus\set{\b}} \vr{x}(\a) & \leqslant  1 \quad (\b \in T) \\
+    \sum_{\a\in T} \vr{x}(\a) & > 1 \ .
+  \end{aligned}
+\]
+The vector solution $\vr{x}_T$ which assigns the value $\frac{1}{|T| - 1}$ to all the variables is a solution of $\cU_{S\cup T}$. 
+
+Now we show unsolvability of $\cU$.
+Assume otherwise.
+Let $\vr{y} : \A\to\R$ be a solution of $\cU$.
+The sum $\sum_{\a\in\A} \vr{y}(\a)$ is well defined.
+\footnote{Here, by well-defined we mean that the series $\sum_{n\in\N}\vr{y}(\a_n)$ converges absolutely for some (every) enumeration $\a_1,\a_2,\dots$ of atoms \cite[Page 71]{babyRudin}.
+This ensures that the sum $\sum_{n\in\N}\vr{y}(\a_n)$ converges to a unique real number independent of the enumeration $\a_1,\a_2,\dots$ of atoms (cf. \cite[Theorems 3.54 and 3.55]{babyRudin}).}
+Hence for any $n \geqslant 1$ there exists $\b_n\in \A$ such that $\vr{y}(\b_n) \leqslant \frac{1}{n}$.
+This implies for every $n\geqslant 1$
+\[
+  \sum_{\a\in\A} \vr{y}(\a)
+  \ =\
+  \left(\sum_{\a\in\A\setminus\set{\b_n}} \vr{y}(\a)\right) + \vr{y}(\b_n)
+  \ \leqslant \
+  1 + \frac{1}{n} \ .
+\]
+Since the above is true for all $n$,
+we conclude
+\[
+  \sum_{\a\in\A} \vr{y}(\a) \leqslant 1 \ .
+\]
+This contradicts the fact the $\vr{y}$ is a solution of $\cU$.
+\end{example}
+%
+The situation improves if we restrict our attention to orbit-finite linear programs which are either column-finite or row-finite.
+%
+\begin{theorem}\label{thm:col row approx}
+Column-finite and row-finite linear programs are good approximations.
+The approximation degree of a column(row)-finite linear program is not bigger than its atom-dimension.
+%Let $\cU$ be an orbit-finite $B{\times}C$-linear program supported by some $S\subseteqfin\A$ and of atom-dimension $d$.
+%If $\cU$ is either column-finite or row-finite,
+%then for every $T\subseteqfin\A\setminus S$ of size at least $d$,
+%the linear programs $\cU_{S\cup T}$ and $\cU$ are equivalent.
+\end{theorem}
+%
+The remainder of this section is devoted to proving the above theorem.
+%
+\section*{Proof of \Cref{thm:col row approx}}
+%
+%\arka{Lemma commented out}
+%
+%\begin{lemma}\label{lem:col fin supp}
+%For %a column-finite $(B{\times} C)$-matrix $\vr{A}$ and
+%$(b,c)\in B{\times} C$, if $\vr{A}(b,c)\neq 0$ then,
+%\[
+%\supp{b}\subseteq (\supp{c}\cup\supp{\vr{A}})
+%\]
+%\end{lemma}
+%%
+%\begin{proof}
+%We do a proof by contradiction.
+%Suppose there exists $(b,c)\in(B{\times} C)$ such that $\vr{A}(b,c)\neq 0$ and
+%\[
+%\supp{b}\nsubseteq(\supp{c}\cup\supp{\vr{A}}) \ .
+%\]
+%Let $S = (\supp{c}\cup\supp{\vr{A}})$.
+%Choose $\a\in (\supp{b}\setminus S)$.
+%Let $T = \A\setminus(\supp{b}\cup S)$.
+%Then $T$ is infinite.
+%For every $\b\in T$ define $\pi_{\b}\in\aut{\A}$ as
+%\[
+%\pi_{\b}(\g) =
+%\begin{cases}
+%\b & \text{ if }\g = \a \\
+%\a & \text{ if }\g = \b \\
+%\g & \text{ otherwise.} \\ 
+%\end{cases}
+%\]
+%Then $\pi_{\b}\in\aut[S]{\A}$ for every $\b\in T$.
+%Hence $\pi_{\b}(c)=c$ for all such $\b$.
+%\Cref{lem:supp fun equiv} says that for every $\b\in T$
+%\[
+%\supp{\pi_{\b}(b)} = \pi_{\b}(\supp{b}) = (\supp{b}\setminus\{\a\})\cup\{\b\}
+%\ .
+%\]
+%This implies for any two distinct $\b,\b'\in T$,
+%\[
+%\supp{\pi_{\b}(b)}\neq\supp{\pi_{\b'}(b)}
+%\]
+%and in consequence $\pi_{\b}(b)\neq \pi_{\b'}(b)$
+%This implies the set $\setof{\pi_{\b}(b)}{\b\in T}$ is infinite.
+%However, for any
+%$\b\in\A\setminus(\supp{b}\cup\supp{c})$
+%\begin{align*}
+%   & \vr{A}(\pi_{\b}(b),c) & \\
+%=\ & \vr{A}(b,\pi_{\b}(c)) &
+%\text{(since $\vr{A}$ is supported by $S$)} \\
+%=\ & \vr{A}(b,c) & \text{(since $\pi_{\b}(c)=c$)}\\
+%\neq\ & 0\,. &
+%\end{align*}
+%Hence $\vr{A}(-,c)\notin\flin{B}$,
+%which contradicts the assumption that $\vr{A}$ is column-finite.
+%\end{proof}
+%
+Pick an arbitrary orbit-finite column-finite linear program $\cU$.
+WLOG assume it is a maximisation problem.
+Its dual $\transpose{\cU}$ is an arbitrary orbit-finite row-finite linear program.
+Let $S\subseteqfin\A$ be the support of $\cU$ and $d$ be its atom-dimension.
+Then $S$ and $d$ are also respectively the support and atom-dimension of $\transpose{\cU}$.
+We can write $\cU$ and $\transpose{\cU}$ as
+\[
+\primalAbc \qquad \dualAbc
+\]
+for some orbit-finite sets $B$ and $C$, column-finite matrix $\vr{A}\in\lin{B{\times}C}$, vectors $\vr{b}\in\flin{B}$ and $\vr{c}\in\lin{C}$, all of them supported by $S$.
+
+Pick $T\subseteqfin \A\setminus S$ of size at least $d$.
+Define $B_{S\cup T}$ and $C_{S\cup T}$ to be the subsets of respectively $B$ and $C$ containing elements which are supported by $S\cup T$:
+%
+\begin{gather*}
+B_{S\cup T} = \setof{b\in B}{\supp{b}\subseteq S\cup T} \ \ \ \\
+C_{S\cup T} = \setof{c\in C}{\supp{c}\subseteq S\cup T} \ .
+\end{gather*}
+%
+Note that both $B_{S\cup T}$ and $C_{S\cup T}$ are finite due to \ref{lem:supp count}.
+The linear programs $\cU_{S\cup T}$ and $\transpose{\cU_{S\cup T}}$ can be written as
+\[
+\lpMatPrimal{\vr{A}_{S\cup T}}{\vr{b}_{S\cup T}}{\vr{c}_{S\cup T}}{\vr{u}}{B_{S\cup T}}{C_{S\cup T}}
+\qquad\qquad
+\lpMatDual{\vr{A}_{S\cup T}}{\vr{b}_{S\cup T}}{\vr{c}_{S\cup T}}{\vr{v}}{B_{S\cup T}}{C_{S\cup T}}
+\]
+where,
+$\vr{A}_{S\cup T}$, $\vr{b}_{S\cup T}$ and $\vr{c}_{S\cup T}$ respectively be the restrictions of $\vr{A}$, $\vr{b}$ and $\vr{c}$ to $B_{S\cup T}{\times}C_{S\cup T}$, $B_{S\cup T}$ and $C_{S\cup T}$.
+Note that
+$\transpose{(\vr{A}_{S\cup T})} = (\transpose{\vr{A}})_{S\cup T}$,
+$\transpose{(\vr{b}_{S\cup T})} = (\transpose{\vr{b}})_{S\cup T}$,
+and
+$\transpose{(\vr{c}_{S\cup T})} = (\transpose{\vr{c}})_{S\cup T}$.
+Hence we can write $\transpose{\vr{A}_{S\cup T}}$, $\transpose{\vr{b}_{S\cup T}}$, $\transpose{\vr{c}_{S\cup T}}$ without any confusion.
+As a consequence, $\transpose{(\cU_{S\cup T})} = (\transpose{\cU})_{S\cup T}$.
+So we can write $\transpose{\cU_{S\cup T}}$ without any ambiguity.
+
+To prove \Cref{thm:col row approx} we show that the linear programs $\cU$ and $\cU_{S\cup T}$ are equivalent,
+and so are the linear programs $\transpose{\cU}$ and $\transpose{\cU_{S\cup T}}$.
+
+Observe that the current premise allows us to reuse \Cref{lem:restr sol,lem:restr sol dual} proven inside the proof of \Cref{thm:weak o.f. duality} in \Cref{subsec:weak dual proof}.
+From \Cref{lem:restr sol} and \Cref{thm:col fin opt} we get:
+%
+\begin{lemma}\label{clm:opt sE < opt sET}
+  The optimum of $\cU$ is smaller than or equal to the optimum of $\cU_{S\cup T}$.
+%
+ %For every solution of $\vr{x}'$ of $\cU$ there exists a solution $\vr{u}'$ of $\cU_{S\cup T}$ such that
+  %$
+  %\transpose{\vr{c}}\cdot\vr{x}' = \transpose{\vr{c}_{S\cup T}}\cdot\vr{u}'
+  %$.
+\end{lemma}
+%
+Similarly, \Cref{lem:restr sol dual} and \Cref{thm:row fin opt} gives us:
+%
+\begin{lemma}\label{clm:row opt sE > opt sET}
+The optimum of $\transpose{\cU}$ is bigger than or equal to the optimum of $\transpose{\cU_{S\cup T}}$.
+\end{lemma}
+%
+We will prove the following two lemmas:
+%
+\begin{lemma}\label{clm:opt sE > opt sET}
+  The optimum of $\cU$ is larger than or equal to the optimum of $\cU_{S\cup T}$.
+  %
+  %For every solution of $\vr{u}'$ of $\cU_{S\cup T}$ there exists a solution $\vr{x}'$ of $\cU$ such that
+  %$
+  %\transpose{\vr{c}}\cdot\vr{x}' = \transpose{\vr{c}_{S\cup T}}\cdot\vr{u}'
+  %$.
+\end{lemma}
+  %
+\begin{lemma}\label{clm:row opt sE < opt sET}
+The optimum of $\transpose{\cU}$ is smaller than or equal to the optimum of $\transpose{\cU_{S\cup T}}$.
+\end{lemma}
+%
+Before proving the above two lemmas, we finish the proof of \Cref{thm:col row approx} using them.
+We argue that the equivalence between $\cU$ and $\cU_{S\cup T}$ follows from \Cref{clm:opt sE < opt sET,clm:opt sE > opt sET} and \Cref{thm:col fin opt}.
+\Cref{clm:opt sE < opt sET,clm:opt sE > opt sET} imply $\cU$ and $\cU_{S\cup T}$ have the same optimum.
+Hence we just need to show that if one of them have an optimal solution,
+so does the other.
+Since $\cU_{S\cup T}$ is a finite linear program,
+it has an optimal solution whenever its optimum is finite.
+The same is true for $\cU$ due to \Cref{thm:col fin opt}.
+Since the optimums of $\cU$ and $\cU_{S\cup T}$ are the same,
+this shows $\cU$ and $\cU_{S\cup T}$ are equivalent.
+
+%Similarly, \Cref{clm:row opt sE < opt sET,clm:row opt sE > opt sET} imply $\transpose{\cU}$ and $\transpose{\cU_{S\cup T}}$ have the same optimum.
+%Hence, to show that 
+%
+%
+%Since $\cU_{S\cup T}$ and $\transpose{\cU_{S\cup T}}$ are finite linear programs,
+%they have optimal solutions when their optimum is finite.
+%The same is true for $\cU$ and $\transpose{\cU}$ due to \Cref{thm:col row duality,thm:col fin opt,thm:row fin opt}.
+%Hence for proving the equivalences between $\cU$ and $\cU_{S\cup T}$, and between $\transpose{\cU}$ and $\transpose{\cU_{S\cup T}}$,
+%we just have to show that $\cU$ and $\cU_{S\cup T}$ have the same optimum,
+%and likewise for $\transpose{\cU}$ and $\transpose{\cU_{S\cup T}}$.
+The equivalence between $\transpose{\cU}$ and $\transpose{\cU_{S\cup T}}$ follows from \Cref{clm:row opt sE > opt sET,clm:row opt sE < opt sET} and \Cref{thm:row fin opt} in a similar manner.
+
+
+
+Now we prove \Cref{clm:opt sE > opt sET,clm:row opt sE < opt sET}
+%
+\begin{proof}[Proof of \Cref{clm:opt sE > opt sET}]
+%
+Pick a solution $\vr{u}$ of $\cU_{S\cup T}$.
+Define $\vr{x}\in\flin{C}$ as
+\[
+\vr{x}(c) \defeq
+\begin{cases}
+\vr{u}(c) & \text{when $c\in C_{S\cup T}$}\\
+0 & \text{when $c\in C\setminus C_{S\cup T}$.}
+\end{cases}
+\]
+Then $\transpose{\vr{c}} \cdot \vr{x} = \transpose{\vr{c}_{S\cup T}} \cdot \vr{u}$.
+We finish the proof by showing $\vr{x}$ is a solution of $\cU$.
+Since $\vr{u}$ is a solution of $\cU_{S\cup T}$, we have $\vr{u}\geqslant\vr{0}$.
+Hence we also have $\vr{x}\geqslant \vr{0}$.
+We just have to show $\vr{A}\cdot\vr{x} \leqslant \vr{b}$.
+
+We have $\dom{\vr{x}}\subseteq C_{S\cup T}$.
+%The set $C_{S\cup T}$ is finite due to \ref{lem:supp count}.
+\Cref{lem:fin vec supp} implies $\vr{x}$ is a finite vector supported by $S\cup T$.
+The matrix $\vr{A}$ is supported by $S$ and is column-finite.
+Hence $\vr{A}\cdot\vr{x}$ is supported by $S\cup T$,
+and using \Cref{cor:col fin prod} we get that it is also a finite vector.
+The vector $\vr{b}$ is a finite vector supported by $S$.
+Hence, another application of \Cref{lem:fin vec supp} gives us
+\[
+\dom{\vr{A}\cdot\vr{x}},\dom{\vr{b}}\subseteq B_{S\cup T} \ .
+\]
+Therefore, we just have to prove that $(\vr{A}\cdot\vr{x})(b)\leqslant\vr{b}(b)$ for all $b\in B_{S\cup T}$.
+For every $b\in B_{S\cup T}$ we have
+\begin{align*}
+(\vr{A}\cdot\vr{x})(b) & = (\vr{A}\cdot\vr{x})_{S\cup T}(b) \\
+& = (\vr{A}_{S\cup T}\cdot\vr{x}_{S\cup T})(b) && \text{(\Cref{lem:mat prod fin})}
+\\
+& = (\vr{A}_{S\cup T}\cdot\vr{u})(b) && \text{(by definition of $\vr{x}$)} \\
+& \leqslant \vr{b}_{S\cup T}(b) \\
+& = \vr{b}(b) \ .
+\end{align*}
+%
+This finishes the proof.
+%
+\end{proof}
+%
+%
+\begin{proof}[Proof of \Cref{clm:row opt sE < opt sET}]
+%
+Recall \Cref{cor:row fin solv} which says that $\transpose{\cU}$ and
+$\transpose{\orbSum{S}(\cU)}$ are equivalent.
+Hence to show that the optimum of $\transpose{\cU}$ is smaller than or equal to the optimum of $\transpose{\cU_{S\cup T}}$,
+it is enough to prove that the optimum of $\transpose{\orbSum{S}(\cU)}$ is smaller than the latter.
+
+Pick an arbitrary solution $\vr{v}$ of $\transpose{\cU_{S\cup T}}$.
+We will construct a solution $\vr{z}$ of $\transpose{\orbSum{S}(\cU)}$ such that
+\[
+\transpose{\orbSum{S}(\vr{b})} \cdot \vr{z} = \transpose{\vr{b}_{S\cup T}} \cdot \vr{v} \ .
+\]
+Extend $\vr{v}$ to a $\vr{y} : B\to\R$ by assigning $0$ outside $B_{S\cup T}$:
+\[
+\vr{y}(b) \defeq
+\begin{cases}
+\vr{v}(b) & \text{if $b\in B_{S\cup T}$}\\
+0          & \text{otherwise.}%when $b\in B\setminus B_{S\cup T}$.}\\
+\end{cases}
+\]
+%
+We show $\vr{z} = \orbsmt{S}{T}(\vr{y})$ satisfies our requirement.
+%
+Since $\vr{A}$ is a column-finite matrix,
+$\transpose{\vr{A}}\cdot\vr{y}$ is well-defined (\Cref{cor:col fin prod}).
+Define $\vr{c}' : C\to\R$ as
+\[
+\vr{c}'(c) =
+\begin{cases}
+\vr{c}(c)                       & \text{if $c\in C_{S\cup T}$}\\
+(\transpose{\vr{A}}\cdot\vr{y})(c)  & \text{otherwise.}%when $c\in C\setminus C_{S\cup T}$.}\\
+\end{cases}
+\]
+%
+\begin{claim}\label{clm:c' constraint}
+$\transpose{\vr{A}}\cdot\vr{y} \geqslant \vr{c}'$
+\end{claim}
+%
+\begin{claim}\label{clm:orbsum c c'}
+$\transpose{\orbsmt{S}{T}(\vr{c}')} = \orbSum{S}(\transpose{\vr{c}})$.
+\end{claim}
+%
+Before proving the above claims we show that they imply $\orbsmt{S}{T}(\vr{y})$ is a solution of $\transpose{\orbSum{S}(\cU)}$ such that
+\[
+\transpose{\orbSum{S}(\vr{b})} \cdot \orbsmt{S}{T}(\vr{y}) = \transpose{\vr{b}_{S\cup T}} \cdot \vr{v} \ .
+\]
+%
+The vector $\vr{v}$ is non-negative and hence $\vr{y}$ is also so.
+Using the definition of $\orbsmt{S}{T}$ we conclude $\orbsmt{S}{T}(\vr{y})$ is non-negative as well.
+Now
+\begin{align*}
+&& &\ \transpose{\orbSum{S}(\vr{A})}\cdot\orbsmt{S}{T}(\vr{y})
+& \\
+&&= &\ \orbsmt{S}{T}(\transpose{\vr{A}}\cdot \vr{y})& \text{\Cref{lem:orbsmt mat vec}} \\
+&&\geqslant\ & \orbsmt{S}{T}(\vr{c}') &\text{\Cref{lem:orbsmt lin supp} and \Cref{clm:c' constraint}}\\
+&&= &\ \transpose{\orbSum{S}(\transpose{\vr{c}})} &\text{\Cref{clm:orbsum c c'}} & .
+\end{align*}
+%
+%It remains to show $\transpose{\orbSum{S}(\vr{b})} \cdot \orbsmt{S}{T}(\vr{y}) = \transpose{\vr{b}_{S\cup T}} \cdot \vr{v}$.
+Again using \Cref{lem:orbsmt mat vec} we get
+\[
+\transpose{\orbSum{S}(\vr{b})} \cdot \orbsmt{S}{T}(\vr{y}) =
+\transpose{\vr{b}} \cdot \vr{y} \ .
+\]
+%
+Since $\vr{y}$ is $0$ outside $B_{S\cup T}$ and agrees with $\vr{v}$ inside $B_{S\cup T}$ we have
+\[
+\transpose{\vr{b}} \cdot \vr{y} =
+\sum_{b\in B}\vr{b}(b)\cdot\vr{y}(b) =
+\sum_{b\in B_{S\cup T}}\vr{b}_{S\cup T}(b)\cdot\vr{v}(b) =
+\transpose{\vr{b}_{S\cup T}} \cdot \vr{v} \ .
+\]
+As a consequence we get
+\[
+\transpose{\orbSum{S}(\vr{b})} \cdot \orbsmt{S}{T}(\vr{y}) = \transpose{\vr{b}_{S\cup T}} \cdot \vr{v} \ .
+\]
+%
+This finishes the proof of \Cref{clm:row opt sE < opt sET} modulo the proofs of \Cref{clm:c' constraint,clm:orbsum c c'},
+which we do now.
+%
+\begin{claimproof}[Proof of \Cref{clm:c' constraint}]
+%
+We have to show that for $c\in C$, we have $\vr{c}'(c) \leqslant (\vr{A}\cdot\vr{y})(c)$.
+For $c\in C\setminus C_{S\cup T}$,
+it follows from the definition of the $\vr{c}'$.
+We now show it for $c\in C_{S\cup T}$.
+
+Pick $c\in C_{S\cup T}$.
+Using \Cref{lem:fin vec supp} we conclude $\vr{y}$ is a finite vector supported by $S\cup T$.
+The matrix $\vr{A}$ and  is also supported by $S$.
+We have,
+\begin{align*}
+(\vr{A}\cdot\vr{y})(c) &=
+(\vr{A}\cdot\vr{y})_{S\cup T}(c) \\
+& = (\vr{A}_{S\cup T}\cdot\vr{y}_{S\cup T})(c) && \text{(\Cref{lem:mat prod fin})}\\
+& = (\vr{A}_{S\cup T}\cdot\vr{v})(c) && \text{(by definition of $\vr{y}$)} \\
+& \geqslant \vr{c}_{S\cup T}(c) && \text{($\vr{v}$ is a solution of $\transpose{\cU_{S\cup T}}$)} \\
+& = \vr{c}(c) \ .
+\end{align*}
+This finishes the proof.\end{claimproof}
+%
+\begin{claimproof}[Proof of \Cref{clm:orbsum c c'}]
+The vectors $\vr{c}$ and $\vr{c}'$ agree on $C_{S\cup T}$.
+Since the function $\orbsmt{S}{T}$ only looks at values inside $C_{S\cup T}$,
+we have
+\[
+\orbsmt{S}{T}(\vr{c}') = \orbsmt{S}{T}(\vr{c})  \ .
+\]
+The vector $\vr{c}$ is supported by $S$.
+Hence \Cref{lem:orbsmt orbsum} implies
+\[
+\transpose{\orbsmt{S}{T}(\vr{c})} = \orbSum{S}(\transpose{\vr{c}}) \ .
+\]
+Combining the above two equalities we get $\transpose{\orbsmt{S}{T}(\vr{c}')} = \orbSum{S}(\transpose{\vr{c}})$.
+\end{claimproof}
+%
+With the proofs of \Cref{clm:c' constraint,clm:orbsum c c'},
+the proof of \Cref{clm:row opt sE < opt sET} is also complete.
+%
+\end{proof}
+%
+Now that we have proven \Cref{clm:opt sE > opt sET,clm:row opt sE < opt sET},
+the proof of \Cref{thm:col row approx} is also finished.
+\hfill\qedsymbol
+%
+%\section{Duality with atoms other than equality atoms}
+%%
+%\arka{Ignore this section}
+%
+%Although we were interested in duality between orbit-finite linear programs with \emph{equality atoms} (\Cref{rem:other atoms}),
+%some of the results extend to other atomic structures as well.
+%In particular, weak duality (\Cref{thm:weak o.f. duality}) also holds for orbit-finite linear programs defined with oligomorphic atoms.
+%We briefly describe how this can be done.
+%
+%
+%\arka{start with extending definitions and simple facts }
+%%
+%\begin{definition}\label{def:oligo}
+%A structure $\X$ is called \emph'def{oligomorphic} if for any $n\in\N$ the number of equivariant orbits in $\otufrom{X}{n}$ is finite. 
+%\end{definition}
+%%
+%\begin{example}
+%Recall the examples of atoms given in \Cref{rem:other atoms}.
+%Equality atoms, ordered atoms, bit-vector atoms and graph atoms are oligomorphic by virtue of being homogeneous (\cite[Chapter 7]{atombook}).%(\cite{homsurvey}).
+%The structure $(\Z,+)$ is not oligomorphic since $\otufrom{\Z}{2}$ splits into infinitely many equivariant orbits of the form $\setof{(n,n+k)}{n\in\Z}$ for $k\in\Z$.
+%\end{example}
+%%
+%%In \Cref{def:oligo}, instead of taking equivariant orbits,
+%%we could have taken $S$-orbits for any $S\subseteqfin\X$.
+%%%
+%%\arka{maybe the lemma can be skipped}
+%%%
+%%\begin{lemma}[\mbox{\cite[Lemma 3.19]{atombook}}]\label{lem:oligo S}
+%%For an oligomorphic structure $\X$ and finite subset $S\subseteqfin \X$ the number of $S$-orbits of $\X^n$ is also finite.
+%%\end{lemma}
+%%
+%In \Cref{rem:other atoms} we showed how the definition of orbit-finiteness can be extended to an arbitrary structure of atoms.
+%For oligomorphic atoms it extends particularly well
+%since for these atoms orbit-finiteness is independent of orbit-refinement by increasing the size of the support.
+%%
+%\begin{lemma}[\protect{\cite[Theorem 3.16]{atombook}}]\label{lem:oligo ind supp}
+%For any oligomorphic structure $\X$ and finite subsets $S\subseteq T\subseteqfin \X$,
+%every $S$-orbit is a finite union of $T$-orbits.
+%\end{lemma}
+%%
+%\fixed{For the rest of this section we fix an arbitrary oligomorphic structure $\X$.}
+%Recall that a vector/function is viewed as a set of (input, output) pairs and is called orbit-finite if the set of pairs is orbit-finite.
+%A consequence of the above theorem is the following lemma:
+%\begin{lemma}
+%Orbit-finite vectors are closed under addition.
+%\end{lemma}
+%\begin{proof}
+%Pick an orbit-finite set $B$ and orbit-finite vectors $\vr{u}$ and $\vr{v}$ in $\lin{B}$ respectively supported by finite subsets $S$ and $T$ of $\X$.
+%%
+%\begin{claim}
+%Both $S$ and $T$ supports $B$.
+%\end{claim}
+%%
+%\begin{claimproof}
+%\arka{TODO}
+%\end{claimproof}
+%%
+%%\Cref{lem:fun supp dom} extends to this general setting, which means both $S$ and $T$ has to support $B$.
+%Since $\X$ is oligomorphic, by \Cref{lem:oligo ind supp} $B$ is a finite union of $(S{\cup}T)$-orbits.
+%The vector $\vr{u} + \vr{v}$ is supported by $S{\cup}T$ and can be written as the orbit-finite set of pairs
+%\[
+%\setof{ (\vr{u} + \vr{v})(O)}{O\in\orbits[S\cup T]{B}}
+%\]
+%where $(\vr{u} + \vr{v})(O)$ is the value of the vector $(\vr{u} + \vr{v})$ at any(every) element of $O$.
+%\end{proof}
+%This seemingly simple fact may not be true for atoms that are not oligomorphic.
+%%
+%\begin{example}
+%Consider the structure $(\R^2, (R_r)_{r\in\R})$,
+%where for $r\in\R\setminus\set{0}$ the relation $R_r$ is a ternary relation defined as
+%\[
+%R_r(\a,\b,\g) \quad\defiff\quad \frac{\norm{\a - \g}}{\norm{\b - \g}} = r \ .
+%\] 
+%It is not oligomorphic since for each $r\in\R\setminus\set{0}$ the set of triples
+%\[
+%\setof{\a\b\g\in(\R^2)^{(3)}}{R_r(\a,\b,\g)}
+%\]
+%can intersect at most one equivariant orbit.
+%
+%Pick two distinct points $\a$ and $\b$ in $\R^2$.
+%We show the vectors $\idvec{\R^2\setminus\set{\a}}$ and $2\cdot\idvec{\R^2\setminus\set{\b}}$ are orbit-finite,
+%however their sum is not.
+%
+%We prove $\idvec{\R^2\setminus\set{\a}}$ is orbit-finite.
+%The proof that $\idvec{\R^2\setminus\set{\b}}$ is orbit-finite can be done symmetrically.
+%It is enough to show that $\R^2\setminus\set{\a}$ is an orbit-finite set,
+%in fact we show that it is a single orbit.
+%\Wlog{} we assume $\a$ is the origin.
+%Any rotation of the plane around the origin preserves the relations $R_r$ and also the set $\R^2 \setminus \set{\a}$.
+%So does scaling the plane by any non-zero constant.
+%But for any two points $\g,\delta\neq\a$,
+%there exists a rotation $\pi$ and scaling $\sigma$ such that $(\sigma\circ\pi)(\g) = \delta$.
+%Which means the set $\R^2 \setminus \set{\a}$ is a single orbit.
+%
+%Now we show that the vector
+%\[
+%\vr{x} =
+%\idvec{\R^2\setminus\set{\a}} +  2\cdot\idvec{\R^2\setminus\set{\b}}
+%=
+%3\cdot\idvec{\R^2\setminus\set{\a,\b}} +  \idvec{\set{\a}} + 2\cdot\idvec{\set{\b}}
+%\]
+%is not orbit-finite.
+%Assume otherwise, say $S\subseteq \R^2$ be such that the vector/function $\vr{x}$,
+%seen as a set of (input, output) pairs is a finite union of $S$-orbits;
+%equivalently $S$ supports $\vr{x}$ and $\R^2$ is a finite union of $S$-orbits.
+%Any automorphism $\pi\in\aut[S]{\R^2}$ must fix both $\a$ and $\b$ since $\vr{x}(\a)\neq\vr{x}(\b) \neq \vr{x}(\g)$ for any $\g\in\R^2\setminus\set{\a,\b}$.
+%But then, for each $r\in\R\setminus\set{0}$,
+%the set
+%\[
+%\setof{\g\in\R^2\setminus\set{\a,\b}}{
+%\frac{\norm{\a - \g}}{\norm{\b - \g}} = r}
+%\]
+%is non-empty, and can intersect at most one $S$-orbit.
+%This contradicts the fact that $\R^2$ is a finite union of $S$-orbits.
+%\end{example}
+%
+%
+%
+%
+%
+%\arka{as a consequence orbit-finite vectors are closed under addition }
+%
+%\arka{maybe fix a structure}
+%
+%
+%\arka{``to avoid complications with representation'' in this section we work with orbit-finite sets which are straight.
+%define orbit-finite linear programs indexed with just straight sets,}
+%
+%\arka{not necessary. Just write the theorem that orbit-finiteness is independent under increasing support}
+%
+%\section{Cones and Solution Sets}
+%
+%\pagebreak
+%
+%\huge
+%\arka{Experimental Part}
+%\normalsize
+%%
+%\begin{definition}\label{def:fsum}
+%The subspace $\fsum{B}\subseteq (B\to \R)$ consists of all the vectors $\vr{x}:B\to\R$ such that $\sum_{b\in B} |\vr{x}(b)|$ is finite.
+%\end{definition}
+%%
+%\arka{Problem:to define inner product we need to fix an ordering of the tuples.
+%This would create lot of unnecessary complications}
+%%
+%\begin{theorem}\label{thm:col fin opt 1}
+%Consider an $S$-supported column-finite linear program of atom dimension $d$.
+%For any $T\subseteqfin(\A\setminus S)$ of size at least $d$:
+%\begin{enumerate}
+%\item The optimum of the linear program does not change if we restrict to solutions which are finite and supported by $S\cup T$.
+%\item The optimum of the linear program does not change if we allow orbit-infinite solutions of bounded norm.
+%\item If the optimum is finite then,
+%it has an optimal solution supported by ${S\cup T}$.
+%\end{enumerate}
+%\end{theorem}
+%
+%\huge
+%\arka{OLD PART}
+%\normalsize
+%
+%\begin{definition}\label{def:orbdis row}
+%Define $\orbrow{S} : \R^{\orbits[S]{C}}\to\lin{C}$ as
+%\[
+%\orbrow{S}(\vr{x}) : c \mapsto \vr{x}(\orbit[S]{c}) 
+%\]
+%\end{definition}
+%%
+%\begin{lemma}
+%For any $\vr{x}\in\R^{\orbits{C}}$ the vector $\orbrow{S}(\vr{x})$ is supported by $S$.
+%\end{lemma}
+%%
+%\begin{proof}[Proof of \Cref{lem:orbrow sol}]
+%\arka{TODO}
+%\end{proof}
+%%
+%Finite linear programs with finite optimum admit optimal solutions \footnote{\arka{same citation as before}}.
+%Let $\vr{z}$ be an optimal solution of \eqref{eq:duality proof orbsum dual}.
+%Then \Cref{lem:orbrow sol} implies $\orbrow{S}(\vr{z})$ is a $S$-supported solution of \eqref{eq:duality proof dual} with
+%$\transpose{\vr{c}}\cdot\orbrow{S}(\vr{z}) = r$.
+%%
+%\arka{note here that the lemmas also prove $S$-supp of row-finite.
+%The remaining case is when the column-finite is not solvable and the row-finite is solvable} 
+%%
+%\section{Unused lemmas and theorems on $\orbsum{S}$}
+%%
+%\begin{definition}\label{def:cone}
+%For $G\subseteq \flin{B}$ define
+%\[
+%\cone(G) \defeq
+%\setof{\sum_{i = 1}^n r_i \cdot\vr{g}_i}{r_1,\dots,r_n\geqslant 0,\ \vr{g}_1,\dots,\vr{g}_n\in G} \ .
+%\] 
+%\end{definition}
+%%
+%%For any  $G\subseteq \flin{B}$ and $\vr{t}\in\flin{B}$,
+%%if $\vr{t}\in\cone(G)$ then $\orbsum{S}(\vr{t})\in\cone(\orbsum{S}(G))$.
+%%Indeed, if there exists $r_1,\dots,r_n \in \R_+$ and $\vr{g}_1,\dots,\vr{g}_n \in G$ such that
+%%\[
+%%\vr{t} = \sum_{i = 1}^n r_i \cdot \vr{g}_i \ .
+%%\]
+%%By linearity of $\orbsum{S}$ (\Cref{lem:orbsum lin S supp})
+%%\[
+%%\orbsum{S}(\vr{t}) = \sum_{i = 1}^n r_i \cdot \orbsum{S}(\vr{g}_i)
+%%\in \cone(\orbsum{S}(G)) \ .
+%%\]
+%%%
+%%In fact, both directions hold when $\vr{t}$ and $G$ is supported by $S$.
+%%
+%\begin{theorem}\label{thm:orbsum cone}
+%For any set of vectors $G\subseteq \flin{B}$ and vector $\vr{t}\in\flin{B}$,
+%both supported by $S$, we have
+%\[
+%\vr{t} \in \cone(G)
+%\quad\iff\quad
+%\orbsum{S}(\vr{t}) \in \cone(\orbsum{S}(G))
+%\]
+%\end{theorem}
+%%
+%%We have already shown the easier direction of the Theorem.
+%%The harder direction will follow from the following Lemma.
+%The proof of this theorem uses the following lemma,
+%which is also useful on its own.
+%%
+%\begin{lemma}\label{lem:orbsum cone}
+%Consider finitely many vectors $\vr{g}_1,\dots,\vr{g}_n \in \flin{B}$.
+%Let $\vr{t}\in\flin{B}$ be a vector supported by $S$.
+%Let $T\subseteqfin (\A\setminus S)$ be a finite subset of atoms such that $S\cup T$ supports $\vr{g}_1,\dots,\vr{g}_n$.
+%If there exists $r_1,\dots,r_n\geqslant 0$ such that
+%\[
+%\orbsum{S}(\vr{t}) =
+%\sum_{i=1}^n r_i \cdot \orbsum{S}(\vr{g}_i)
+%\]
+%then,
+%\begin{equation}\label{eq:orbsum cone}
+%\vr{t} = \frac{1}{|\aut{T}|}
+%\left(
+%\sum_{\pi\in\aut{T}}
+%\pi(\vr{t}')
+%\right)
+%\end{equation}
+%where
+%\[
+%\vr{t}' = \sum_{i = 1} r_i \cdot \vr{g}_i
+%\]
+%\end{lemma}
+%%
+%Before proving \Cref{lem:orbsum cone} we show how it finishes the proof of \Cref{thm:orbsum cone}.
+%%
+%\begin{proof}[Proof of \Cref{thm:orbsum cone}]\label{proof:thm:orbsum cone}
+%$(\implies)$
+%Assume $\vr{t}\in\cone(G)$.
+%Then there exists $r_1,\dots,r_n \geqslant 0$ and $\vr{g}_1,\dots,\vr{g}_n \in G$ such that
+%\[
+%\vr{t} = \sum_{i = 1}^n r_i \cdot \vr{g}_i
+%\]
+%By linearity of $\orbsum{S}$ (\Cref{lem:orbsum lin S supp})
+%\[
+%\orbsum{S}(\vr{t}) = \sum_{i = 1}^n r_i \cdot \orbsum{S}(\vr{g}_i)
+%\in \cone(\orbsum{S}(G))
+%\]
+%\smallskip
+%
+%\noindent
+%$(\impliedby)$
+%Say $\orbsum{S}(\vr{t}) \in \orbsum{S}(G)$.
+%Then there exists $r_1,\dots,r_n \geqslant 0$ and $\vr{g}_1,\dots,\vr{g}_n \in G$ such that
+%\[
+%\orbsum{S}(\vr{t}) = \sum_{i = 1}^n r_i \cdot \orbsum{S}(\vr{g}_i) \ .
+%\]
+%Let $\vr{t}' = \sum_{i = 1}^n r_i \cdot\vr{g}_i$.
+%\Cref{lem:orbsum cone} says
+%\[
+%\vr{t} = \frac{1}{|\aut{T}|}
+%\left(
+%\sum_{\pi\in\aut{T}}
+%\pi(\vr{t}')
+%\right)
+%\]
+%Since $r_i\geqslant 0$ and $g_i\in G$ we get $\vr{t}'\in\cone(G)$.
+%$G$ is supported by $S$.
+%Which means $\cone(G)$ is also supported by $S$.
+%\arka{should this be expanded?}.
+%Since $T\cap S =\emptyset$, we have $\aut{T}\subseteq\aut[S]{\A}$.
+%Hence $\pi(\vr{t}')\in\cone(G)$ for every $\pi\in\aut{T}$.
+%Since $\cone(G)$ is a cone and
+%$\vr{t}$ is a convex combination of the finite set of vectors
+%\[
+%\setof{\pi(\vr{t}')}{\pi\in\aut{T}}
+%\subseteq \cone(G)
+%\]
+%it must be in $\cone(G)$ as well.
+%\arka{should there be a lemma saying cones are closed under convex combination}
+%\end{proof}
+%%
+%\begin{proof}
+%[Proof of \Cref{lem:orbsum cone}]
+%\label{proof:lem:orbsum cone}
+%We start with the following easy claim.
+%%
+%\begin{claim}\label{clm:t prime t}
+%$\orbsum{S}(\vr{t}') = \orbsum{S}(\vr{t})$.
+%\end{claim}
+%%
+%\begin{claimproof}
+%By definition of $\vr{t}'$ and linearity of $\orbsum{S}$ (\Cref{lem:orbsum lin S supp})
+%\[
+%\orbsum{S}(\vr{t}')
+%= \sum_{i = 1}^n r_i\cdot\orbsum{S}(\vr{g}_i)
+%= \orbsum{S}(\vr{t})
+%\]
+%\end{claimproof}
+%%
+%Let
+%\[
+%\vr{t}'' = \frac{1}{|\aut{T}|}
+%\left(
+%\sum_{\pi\in\aut{T}}
+%\pi(\vr{t}')
+%\right)
+%\]
+%We show $\vr{t}'' = \vr{t}$.
+%Choose arbitrary $b \in B$.
+%We prove $\vr{t}''(b) = \vr{t}(b)$.
+%We split into two cases.
+%%
+%\paragraph{(Case 1: $b$ is not supported by $S\cup T$)}
+%
+%The vector $\vr{t}$ is supported by $S$.
+%\Cref{lem:fin vec supp} implies $\vr{t}(b) = 0$.
+%We show $\vr{t}''(b) = 0$ as well.
+%\Cref{lem:add supp} implies the vector $\vr{t}'$ is supported by $S\cup T$.
+%Using \Cref{lem:supp fun equiv} we conclude $\pi(\vr{t}')$ is supported by $S\cup T$ for every $\pi\in\aut{T}$.
+%\Cref{lem:fin vec supp} implies $(\pi(\vr{t}'))(b) = 0$ for every $\pi\in\aut{T}$.
+%Hence $\vr{t}''(b) = 0$.
+%%
+%\paragraph{(Case 2: $b$ is supported by $S\cup T$)}
+%
+%Let $D_b = \setof{\pi(b)}{\pi\in\aut{T}}$.
+%$\aut{T}$ is a group which acts transitively on $D_b$.
+%\arka{should this be expanded?}
+%Let $d_b = |\setof{\pi\in\aut{T}}{\pi(b) = b}|$.
+%\begin{claim}\label{clm:stab}
+%For every $b' \in D_b$
+%\[
+%|\setof{\pi\in\aut{T}}{\pi(b) = b'}|
+%=
+%d_b
+%\]
+%\end{claim}
+%%
+%\begin{claimproof}
+%Pick arbitrary $b'\in D_b$.
+%There exists $\sigma\in\aut{T}$ such that $\sigma(b) = b'$.
+%Then $\pi\mapsto \sigma^{-1}\circ\pi$ is a bijection from the set
+%\[
+%\setof{\pi\in\aut{T}}{\pi(b) = b'}
+%\] to the set
+%\[
+%\setof{\pi\in\aut{T}}{\pi(b) = b}
+%\]
+%with inverse $\pi\mapsto \sigma\circ\pi$.
+%\end{claimproof}
+%%
+%\begin{claim}\label{clm:zero outside Db}
+%For any $b'\in\orbit[S]{b}$, if $\vr{t}'(b')\neq 0$ then $b'\in D_b$.
+%\end{claim}
+%%
+%\begin{claimproof}
+%Pick $b'\in\orbit[S]{b}$ such that $\vr{t}'(b')\neq 0$.
+%The vector $\vr{t}'$ is supported by $S\cup T$.
+%\Cref{lem:fin vec supp} implies $b'$ is supported by $S\cup T$.
+%Using \Cref{lem:same supp orb} we conclude that there exists $\pi\in\aut{T}$ such that $\pi(b) = b'$.
+%In other words $\pi(b) = b'$. 
+%\end{claimproof}
+%%
+%We have the following sequence of equations.
+%\[
+%\begin{aligned}
+%& &&  \left(
+%\sum_{\pi \in \aut{T}} \pi(\vr{t}')
+%\right)(b) &\\
+%& = &&
+%\sum_{\pi \in \aut{T}} \pi(\vr{t}')(b) & \\
+%& = &&
+%\sum_{\pi \in \aut{T}} \vr{t}'(\pi^{-1}(b))
+%& \quad(\text{\Cref{lem:perm fun}})\\
+%& = && \sum_{b'\in D_b}
+%\left|
+%\setof{\pi\in\aut{T}}{\pi^{-1}(b) = b'}
+%\right| \cdot\vr{t}'(b') & \\
+%& = && \sum_{b'\in D_b} \left|
+%\setof{\pi\in\aut{T}}{\pi(b) = b'}
+%\right| \cdot\vr{t}'(b')
+%& \\
+%& = && \sum_{b' \in D_b} d_b\cdot \vr{t}'(b') &
+%\quad(\text{\Cref{clm:stab}})\\
+%& = && d_b \cdot (\orbsum{S}(\vr{t}'))(\orbit[S]{b}) &\quad(\text{\Cref{clm:zero outside Db}})\\
+%& = && d_b \cdot (\orbsum{S}(\vr{t}))(\orbit[S]{b})
+%& \quad(\text{\Cref{clm:t prime t}})
+%\end{aligned}
+%\]
+%To finish the proof now need to show
+%\[
+%d_b \cdot (\orbsum{S}(\vr{t}))(\orbit[S]{b}) = |\aut{T}|\cdot \vr{t}(b)
+%\]
+%for all $b\in B$.
+%We split the proof of this into two subcases.
+%
+%\paragraph{Case 2.1 ($b$ is supported by $S$)}
+%The vector $\vr{t}$ is supported by $S$.
+%Hence $(\orbsum{S}(\vr{t}))(\orbit[S]{b}) = (\orbsum{S}(\vr{t}))(\{b\}) = \vr{t}(b)$, and $d_b = |\aut{T}|$.
+%Hence
+%\[
+%d_b \cdot (\orbsum{S}(\vr{t}))(\orbit[S]{b}) = |\aut{T}|\cdot \vr{t}(b)
+%\]
+%%
+%\paragraph{Case 2.2 ($b$ is not supported by $S$)}
+%Since $\vr{t}$ is supported by $S$ and is a finite vector,
+%\Cref{lem:fin vec supp} implies $\vr{t}(b') = 0$ for all $b'\in D_b$.
+%Hence
+%\[
+%d_b \cdot (\orbsum{S}(\vr{t}))(\orbit[S]{b}) = 0 = |\aut{T}|\cdot \vr{t}(b)
+%\]
+%\end{proof}
+%%
+%\begin{theorem}\label{thm:orbsum ineq}
+%Consider a column-finite matrix $\vr{A}\in\lin{B{\times} C}$ and vector $\vr{b}\in\flin{B}$,
+%both supported by $S$.
+%Let
+%\[
+%d = \max\{\text{atom-dimension of }\vr{A},
+%          \text{atom-dimension of }\vr{b}\}
+%\]
+%The following are equivalent:
+%\begin{enumerate}
+%\item There exists a non-negative vector $\vr{x}\in\flin{C}$ such that 
+%      $\vr{A}\cdot\vr{x}\leqslant\vr{b}$.
+%\item There exists a non-negative vector $\vr{z}\in\R^{\orbits[S]{B}}$ such that
+%      $\orbSum{S}(\vr{A})\cdot\vr{z}\leqslant\orbSum{S}(\vr{B})$.
+%\item For any $T\subseteqfin(\A\setminus S)$  of size at least $d$,
+%      there exists a non-negative vector $\vr{x}\in\flin{C}$
+%      supported by $S\cup T$ such that 
+%      $\vr{A}\cdot\vr{x}\leqslant\vr{b}$.
+%\end{enumerate}
+%\end{theorem}
+%%
+%\begin{proof}[Proof of \Cref{thm:orbsum ineq}]
+%It is trivial to show that (3)$\implies$(1).
+%We show \\ (1)$\implies$(2) and (2)$\implies$(3).
+%
+%First we prove (1)$\implies$(2).
+%Say there exists a non-negative vector $\vr{x}$ in $\flin{C}$ such that 
+%$\vr{A}\cdot\vr{x}\leqslant\vr{b}$.
+%We need to find a non-negative vector $\vr{z}\in\R^{\orbits[S]{B}}$ such that
+%$\orbSum{S}(\vr{A})\cdot\vr{z}\leqslant\orbSum{S}(\vr{B})$.
+%We show $\vr{z} = \orbsum{S}(\vr{x})$ does the job.
+%\Cref{cor:orbsum non-neg} implies $\orbsum{S}(\vr{x})$ is non-negative.
+%Hence, we just need to show
+%$\orbSum{S}(\vr{A})\cdot\orbsum{S}(\vr{x})\leqslant\orbSum{S}(\vr{B})$.
+%\Cref{lem:orbsum mat vec} implies
+%$\orbSum{S}(\vr{A})\cdot\orbsum{S}(\vr{x}) = \orbsum{S}(\vr{A}\cdot\vr{x})$.
+%Since $\vr{A}\cdot\vr{x}\leqslant\vr{b}$,
+%\Cref{lem:orbsum ord} implies
+%$\orbsum{S}(\vr{A}\cdot\vr{x}) \leqslant \orbSum{S}(\vr{B})$.
+%Hence $\orbSum{S}(\vr{A})\cdot\orbsum{S}(\vr{x})\leqslant\orbSum{S}(\vr{B})$.
+%This finishes the proof.
+%
+%Now we prove (2)$\implies$(3).
+%Say there exists a non-negative vector ${\vr{z}\in\R^{\orbits[S]{C}}}$ such that
+%$\orbSum{S}(\vr{A})\cdot\vr{z}\leqslant\orbSum{S}(\vr{B})$.
+%We need to find a non-negative vector $\vr{x}\in\flin{C}$ such that $\vr{A}\cdot\vr{x}\leqslant\vr{b}$.
+%Let $\vr{d} = \orbSum{S}(\vr{b}) - \orbSum{S}(\vr{A})\cdot\vr{z}$.
+%Since $\orbSum{S}(\vr{A})\cdot\vr{z}\leqslant\orbSum{S}(\vr{B})$,
+%we get $\vr{d}\geqslant\vr{0}$.
+%We have
+%\begin{equation}\label{eq:thm:orbsum ineq:b A d}
+%\orbSum{S}(\vr{b}) = \orbSum{S}(\vr{A})\cdot\vr{z} + \vr{d}
+%\end{equation}
+%Expanding the expressions in the RHS
+%\begin{equation}\label{eq:thm:orbsum ineq:b sum E D}
+%\orbSum{S}(\vr{b}) = \sum_{E\in\orbits[S]{C}}\vr{z}(E)\cdot\orbSum{S}(\vr{A})(-,E) +
+%                  \sum_{D\in\orbits[S]{B}}\vr{d}(D)\cdot\idvec{D}
+%\end{equation}
+%For every $E\in\orbits[S]{C}$ pick $c_E\in E$ such that
+%\[
+%\supp{c_E}\subseteq S\cup T
+%\]
+%Similarly, for every $D\in\orbits[S]{B}$ pick $b_D\in D$ such that
+%\[
+%\supp{b_D}\subseteq S\cup T
+%\]
+%\Cref{lem:pick elem supp} guarantees existence of such elements.
+%By \Cref{def:orbsum matrix}, for every $E\in\orbits[S]{B}$ we have
+%$\orbSum{S}(\vr{A})(-,E) = \orbsum{S}(\vr{A}(-,c_E))$.
+%Applying \Cref{def:orbsum vector} we get $\orbsum{S}(\idvec{b_D})=\idvec{D}$ for every $D\in\orbits[S]{B}$.
+%Rewriting the RHS of equation \eqref{eq:thm:orbsum ineq:b sum E D} using these facts we get
+%\begin{equation}\label{eq:thm:orbsum ineq:orbsum b cE bD}
+%\begin{aligned}
+% & \orbsum{S}(\vr{B})
+% & = & \sum_{E\in\orbits[S]{C}}\vr{z}(E)\cdot\orbsum{S}(\vr{A}(-,c_E)) \\
+% & & & \hspace{70pt} + \\
+% & & &\sum_{D\in\orbits[S]{B}}\vr{d}(D)\cdot\orbsum{S}(\idvec{b_D})
+%\end{aligned}
+%\end{equation}
+%Define $\vr{x}'\in\flin{C}$ as
+%\[
+%\vr{x}' = \sum_{E\in\orbits[S]{C}} \vr{z}(E)\cdot c_E
+%\]
+%Define $\vr{y}\in\flin{B}$ as
+%\[
+%\vr{y} = \sum_{D\in\orbits[S]{B}} \vr{d}(D)\cdot b_D
+%\]
+%Define $\vr{b}' = \vr{A}\cdot\vr{x}' + \vr{y}$.
+%Expanding the expression $\vr{A}\cdot\vr{x}'$ and $\vr{y}$ using the definition of $\vr{x}'$ and $\vr{y}$
+%\begin{equation}\label{eq:thm:orbsum ineq:b' cE bD}
+%\vr{b}' = \sum_{E\in\orbits[S]{C}}\vr{z}(E)\cdot\vr{A}(-,c_E) +
+%          \sum_{D\in\orbits[S]{B}}\vr{d}(D)\cdot\idvec{b_D}
+%\end{equation}
+%Applying \Cref{lem:orbsum cone} with \eqref{eq:thm:orbsum ineq:orbsum b cE bD} and \eqref{eq:thm:orbsum ineq:b' cE bD} we get
+%\begin{equation}\label{eq:thm:orbsum ineq 5}
+%\vr{b} = \frac{1}{d!}\cdot\left(\sum_{\pi\in\aut{T}} \pi(\vr{b}')\right)
+%\end{equation}
+%Expanding the expression $\sum_{\pi\in\aut{T}} \pi(\vr{b}')$
+%using the definition of $\vr{b}'$
+%\begin{equation}\label{eq:thm:orbsum ineq 6}
+%\sum_{\pi\in\aut{T}} \pi(\vr{b}') =
+%\sum_{\pi\in\aut{T}} \pi(\vr{A}\cdot\vr{x}' + \vr{y})
+%\end{equation}
+%Using \Cref{lem:mult equiv,lem:add equiv}
+%\begin{equation}\label{eq:thm:orbsum ineq 7}
+%\sum_{\pi\in\aut{T}} \pi(\vr{A}\cdot\vr{x}' + \vr{y}) =
+%\sum_{\pi\in\aut{T}}
+%\left(
+%\pi(\vr{A})\cdot\pi(\vr{x}') + \pi(\vr{y})
+%\right)
+%\end{equation}
+%The matrix $\vr{A}$ is supported by $S$.
+%Hence $\pi(\vr{A}) = \vr{A}$ for every $\pi\in\aut{T}\subseteq\aut[S]{\A}$.
+%\arka{define the $\aut{T}$ to be the shorthand for $\aut[\A\setminus T]{\A}$}
+%Using this fact we get
+%\begin{equation}\label{eq:thm:orbsum ineq 8}
+%\begin{aligned}
+%       & \sum_{\pi\in\aut{T}} (\pi(\vr{A})\cdot\pi(\vr{x}') + \pi(\vr{y})) \\
+%       & \\
+%=\quad & \vr{A}\cdot\left(
+%         \sum_{\pi\in\aut{T}}\pi(\vr{x}')\right) +
+%         \sum_{\pi\in\aut{T}} \pi(\vr{y})
+%\end{aligned}
+%\end{equation}
+%Combining equations \eqref{eq:thm:orbsum ineq 6}, \eqref{eq:thm:orbsum ineq 7} and \eqref{eq:thm:orbsum ineq 8} we get
+%\begin{equation}\label{eq:thm:orbsum ineq 9}
+%\begin{aligned}
+%       & \sum_{\pi\in\aut{T}} \pi(\vr{b}')
+%=\quad & \vr{A}\cdot\left(
+%         \sum_{\pi\in\aut{T}}\pi(\vr{x}')\right) +
+%         \sum_{\pi\in\aut{T}} \pi(\vr{y})
+%\end{aligned}
+%\end{equation}
+%Using equations \eqref{eq:thm:orbsum ineq 5} and \eqref{eq:thm:orbsum ineq 9} we get
+%\begin{equation}\label{eq:thm:orbsum ineq:b x y}
+%\vr{b} = 
+%\vr{A}\cdot
+%\left(\frac{1}{d!}\cdot\sum_{\pi\in\aut{T}}\pi(\vr{x}')\right) +
+%\left(\frac{1}{d!}\cdot\sum_{\pi\in\aut{T}} \pi(\vr{y})\right)
+%\end{equation}
+%Define two vectors $\vr{x}$ and $\vr{y}$ as
+%\[
+%\vr{x} = \frac{1}{d!}\cdot\left(\sum_{\pi\in\aut{T}}\pi(\vr{x}')\right)
+%\]
+%and
+%\[
+%\vr{y} = \frac{1}{d!}\cdot\left(\sum_{\pi\in\aut{T}} \pi(\vr{y})\right)
+%\]
+%To finish the proof we show that $\vr{x}$ is a non-negative vector in $\flin{C}$ such that $\vr{A}\cdot\vr{x} \leqslant \vr{b}$ and $\supp{\vr{x}}\subseteq S\cup T$.
+%Since $\vr{x}'$ is a non-negative vector in $\flin{C}$, $\pi(\vr{x})$ is a non-negative vector in $\flin{C}$ for every $\pi\in\aut{T}$.
+%Hence $\vr{x}$ is also a non-negative vector in $\flin{C}$.
+%Similarly, one can show $\vr{y}$ to be a non-negative vector in $\flin{B}$.
+%Equation \eqref{eq:thm:orbsum ineq:b x y} implies $\vr{b} = \vr{A}\cdot\vr{x} + \vr{y}$.
+%Since $\vr{y}$ is non-negative we get $\vr{A}\cdot\vr{x}\leqslant\vr{b}$.
+%It only remains to prove that $\vr{x}$ is supported by $S\cup T$, which we do now.
+%For every $E\in\orbits[S]{C}$ the element $c_E\in E$ is supported by $S\cup T$.
+%The vector $\vr{x}$ is zero outside the finite set $\setof{c_E}{E\in\orbits[S]{C}}$.
+%Using \Cref{lem:fin vec supp} we conclude $\vr{x}'$ is supported by $S\cup T$.
+%\Cref{lem:perm supp mat} implies $\pi(\vr{x}')$ is also supported by $S\cup T$ for every $\pi\in\aut{T}$.
+%Using \Cref{lem:add supp} we conclude $\vr{x}$ is also supported by $S\cup T$.
+%This finishes the proof.
+%\end{proof}
+%%
+%\section{Old part}
+%
+%We have the following computational problems regarding these linear programs.
+%%
+%\probOut{\colLinProg}{A column-finite linear program.}
+%{Optimum of the linear program. If the optimum is finite, then\\
+%& an optimal solution.}
+%%
+%\probOut{\rowLinProg}{A row-finite linear program.}
+%{Optimum of the linear program. If the optimum is finite,
+%then \\ & an optimal solution.}
+%%
+%For both of the above problems, we assume the input linear programs are given in standard representation.
+%\arka{define standard representation at some place. Don't assume straightness in the standard representation}
+%Notice that, as opposed to the computational problems related to orbit-finite linear programs (\linProg{} and \flinProg{}),
+%in the above problems we also ask for an optimal solution.
+%We have the following results regarding these problems.
+%%
+%\begin{theorem}\label{thm:col fin fadp}
+%\textsc{Col-Fin-Max} is in \fadp.
+%\end{theorem}
+%%
+%\begin{theorem}\label{thm:row fin fadp}
+%\textsc{Row-Fin-Max} is in \fadp.
+%\end{theorem}
+%%
+%\Cref{thm:col fin fadp} follows from \Cref{thm:col fin opt,thm:fLinProg fadp} and \footnote{\arka{appropriate theorem saying orbit-finite linear programs can be aproximated}}.
+%Similarly \Cref{thm:row fin fadp} follows from \Cref{thm:row fin opt}, \Cref{cor:linProg fadp} and \footnote{\arka{appropriate theorem saying orbit-finite linear programs can be aproximated}}.
+%However, the techniques we develope for proving \Cref{thm:col row duality},thm:col fin opt,thm:row fin opt} will lead to simpler proofs.

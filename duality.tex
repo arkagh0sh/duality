@@ -1,0 +1,1311 @@
+%!TEX root = main.tex
+%
+% The code below is used to hide the proofs 
+%\usepackage{environ}
+%\NewEnviron{killcontents}{}
+%\let\proof\killcontents
+%\let\endproof\endkillcontents
+%\let\claimproof\killcontents
+%\let\endclaimproof\endkillcontents
+%%
+%
+%
+\chapter{Duality in Linear Programming}\label{ch:duality}
+%
+\section{Introduction}
+%
+For orbit-finite sets $B$ and $C$,
+matrix $\vr{A}\in\lin{B{\times}C}$, vectors $\vr{b}\in\lin{B}$ and $\vr{c}\in\lin{C}$,
+and an orbit-finite linear program
+
+\begin{equation}\label{eq:primal gen}
+\primalAbc
+\end{equation}
+called the \defind{primal}{primal linear program},
+its \defind{dual}{dual linear program} is defined to be the orbit-finite linear program
+\begin{equation}\label{eq:dual gen}
+\dualAbc
+\end{equation}
+Every such pair (\eqref{eq:primal gen},\eqref{eq:dual gen}) of linear programs is known as a \defindS{primal-dual pair}.
+Duals of finite linear programs are clearly finite themselves.
+The \emph{weak duality theorem} states that the optimum of every finite linear program is dominated by the optimum of its dual.
+The \emph{strong duality theorem} states that for every primal-dual pair of finite linear programs, if the optimum of one of the linear programs is finite, then the optimum of the other linear program is also finite and the two optima are equal.
+In this chapter we investigate whether these duality theorems can be extended to orbit-finite linear programs.
+%%
+%\begin{hypothesis}[Weak Orbit-finite Duality]\label{hypo:weak duality}
+%For any primal-dual pair of orbit-finite linear programs,
+%the optimum of the primal is dominated by the optimum of the dual.
+%\end{hypothesis}
+%%
+%\begin{hypothesis}[Strong Orbit-finite Duality]\label{hypo:strong duality}
+%For any primal-dual pair of orbit-finite linear programs,
+%if the optimum of one of the linear programs is finite,
+%then the optimum of the other linear program is also finite and they are equal.
+%%to each other.
+%\end{hypothesis}
+%
+%We argue that \Cref{hypo:weak duality} is true and \Cref{hypo:strong duality} is false.
+We show that, weak duality holds for orbit-finite linear programs and strong duality does not.
+However, both weak and strong duality hold between two natural subclasses of orbit-finite linear programs, called \emph{column-finite} and \emph{row-finite} linear programs, respectively.
+%
+\subsection*{Organisation of the chapter}
+%
+In \Cref{sec:weak o.f. duality} we prove weak duality holds for orbit-finite linear programs.
+In \Cref{sec:lost} we show strong duality does not hold for orbit-finite linear programs by constructing a counterexample.
+%At the end of \Cref{sec:lost}, we refine \Cref{hypo:strong duality} to pose a conjecture.
+In \Cref{sec:dual inf} we briefly discuss duality for infinite linear programs,
+which are not necessarily orbit-finite.
+In \Cref{sec:regained} we restrict our attention to orbit-finite linear programs which are \emph{column-finite} or \emph{row-finite}.
+We show that strong duality holds between them (\Cref{thm:col row duality}),
+and that these linear program are more robust than the general class of orbit-finite linear programs (\Cref{thm:col fin opt,thm:row fin opt}).
+In \Cref{sec:strong proof} we give the proofs of these theorems using several facts which are demonstrated in \Cref{sec:orbres,sec:orbsum,sec:orbdis,sec:orbsmt,sec:orbrow}.
+Finally, in \Cref{sec:approx} we answer the question raised in
+\Cref{sec:intro approx}: whether orbit-finite linear programs approximate large linear programs.
+In particular we show that orbit-finite linear programs in general do not,
+however both column-finite and row-finite linear programs do.
+%
+%Using the results of two latter sections we quickly discuss extensions of asymmetric version of the duality theorems and of Farkas' Lemma respectively in \Cref{sec:asym} and \Cref{sec:farkas}.
+%
+%\arka{The things mentioned in the last sentence are not done}
+%
+%
+\section{Weak duality}\label{sec:weak o.f. duality}
+%
+\begin{theorem}[Weak Orbit-finite Duality]\label{thm:weak o.f. duality}
+The optimum of any orbit-finite linear program is dominated by the optimum of its dual.
+\end{theorem}
+%
+\subsection{Proof of \Cref{thm:weak o.f. duality}}\label{subsec:weak dual proof}
+%
+\fixed{Let $B$ and $C$ be two arbitrary orbit-finite sets.
+Consider a primal-dual pair of orbit-finite linear programs $(\cU,\transpose{\cU})$
+%
+\[
+  \cU\quad :\quad \primalAbc 
+\]
+\[
+  \transpose{\cU}\quad :\quad \dualAbc
+\]
+%
+where $\vr{A}\in\lin{B\times C}$, $\vr{b}\in\lin{B}$ and $\vr{c}\in\lin{C}$.
+Let $S$ be the support of the above systems.}
+We need to show that the optimum of $\cU$ is dominated by the optimum of $\transpose{\cU}$.
+We fix some notations and prove a few lemmas for future use.
+%
+\begin{notation}\label{notation:mat res}
+Consider $K\subseteqfin \A$ and orbit-finite set $P$ supported by $K$.
+For $\vr{u}\in \lin{P}$ also supported by $K$,
+by $\vr{u}_K$ we denote the restriction of $\vr{u}$ to $P_K$, where
+\[
+P_K = \setof{p\in P}{\supp{p}\subseteq K} \ .
+\]
+Let $Q$ be another $K$-supported orbit-finite set,
+and $\vr{B}\in\lin{P{\times}Q}$ a $K$-supported matrix.
+By $\vr{B}_K$ we denote the restriction of $\vr{B}$ to $P_K{\times}Q_K$ where
+\[
+  Q_K = \setof{q\in Q}{\supp{q}\subseteq K} \ .
+\]
+\end{notation}
+%
+\begin{lemma}\label{lem:mat prod fin}
+For $K\subseteqfin \A$,
+$K$-supported orbit-finite sets $P$, $Q$ and $R$,
+and $K$-supported matrices $\vr{B}\in\lin{P{\times}Q}$ and $\vr{C}\in\lin{Q{\times}R}$ we have
+\[
+\vr{B}_K\cdot\vr{C}_K 
+=
+(\vr{B}\cdot\vr{C})_K
+\]
+\end{lemma}
+%
+\begin{proof}
+Pick $(p,r)\in P_K{\times}R_K$.
+\ref{lem:row col supp} implies the row $\vr{B}(p,-)$ and the column $\vr{C}(-,r)$ are both supported by $K$.
+We have 
+\begin{align*}
+    (\vr{B}\cdot\vr{C})_K(p,r)
+& = \vr{B}(p,-)\cdot\vr{C}(-,r) \\
+& = \sum_{q\in Q_K} \vr{B}(p,q)\cdot\vr{C}(q,r) & \text{(\Cref{lem:inner product fin})} \\
+& = \vr{B}_K(p,-)\cdot\vr{C}_K(-,r) \\
+& = (\vr{B}_K\cdot\vr{C}_K)(p,r)
+\end{align*}
+Since $(p,r)\in P_K{\times}R_K$ was chosen arbitrarily,
+this finishes the proof.
+\end{proof}
+%
+\fixed{
+Consider $T\subseteqfin\A\setminus S$.
+Let
+\begin{align*}
+&B_{S\cup T} \defeq \setof{b\in B}{\supp{b} \subseteq S\cup T}\\
+&C_{S\cup T} \defeq \setof{c\in C}{\supp{C} \subseteq S\cup T} \ .
+\end{align*}
+From the orbit-finite linear program $\cU$,
+we get a finite linear program $\cU_{S\cup T}$
+by restricting to constraints and variables whose indices are supported by ${S\cup T}$:
+%
+\[
+\cU_{S\cup T} \quad :\quad
+\lpMatPrimal{\vr{A}_{{S\cup T}}}{\vr{b}_{{S\cup T}}}{\vr{c}_{{S\cup T}}}{\vr{u}}{B_{{S\cup T}}}{C_{{S\cup T}}}
+\]
+}
+\begin{lemma}\label{lem:restr sol}
+Let $\vr{x}$ be a solution of $\cU$ supported by $S\cup T$,
+for some $T\subseteqfin\A\setminus S$.
+Then $\vr{x}_{S\cup T}$ is a solution of $\cU_{S\cup T}$ with
+$\transpose{\vr{c}}\cdot\vr{x} = \transpose{\vr{c}_{S\cup T}}\cdot\vr{x}_{S\cup T}$.
+\end{lemma}
+%
+\begin{proof}
+Clearly $\vr{x}_{S\cup T} \geqslant \vr{0}$.
+Using \Cref{lem:mat prod fin} we get
+\[
+\transpose{\vr{c}}\cdot\vr{x} = \transpose{\vr{c}_{S\cup T}}\cdot\vr{x}_{S\cup T}
+\]
+and
+\[
+\vr{A}_{S\cup T} \cdot \vr{x}_{S\cup T} 
+= (\vr{A}\cdot\vr{x})_{S\cup T}
+\leqslant \vr{b}_{S\cup T} \ .
+\]
+\end{proof}
+%
+\fixed{
+For every $T\subseteqfin\A\setminus S$,
+applying the transformation $\cU \mapsto \cU_{S\cup T}$ to the orbit-finite linear program $\transpose{\cU}$ we get the finite linear program $\transpose{\cU_{S\cup T}}$:
+\[
+\transpose{\cU_{S\cup T}}\quad :\quad
+\lpMatDual{\vr{A}_{{S\cup T}}}{\vr{b}_{{S\cup T}}}{\vr{c}_{{S\cup T}}}{\vr{v}}{B_{{S\cup T}}}{C_{{S\cup T}}}
+\]
+}
+%
+\begin{remark}\label{rem:rest tr}
+The linear program $\transpose{\cU_{S\cup T}}$ is the dual of the linear program $\cU_{S\cup T}$.
+In other words,
+the linear programs $\transpose{(\cU_{S\cup T})}$ and $(\transpose{\cU})_{S\cup T}$ are exactly the same.
+Hence we can write $\transpose{\cU_{S\cup T}}$ without any confusion.
+\end{remark}
+%
+The following lemma can be proven similarly to \Cref{lem:restr sol}.
+%
+\begin{lemma}\label{lem:restr sol dual}
+Let $\vr{y}$ be a solution of $\transpose{\cU}$ supported by $S\cup T$ for some $T\subseteqfin\A\setminus S$.
+Then $\vr{y}_{S\cup T}$ is a solution of $\transpose{\cU_{S\cup T}}$ with
+$\transpose{\vr{b}}\cdot\vr{y} = \transpose{\vr{b}_{S\cup T}}\cdot\vr{y}_{S\cup T}$.
+\end{lemma}
+%
+We now finish the proof of \Cref{thm:weak o.f. duality} using the above lemmas.
+
+To prove that the optimum of $\cU$ is dominated by the optimum of $\transpose{\cU}$,
+it is sufficient to show that for any pair of vectors
+${(\vr{x},\vr{y})\in \lin{C} \times \lin{B}}$ such that $\vr{x}$ and $\vr{y}$ are solutions of $\cU$ and $\transpose{\cU}$, respectively,
+we have $\transpose{\vr{c}}\cdot\vr{x}\leqslant \transpose{\vr{b}}\cdot\vr{y}$.
+Fix such a pair of vectors ${(\vr{x},\vr{y})\in \lin{C}\times\lin{B}}$.
+Let
+\[
+T = (\supp{\vr{x}} \cup \supp{\vr{y}})\setminus S \ .
+\]
+Then using \Cref{lem:restr sol,lem:restr sol dual} we get that $\vr{x}_{S\cup T}$ and $\vr{y}_{S\cup T}$ are solutions of $\cU_{S\cup T}$ and $\transpose{\cU_{S\cup T}}$, respectively,
+and that
+$\transpose{\vr{c}}\cdot\vr{x} = \transpose{\vr{c}_{S\cup T}}\cdot\vr{x}_{S\cup T}$ and 
+$\transpose{\vr{b}}\cdot\vr{y} = \transpose{\vr{b}_{S\cup T}}\cdot\vr{y}_{S\cup T}$.
+But $(\cU_{S\cup T},\transpose{\cU_{S\cup T}})$ is a pair of finite linear programs.
+Hence using weak duality for finite linear programs (\cite[page 435]{strang2005})
+we get
+\[
+\transpose{\vr{c}}\cdot\vr{x} = \transpose{\vr{c}_{S\cup T}}\cdot\vr{x}_{S\cup T}
+\leqslant
+\transpose{\vr{b}_{S\cup T}}\cdot\vr{y}_{S\cup T} = \transpose{\vr{b}}\cdot\vr{y}
+\]
+which finishes the proof.
+\qed{}
+%
+%\subsection*{Proof of \Cref{thm:weak o.f. duality}}
+%%
+%\fixed{Let $B$ and $C$ be two arbitrary orbit-finite sets}.
+%Consider a primal-dual pair of orbit-finite linear programs
+%%
+%\[
+%\primalAbc \quad\quad\quad \dualAbc
+%\]
+%%
+%where $\vr{A}\in\lin{B\times C}$, $\vr{b}\in\lin{B}$ and $\vr{c}\in\lin{C}$.
+%To prove that the optimum of the primal is dominated by the optimum of the dual,
+%it is sufficient to show that for any pair of vectors
+%${(\vr{x},\vr{y})\in \lin{C} \times \lin{B}}$ such that:
+%\begin{enumerate}
+%\item $\vr{x}\geqslant\vr{0}$ and $\vr{y}\geqslant\vr{0}$,
+%\item the products $\transpose{\vr{c}}\cdot\vr{x}$, $\vr{A}\cdot\vr{x}$,
+%                   $\transpose{\vr{b}}\cdot\vr{y}$ and
+%                   $\transpose{\vr{A}}\cdot\vr{y}$ are all well defined, and
+%\item $\vr{A}\cdot\vr{x} \leqslant \vr{b}$ and
+%      $\transpose{\vr{A}}\cdot\vr{y} \geqslant \vr{c}$,           
+%\end{enumerate}
+%we have $\transpose{\vr{c}}\cdot\vr{x}\leqslant \transpose{\vr{b}}\cdot\vr{y}$.
+%Fix such a pair of vectors ${(\vr{x},\vr{y})\in \lin{C}\times\lin{B}}$.
+%If both the products
+%$\transpose{\vr{y}}\cdot(\vr{A}\cdot\vr{x})$ and
+%$(\transpose{\vr{y}}\cdot\vr{A})\cdot\vr{x}$ are well-defined then they are equal.
+%In this case,
+%we can replicate the proof of weak duality for finite linear programs
+%(\cite[page 435]{strang2005}) and conclude
+%\begin{equation}\label{eq:weak duality proof}
+%           \transpose{\vr{c}}\cdot \vr{x}
+%\leqslant (\transpose{\vr{y}}\cdot \vr{A})\cdot\vr{x}
+%=          \transpose{\vr{y}}\cdot(\vr{A} \cdot\vr{x})
+%\leqslant  \transpose{\vr{y}}\cdot\vr{b} \ .
+%\end{equation}
+%Unfortunately, the products
+%$\transpose{\vr{y}}\cdot(\vr{A}\cdot\vr{x})$ and
+%$(\transpose{\vr{y}}\cdot\vr{A})\cdot\vr{x}$ may not be well-defined even in very simple cases
+%(for example, consider $B = C = \A$, $\vr{A} = \iden_{\A}$, $\vr{b} = \vr{c} = \zerovec$ and $\vr{x} = \vr{y} = \idvec{\A}$).
+%So we need to be more careful.
+%
+%The matrix $\vr{A}$ and the vectors $\vr{b}$, $\vr{c}$, $\vr{x}$ and $\vr{y}$ are all finitely supported.
+%Let $S\subseteq \A$ be the union of their supports
+%\[
+%S = \supp{\vr{A}}\cup\supp{\vr{b}}\cup\supp{\vr{c}}
+%\cup\supp{\vr{x}}\cup\supp{\vr{y}} \ .
+%\]
+%Then, $S$ supports all of $\vr{A}$, $\vr{b}$, $\vr{c}$, $\vr{x}$ and $\vr{y}$.
+%Let $B_S\subseteq B$ and $C_S\subseteq C$ be the subsets of elements of respectively $B$ and $C$ which are supported by $S$:
+%\[
+%B_S = \setof{b\in B}{\supp{b}\subseteq S}\qquad
+%C_S = \setof{c\in C}{\supp{c}\subseteq S} \ .
+%\]
+%\ref{lem:supp count} implies that $B_S$ and $C_S$ are both finite.
+%Let $\vr{A}_S\in\lin{B_S\times C_S}$, $\vr{b}_S\in\lin{B_S}$, $\vr{c}_S\in\lin{C_S}$, $\vr{x}_S\in\lin{C_S}$ and $\vr{y}_S\in\lin{B_S}$ be the respective restrictions of
+%$\vr{A}$, $\vr{b}$, $\vr{c}$, $\vr{x}$ and $\vr{y}$.
+%\Cref{lem:inner product fin} implies
+%\begin{equation}\label{eq:finite approx of obj}
+%\transpose{\vr{c}}  \cdot\vr{x} =
+%\transpose{\vr{c}_S}\cdot\vr{x}_S
+%\quad\text{and}\quad
+%\transpose{\vr{b}}  \cdot\vr{y} =
+%\transpose{\vr{b}_S}\cdot\vr{y}_S \ .
+%\end{equation}
+%Hence, it is enough to show
+%$\transpose{\vr{c}_S}\cdot\vr{x}_S\leqslant\transpose{\vr{b}_S}\cdot\vr{y}_S$.
+%This will follow from the next two claims.
+%\begin{claim}\label{clm:A x b S}
+%$\vr{A}_S \cdot \vr{x}_S \leqslant \vr{b}_s$.
+%\end{claim}
+%%
+%\begin{claim}\label{clm:A y c S}
+%$\transpose{\vr{A}_S} \cdot \vr{y}_S \geqslant \vr{c}_s$.
+%\end{claim}
+%%
+%\noindent
+%Before giving the proofs we show how these claims imply 
+%$\transpose{\vr{c}_S}\cdot\vr{x}_S\leqslant\transpose{\vr{b}_S}\cdot\vr{y}_S$.
+%The vectors $\vr{x}$ and $\vr{y}$ are both non-negative.
+%Hence, their restrictions $\vr{x}_S$ and $\vr{y}_S$ are also non-negative.
+%The matrix $\vr{A}_S$ and the vectors $\vr{b}_S$, $\vr{c}_S$, $\vr{x}_S$ and $\vr{y}_S$ are all finite dimensional.
+%Hence, the products $ \transpose{\vr{c}_S}\cdot \vr{x}_S$, $(\transpose{\vr{y}_S}\cdot \vr{A}_S)\cdot\vr{x}_S$, $\transpose{\vr{y}_S}\cdot(\vr{A}_S \cdot\vr{x}_S)$ and $ \transpose{\vr{y}_S}\cdot\vr{b}_S$ are all well-defined.
+%Using non-negativity of $\vr{x}_S$ and $\vr{y}_S$, and \Cref{clm:A x b S,clm:A y c S} we conclude
+%\[
+%               \transpose{\vr{c}_S}\cdot \vr{x}_S
+%\leqslant (\transpose{\vr{y}_S}\cdot \vr{A}_S)\cdot\vr{x}_S
+%            =  \transpose{\vr{y}_S}\cdot(\vr{A}_S \cdot\vr{x}_S)
+%\leqslant  \transpose{\vr{y}_S}\cdot\vr{b}_S \ .
+%\]
+%%
+%\noindent
+%Now we prove the claims.
+%The proof of the two claims are similar,
+%so we concentrate on the first claim only.
+%%
+%\begin{proof}[Proof of \Cref{clm:A x b S}]
+%Pick arbitrary $b\in B_S$.
+%We show
+%\begin{equation}\label{eq:clm:A x b S 1}
+%(\vr{A}_S\cdot\vr{x}_S)(b) \leqslant \vr{b}_S(b) \ .
+%\end{equation}
+%Since $\vr{b}_S$ is a restriction of $\vr{b}$,
+%\begin{equation}\label{eq:clm:A x b S 2}
+%\vr{b}_S(b) = \vr{b}(b) \ .
+%\end{equation}
+%The vector $\vr{x}$ satisfies $\vr{A}\cdot\vr{x}\leqslant\vr{b}$.
+%Hence,
+%\begin{equation}\label{eq:clm:A x b S 3}
+%(\vr{A}\cdot\vr{x})(b) \leqslant \vr{b}(b) \ .
+%\end{equation}
+%By definition of matrix multplication
+%\begin{equation}\label{eq:clm:A x b S 4}
+%(\vr{A}\cdot\vr{x})(b) = \vr{A}(b,-)\cdot\vr{x} \ .
+%\end{equation}
+%The set $S$ supports both $b$ and $\vr{A}$.
+%Using \ref{cor:mat prod fin} we can write
+%\begin{equation}\label{eq:clm:A x b S 5}
+% \vr{A}(b,-)\cdot\vr{x} = \sum_{c\in C_S} \vr{A}(b,c)\cdot\vr{x}(c)
+% = \vr{A}_S(b,-)\cdot\vr{x}_S \ ,
+%\end{equation}
+%and by definition of $\vr{A}_S$ and $\vr{x}_S$ we can rewrite the latter term as
+%\begin{equation}\label{eq:clm:A x b S 6}
+%\vr{A}_S(b,-)\cdot\vr{x}_S
+%= (\vr{A}_S\cdot\vr{x}_S)(b) \ .
+%\end{equation}
+%We get \eqref{eq:clm:A x b S 1} as a consequence of
+%\eqref{eq:clm:A x b S 2}-\eqref{eq:clm:A x b S 6}
+%\end{proof}
+%%
+\section{Counterexample to strong duality}\label{sec:lost}
+%
+In this section we show strong duality does not hold for orbit-finite linear programs by giving a counterexample.
+We construct a primal-dual pair of orbit-finite linear programs such that the optimum of the primal system is finite but the optimum of the dual system is not.
+Let $B = C = \A\uplus\{\star\}$.
+Consider the linear program
+%
+\begin{equation}\label{eq:primal lost pic}
+\begin{aligned}
+&
+\hspace{120pt}\indexcolor{\A} \qquad\quad\indexcolor{\star}
+\\
+&
+\lpMax{
+$
+\quad\ \ \ \
+\begin{bmatrix}
+\quad 1 & 1 & \cdots & \vline\ \ \ \, \, 0 \, \, &
+\end{bmatrix}
+\cdot \vr{x}
+$
+}
+{
+$\begin{matrix}
+\\
+&\begin{matrix}
+\\
+\indexcolor{\A} \\
+\\
+\indexcolor{\star} \\
+\end{matrix}
+\begin{bmatrix}
+\begin{matrix}
+& 1 & & \\
+& & 1 & \\
+& & & \ddots & \\
+\hline
+& 0 & 0 & \dots \\
+\end{matrix}
+\vline
+\begin{matrix}
+& 1 \\
+& 1 \\
+& \vdots \\
+\hline
+& -1 \\
+\end{matrix}
+\end{bmatrix}
+\cdot
+\vr{x}
+\leqslant
+\begin{bmatrix}
+\ 0\ \ \\
+\ 0\ \ \\
+\vdots \\
+\hline
+1
+\end{bmatrix}\\
+\end{matrix}
+$ \\ \\
+& \quad $\vr{x}\geqslant\vr{0}$ \\
+& \quad $\vr{x}\in\lin{C}$
+}
+\end{aligned}
+\end{equation}
+% end of mbox to keep the index and the system together
+%
+Written explicitly, this is the linear program
+\[
+\primalAbc
+\]
+where $\vr{A}\in\lin{B{\times}C}$, $\vr{b}\in\lin{B}$ and $\vr{c}\in\lin{C}$ are defined as
+%
+\[
+\begin{tabular}{l l r}
+$\vr{A}(\a,\a)=1$, for $\a\in \A$        &$\phantom{aaaaaaaaaa}$&\\
+$\vr{A}(\a,\b)=0$, for $\a\neq\b \in \A$ &&
+$\vr{b} = \idvec{\{\star\}} \in \lin{B}$   \\
+$\vr{A}(\star,\a)=0$, for $\a\in \A$     & \\
+$\vr{A}(\a,\star)=1$, for $\a\in \A$     &&
+$\vr{c} = \idvec{\A} \in \lin{C}$        \\
+$\vr{A}(\star,\star)= -1$
+\end{tabular}
+\]
+%
+It is clear from the definitions that $\vr{A}$, $\vr{b}$ and $\vr{c}$ are all equivariant.
+The dual linear program of \eqref{eq:primal lost pic} is the linear program
+\begin{equation}\label{eq:dual lost pic}
+\begin{aligned}
+&
+\indexcolor{\A \qquad\quad\star\qquad\qquad\qquad\quad}\\
+&
+\lpMin{
+$
+\quad\ \ \ \
+\begin{bmatrix}
+\quad 0 & 0 & \cdots & \vline\ \ \ \, \, 1 \, \, &
+\end{bmatrix}
+\cdot \vr{y}
+$
+}
+{
+$\begin{matrix}
+\\
+&\begin{matrix}
+\\
+\indexcolor{\A} \\
+\\
+\indexcolor{\star} \\
+\end{matrix}
+\begin{bmatrix}
+\begin{matrix}
+& 1 & & \\
+& & 1 & \\
+& & & \ddots & \\
+\hline
+& 1 & 1 & \dots \\
+\end{matrix}
+\vline
+\begin{matrix}
+& 0 \\
+& 0 \\
+& \vdots \\
+\hline
+& -1 \\
+\end{matrix}
+\end{bmatrix}
+\cdot
+\vr{y}
+\geqslant
+\begin{bmatrix}
+\ 1\ \ \\
+\ 1\ \ \\
+\vdots \\
+\hline
+0
+\end{bmatrix}\\
+\end{matrix}
+$ \\ \\
+& \quad $\vr{y}\geqslant\vr{0}$ \\
+& \quad $\vr{y}\in\lin{B}$
+}
+\end{aligned}
+\end{equation}
+%
+The following lemma imply that the pair (\eqref{eq:primal lost pic},\eqref{eq:dual lost pic}) does not satisfy strong duality:
+%
+\begin{lemma}\label{lem:primal opt is zero}
+The optimum of the linear program \eqref{eq:primal lost pic} is $0$.
+\end{lemma}
+%
+\begin{lemma}\label{lem:dual is infeasible}
+The optimum of the linear program \eqref{eq:dual lost pic} is $+\infty$,
+i.e.\ it is infeasible.
+\end{lemma}
+%
+\begin{proof}[Proof of \Cref{lem:primal opt is zero}]
+The vector $\zerovec\in\lin{C}$ satisfies the system of constraints in \eqref{eq:primal lost pic} since
+\[
+\vr{A}\cdot\zerovec = \zerovec\leqslant \vr{b} \ .
+%\quad\text{and}\quad
+%\zerovec \geqslant \vr{0}
+\]
+Moreover, $\transpose{\vr{c}}\cdot\zerovec = 0$.
+Hence, the optimum of \eqref{eq:primal lost pic} is at least $0$.
+We claim that $\vr{0}$ is the only solution of the system of constraints in \eqref{eq:primal lost pic}.
+Consider arbitrary $\vr{x}\in\lin{C}$ which satisfies
+\[
+\vr{A}\cdot\vr{x}\leqslant\vr{b}
+\quad\text{and}\quad
+\vr{x} \geqslant \vr{0} \ .
+\]
+Then, for any $\a\in\A$
+\[
+\vr{x}(\a) + \vr{x}(\star) \leqslant 0 \ .
+\]
+Since $\vr{x}\geqslant\vr{0}$,
+this can only be true if
+$\vr{x}(\a) = 0$ for all $\a\in\A$ and $\vr{x}(\star) = 0$,
+equivalently, when $\vr{x} = \zerovec$.
+\end{proof}
+%
+\begin{proof}[Proof of \Cref{lem:dual is infeasible}]
+%
+We argue that the system of constraints
+$\transpose{\vr{A}}\cdot\vr{y}\geqslant\vr{c}$ is not satisfiable.
+Towards arriving at a contradiction,
+consider an arbitrary vector $\vr{y}\in\lin{B}$ such that $\transpose{\vr{A}}\cdot\vr{y}$ is well-defined and $\transpose{\vr{A}}\cdot\vr{y} \geqslant\vr{c}$.
+From the definition of $\vr{A}$ we get
+$(\transpose{\vr{A}}\cdot\vr{y})(\a) = \vr{y}(\a)$
+for $\a\in\A$, and
+\[
+(\transpose{\vr{A}}\cdot\vr{y})(\star) =
+\left(\sum_{\a\in\A}\vr{y}(\a)\right) - \vr{y}(\star) \ .
+\] 
+The condition $\transpose{\vr{A}}\cdot\vr{y}\geqslant\vr{c}$ implies $\vr{y}(\a)\geqslant 1$ for every $\a\in\A$.
+But then, the sum $\sum_{\a\in\A}\vr{y}(\a)$ is not well-defined.
+This implies that $\transpose{\vr{A}}\cdot\vr{y}$ is not well defined,
+and we arrive at a contradiction.
+\end{proof}
+%
+\begin{remark}
+The above counterexample also works even if we relax the constraints by dropping the conditions $\vr{x}\in\lin{C}$ and $\vr{y}\in\lin{B}$ in the primal and the dual system (stated differently, we allow their solutions to be orbit-infinite), respectively.
+% are correct even if we relax \eqref{eq:primal lost pic} and \eqref{eq:dual lost pic} by removing the domain constriants $\vr{x}\in\lin{C}$ and $\vr{y}\in\lin{B}$,
+% since the above proofs will still work.
+\end{remark}
+%
+\begin{remark}
+For a primal-dual pair of linear program, their \defindS{duality gap} is the difference between the optimums of the primal and the dual.
+The duality gap between the primal-dual pairs of linear programs defined in this section is infinite.
+We do not know whether there exists a primal-dual pair of orbit-finite linear programs where the duality gap is finite and non-zero.
+\end{remark}
+%
+\begin{remark}\label{rem:weak dual o.f.}
+Weak-duality does not hold for infinite linear programs in general.
+For a counterexample, see \cite[Section 3]{dualinf}.
+\end{remark}
+%
+\section{Duality for orbit-infinite linear programs}\label{sec:dual inf}
+%
+\fixed{In this section,
+exceptionally,
+we do not assume the linear programs and their solutions to be orbit-finite.}
+%
+\begin{definition}
+A matrix is called \defind{column-finite}{column-finite !matrix} if its column vectors are finite (i.e.\ non-zero only on finitely many co-ordinates).
+Symmetrically it is called \defind{row-finite}{column-finite !matrix} if its row vectors are finite.
+\end{definition}
+%
+\begin{definition}\label{def:row col fin}
+A (not necessarily orbit-finite) linear program
+\[
+\lpMaxMin{$\transpose{\vr{c}}\cdot \vr{x}$}{
+  $\vr{A} \cdot \vr{x} \leqslant \vr{b}$ \\
+& $\vr{x}\geqslant\vr{0}$. \\}
+\]
+is called \defind{column-finite}{column-finite linear program} if the matrix $\vr{A}$ is column-finite and $\vr{b}$ is a finite vector.
+Symmetrically, it is called \defind{row-finite}{row-finite linear program} if the matrix $\vr{A}$ is row-finite and $\vr{c}$ is a finite vector.
+\end{definition}
+%
+One can try to remedy the fact that weak duality does not hold for infinite linear programs (\Cref{rem:weak dual o.f.}) by adding extra assumptions.
+As we saw in \Cref{sec:weak}, orbit-finiteness is such an assumption.
+Another possibility is to assume that the primal linear program is column-finite and restrict the solutions to be finite (i.e.\ non-zero only on finitely many variables) as well.
+\footnote{Note that column-finiteness of the system does not enforce finiteness of the solutions.}
+This means that the primal is of the form
+%
+\begin{equation}\label{eq:gen weak primal}
+\lpMax{$\transpose{\vr{c}}\cdot \vr{x}$}{
+  $\vr{A} \cdot \vr{x} \leqslant \vr{b}$ \\
+& $\vr{x}\geqslant\vr{0}$ \\
+& $\vr{x}$ is finite.}
+\end{equation}
+%
+where $\vr{A}$ is column-finite, $\vr{b}$ is a finite vector
+(as mentioned before, we do not assume $\vr{A}$, $\vr{b}$ and $\vr{c}$ to be orbit-finite).
+Then the dual becomes row-finite
+\begin{equation}\label{eq:gen weak dual}
+\lpMin{$\transpose{\vr{b}}\cdot \vr{y}$}{
+  $\transpose{\vr{A}} \cdot \vr{y} \geqslant \vr{c}$ \\
+& $\vr{y}\geqslant\vr{0}$ \\
+& $\vr{y}:B\to\R$}
+\end{equation}
+%
+Multiplication with column-finite matrices is always well-defined, and the product of two column-finite matrices is also column-finite. 
+%
+\begin{lemma}\label{cor:col fin prod}
+%Let $\vr{A}\in\lin{B{\times} C}$ be a column-finite matrix,
+%$D$ be an orbit-finite set.
+%For any matrix $\vr{B} : (D{\times} B)\to\R$ the product $\vr{B}\cdot\vr{A}$ is well-defined.
+%Moreover, if $\vr{B}$ is column-finite then,
+%$\vr{B}\cdot\vr{A}$ is also column-finite.
+For matrices $\vr{X}:(B{\times}C)\to \R$ and $\vr{Y} : (C{\times} D)\to\R$,
+if $\vr{Y}$ is column-finite then the product $\vr{X}\cdot\vr{Y}$ is well-defined,
+and if $\vr{X}$ is also column-finite then $\vr{X}\cdot\vr{Y}$ is also column-finite.
+\end{lemma}
+%
+\begin{proof}
+%[Proof of Corollary \Cref{cor:col fin prod}]
+%
+First we prove $\vr{X}\cdot\vr{Y}$ is well-defined when $\vr{Y}$ is column-finite.
+Pick arbitrary ${(b,d)\in (B{\times} D)}$.
+Then $(\vr{X}\cdot\vr{Y})(b,d) = \vr{X}(b,-)\cdot\vr{Y}(-,d)$.
+Since $\vr{Y}$ is column-finite, $\vr{Y}(-,d)$ is a finite vector.
+Hence $\vr{X}(b,-)\cdot\vr{Y}(-,d)$ is well-defined.
+
+Now we show $\vr{X}\cdot\vr{Y}$ is column-finite assuming both $\vr{X}$ and $\vr{Y}$ are column-finite.
+Pick arbitrary $d\in D$.
+We show $(\vr{X}\cdot\vr{Y})(-,d)$ is finite.
+Let $C'\subseteq C$ be the (necessarily finite) subset of elements of $c\in C$ such that $\vr{Y}(c,d)\neq 0$.
+\[
+C' = \setof{c\in C}{\vr{Y}(c,d)\neq 0}
+\]
+For every $c\in C'$ let $B_c$ be the subset of elements of $b\in B$ such that $\vr{X}(b,c)\neq 0$.
+Since $\vr{X}$ is column-finite, $B_c$ is finite for every $c\in C'$.
+Let $B' = \cup_{c\in C'} B_c$.
+Since $C'$ is finite and $B_c$ is finite for every $c\in B'$,
+the set $B'$ is also finite.
+We claim $(\vr{X}\cdot\vr{Y})(b,d) \neq 0$ only if $b\in B'$.
+Pick arbitrary $b\in (B\setminus B')$.
+Since $\vr{Y}(c,d) \neq 0$ only if $c\in C'$,
+we have
+\[
+(\vr{X}\cdot\vr{Y})(b,d) =
+\sum_{c\in C} \vr{X}(b,c)\cdot\vr{Y}(c,d) =
+\sum_{c\in C'} \vr{X}(b,c)\cdot\vr{Y}(c,d)\ .
+\]
+And for $c\in C'$ we have $\vr{X}(b,c)\neq 0$ only if $b\in B'$.
+Hence,
+\[
+\sum_{c\in C'} \vr{X}(b,c)\cdot\vr{Y}(c,d) = 0\ .
+\]
+Combining the above equations we get
+\[
+(\vr{X}\cdot\vr{Y})(b,d) = 0\ .
+\]
+Thus $(\vr{X}\cdot\vr{Y})(b,d) \neq 0$ only if $b\in B'$,
+which implies finiteness of $(\vr{X}\cdot\vr{Y})(-,d)$.
+\end{proof}
+%
+\begin{remark}
+We emphasize that \Cref{cor:col fin prod} does not assume the matrices to be orbit-finite.
+For a detailed discussion on column-finite matrices outside the orbit-finite setting see \cite{cooke2014}.
+We acknowledge Lorenzo Clemente for pointing out that \Cref{cor:col fin prod} holds without the orbit-finiteness assumption,
+and also for making us aware of the reference.
+\end{remark}
+%
+As a consequence of the above lemma, the proof of weak-duality for finite linear programs also extends to this setting:
+for every solutions $\vr{x}$ of \eqref{eq:gen weak primal} and $\vr{y}$ of \eqref{eq:gen weak dual}, we have
+\[
+\transpose{\vr{c}}\cdot\vr{x}
+\leqslant
+(\transpose{\vr{y}}\cdot\vr{A})\cdot\vr{x}
+=
+\transpose{\vr{y}}\cdot(\vr{A}\cdot\vr{x})
+\leqslant
+\transpose{\vr{y}}\cdot\vr{b} \ ,
+\]
+since the terms and subterms appearing in this sequence of equations and inequalities are all well-defined.
+This implies that the optimum of the primal system \eqref{eq:gen weak primal} cannot be bigger that the optimum of the dual system \eqref{eq:gen weak dual}.
+%
+
+However, like orbit-finiteness, restricting the primal system to be column-finite and its solutions to be finite does not guarantee strong duality,
+as described by the following example.
+%
+\begin{example}
+Let $<$ be a dense linear order on $\A$.
+Let $\star$ be an element not in $\A$.
+Let $B = \set{\star}\uplus\A$ and $C = \binom{\A}{2}$.
+Consider the linear program
+%
+\begin{equation}\label{eq:not strong primal}
+\lpMax{$\displaystyle\sum_{\set{\a,\b}\in C} \vr{x}(\set{\a,\b})$}
+{$
+\displaystyle\sum_{\set{\a,\b}\in C} \vr{x}(\set{\a,\b})
+\leqslant 1 \hspace{100pt}(\star)
+$ \\
+& $\displaystyle\sum_{\b > \a} \vr{x}(\set{\a,\b}) -
+   \displaystyle\sum_{\b < \a} \vr{x}(\set{\a,\b})\leqslant 0\quad\qquad(\a\in\A)$ \\
+& $\vr{x}\geqslant \vr{0}$ \\
+& $\vr{x}\in\flin{C}$.   
+}
+\end{equation}
+%
+Considering this to be the primal system,
+the dual system becomes
+\begin{equation}\label{eq:not strong dual}
+\lpMin{$\vr{y}(\star)$
+}{$\vr{y}(\star) + \vr{y}(\a) - \vr{y}(\b)
+\geqslant 1\quad\qquad(\set{\a < \b}\in C)$ \\
+& $\vr{y} \geqslant \vr{0}$ \\
+& $\vr{y} : B\to\R$ .
+}
+\end{equation}
+%
+The dual is row-finite, therefore, the primal is column-finite.
+%Note that the primal system is column-finite since only one inequality has non-zero RHS and any variable $\vr{x}(\set{\a,\b})$ appears in only the following three inequalities,
+%\begin{align*}
+%\sum_{\set{\a,\b}\in C} \vr{x}(\set{\a,\b})
+%\leqslant 1 \\
+%\sum_{\g > \a} \vr{x}(\set{\a,\g}) -
+%\sum_{\g < \a} \vr{x}(\set{\a,\g})\leqslant 0 &\text{, and} \\
+%\sum_{\g > \b} \vr{x}(\set{\b,\g}) -
+%\sum_{\g < \b} \vr{x}(\set{\b,\g})\leqslant 0 & .
+%\end{align*}
+%
+The following two claims says that the pair (\eqref{eq:not strong primal},\eqref{eq:not strong dual}) violates strong duality.
+%
+\begin{claim}\label{clm:ord prim zero}
+The optimum of the the primal system is $0$.
+\end{claim}
+%
+\begin{claim}\label{clm:ord dual one}
+The optimum of the dual system is $1$.
+\end{claim}
+%
+We now prove the claims.
+%
+\begin{claimproof}[Proof of \Cref{clm:ord prim zero}]
+The vector $\vr{0}$ is a solution to the primal system,
+hence the optimum is at least $0$.
+The optimum is equal to $0$ since it is the only solution to the primal system.
+To see this,
+pick any non-negative finite vector $\vr{v} : C\to\R$.
+Let $S$ be the union of all sets $\set{\a,\b}$ such that $\vr{v}(\set{\a,\b})$ is non-zero.
+Since $\vr{v}$ is finite and not equal to $\vr{0}$ the set $S$ is finite and non-empty.
+Let $\a_0$ be the smallest element in $S$.
+Then
+\[
+\displaystyle\sum_{\b > \a_0} \vr{v}(\set{\a,\b}) -
+\displaystyle\sum_{\b < \a_0} \vr{v}(\set{\a,\b})
+= \displaystyle\sum_{\b > \a_0} \vr{v}(\set{\a,\b}) > 0
+\]
+which means $\vr{v}$ cannot be a solution of the primal system.
+\end{claimproof}
+%
+\begin{claimproof}[Proof of \Cref{clm:ord dual one}]
+The vector $\idvec{\star} : B\to\R$ is a solution to the dual system.
+Hence the optimum is at most $1$.
+It is equal to $1$ since for any solution $\vr{z} : B\to\R$ of the dual system, we have $\vr{z}(\star) \geqslant 1$.
+To see this, pick any solution $\vr{z} : B\to\R$ of the dual system.
+Pick $\a < \b \in \A$.
+Since we assumed $\A$ is dense linear order for any $n$ there exists $n$ atoms $\a < \a_1 < \dots < \a_n < \b$ between $\a$ and $\b$.
+Putting $\a_0 = \a$ and $\a_{n+1} = \b$ we get
+\[
+\vr{z}(\a) - \vr{z}(\b) =
+\sum_{i = 0}^n\vr{z}(\a_i) - \vr{z}(\a_{i+1}) \geqslant n\cdot(1 - \vr{z}(\star)) \ .
+\]
+This cannot be true for all $n\in\N$ unless $\vr{z}(\star) \geqslant 1$.
+%
+\end{claimproof}
+%
+\end{example} 
+%
+Interestingly, assuming both orbit-finiteness and column-finiteness gives us strong duality (\Cref{thm:col row duality}).
+\Cref{sec:regained,sec:strong proof,sec:orbsum,sec:orbdis,sec:orbrow,sec:orbsmt,sec:orbres} are devoted to proving this theorem.
+%
+%%Our investigation on the extension of the symmetric version to orbit-finite setting will help us to investigate the extension of the asymmetric version as well.
+%%%
+%%\begin{question}\label{ques:asym duality}
+%%Given equivariant orbit-finite sets $B$ and $C$,
+%%$B\times C$ dimensional matrix $\vr{A}$, vectors $\vr{b} \in \lin{B}$ and $\vr{c}\in \lin{C}$,
+%%all equivariant,
+%%is the following true?
+%%\begin{equation}
+%%\begin{aligned}
+%%& &\sup\setof{\transpose{\vr{c}} \cdot \vr{x}}{
+%%\vr{x}\in\lin{C},\
+%%\vr{A}\cdot \vr{x} \leqslant \vr{b},\
+%%\text{$\vr{A}\cdot \vr{x}$ and $\transpose{\vr{c}} \cdot \vr{x}$ are well-defined} } \\
+%%& =
+%%& \inf\setof{\transpose{\vr{y}} \cdot \vr{b}}{
+%%\vr{y}\in\lin{B},\
+%%\transpose{\vr{y}}\cdot \vr{A} = \transpose{\vr{c}},\
+%%\vr{y}\geqslant\vr{0}
+%%,\ \text{$\transpose{\vr{y}}\cdot \vr{A}$ and $\transpose{\vr{y}} \cdot \vr{b}$ are well-defined}}
+%%\end{aligned}
+%%\end{equation}
+%%\end{question}
+%%%
+%%We will show as in the case of the symmetric version of duality,
+%%the asymmetric version does not hold in the orbit-finite setting but holds between column-finite and row-finite linear programs.
+%%\subsection{Extending the counterexample}
+%%Recall the definition of $\vr{A}$, $\vr{b}$ and $\vr{c}$ in \Cref{sec:lost}.
+%%We will show that
+%%%
+%%\begin{equation}\label{eq:asym counter ex}
+%%\begin{aligned}
+%%& &\sup\setof{\transpose{\vr{c}} \cdot \vr{x}}{
+%%\vr{x}\in\lin{C},\
+%%\vr{A}\cdot \vr{x} \leqslant \vr{b},\
+%%\text{$\vr{A}\cdot \vr{x}$ and $\transpose{\vr{c}} \cdot \vr{x}$ are well-defined} } \\
+%%& \neq
+%%& \inf\setof{\transpose{\vr{y}} \cdot \vr{b}}{
+%%\vr{y}\in\lin{B},\
+%%\transpose{\vr{y}}\cdot \vr{A} = \transpose{\vr{c}},\
+%%\vr{y}\geqslant\vr{0}
+%%,\ \text{$\transpose{\vr{y}}\cdot \vr{A}$ and $\transpose{\vr{y}} \cdot \vr{b}$ are well-defined}}
+%%\end{aligned}
+%%\end{equation}
+%%%
+%%We will show this by proving that both the primal and dual systems are unsatisfiable.
+%%The primal system is unsatisfiable due to the same argument as \Cref{sec:lost}.
+%%Towards unsatisfiability of the dual system notice that
+%%$\vr{A}(-,\star) \leqslant \vr{0}$.
+%%Which implies that $(\vr{A}\cdot\vr{y})(\star) \leqslant 0 < 1 = \vr{c}(\star)$ for all $\vr{y} \geq 0$.
+%%%This implies that the dual system is also not satisfiable.
+%%%
+%%\subsection{Extending the positive result}
+%%\begin{theorem}[Duality in orbit-finite linear programming, asymmetric version]\label{thm:duality asym}
+%%For any column-finite $B\times C$-matrix $\vr{A}$ and equivariant vectors $\vr{b}$ and $\vr{c}$ with appropriate dimensions,
+%%and such that
+%%\[
+%%\setof{\vr{A}(-,c)}{c \in \col(\vr{A})}
+%%\cup \{\vr{b}\}
+%%\subseteq \flin{\row(\vr{A})}
+%%\]
+%%we have the following equalities
+%%\begin{equation}\label{eq:asym dual 1}
+%%\begin{aligned}
+%%& &&\max\setof{\transpose{\vr{c}} \cdot \vr{x}}{\vr{x}\in\flin{C},\ \vr{A}\cdot \vr{x} \leqslant\vr{b}} \\
+%%& =
+%%&& \min\setof{\transpose{\vr{y}} \cdot \vr{b}}{
+%%\vr{y} : B\to\Q,\
+%%\transpose{\vr{y}}\cdot \vr{A} = \transpose{\vr{c}},
+%%\ \vr{y}\geqslant\vr{0}}
+%%\end{aligned}
+%%\end{equation}
+%%and
+%%\begin{equation}\label{eq:asym dual 2}
+%%\begin{aligned}
+%%& &&\max\setof{\transpose{\vr{c}} \cdot \vr{x}}{
+%%    \vr{x}\in\flin{C},\
+%%    \vr{A}\cdot \vr{x} = \vr{b},\
+%%    \vr{x} \geqslant \vr{0}} \\
+%%& =
+%%&& \min\setof{\transpose{\vr{y}} \cdot \vr{b}}{
+%%\vr{y} : B\to\Q,\
+%%\transpose{\vr{y}}\cdot \vr{A} \geqslant \transpose{\vr{c}}}
+%%\end{aligned}
+%%\end{equation}
+%%\end{theorem}
+%%%
+%%%
+%%\begin{proof}[Proof of \Cref{thm:duality asym}]
+%%We will prove \Cref{thm:duality asym} using \Cref{thm:duality}.
+%%The proof is almost a repetition of the classical proof of asymmetric duality using symmetric duality.
+%%
+%%Consider $\vr{A}$, $\vr{b}$ and $\vr{c}$ as in the statement of \Cref{thm:duality asym}. 
+%%We will prove (\Cref{eq:asym dual 1}).
+%%The proof of (\Cref{eq:asym dual 2}) is similar.
+%%Let $\vr{A}'$ and $\vr{c}'$ be the matrix and the vector
+%%\[
+%%\vr{A}' =
+%%\begin{bmatrix}
+%%\vr{A} \ \vline\ -\vr{A}
+%%\end{bmatrix}
+%%\qquad
+%%\vr{c}' =
+%%\begin{bmatrix}
+%%\vr{c} \\
+%%\hline -\vr{c}
+%%\end{bmatrix} \ .
+%%\]
+%%Then,
+%%\[
+%%\begin{aligned}
+%%& &&\max\setof{\transpose{\vr{c}} \cdot \vr{x}}{
+%%\vr{x}\in\flin{\col(\vr{A})},\
+%%\vr{A}\cdot \vr{x} \leqslant\vr{b}} \\
+%%& =
+%%&& \max\setof{\transpose{\vr{c}'} \cdot \vr{x}'}{
+%%\vr{x}'\in\flin{\col(\vr{A}')},\
+%%\vr{A}'\cdot \vr{x}' \leqslant\vr{b},\
+%%\vr{x}'\geqslant \vr{0}} \\
+%%&=
+%%&& \min\setof{\transpose{\vr{y}} \cdot \vr{b}}{
+%%\vr{y}\in\flin{\row(\vr{A}')},\ 
+%%\transpose{\vr{y}}\cdot \vr{A}'
+%%\geqslant\transpose{\vr{c}'},\
+%%\vr{y}\geqslant\vr{0}} \\
+%%&=
+%%&& \min\setof{\transpose{\vr{y}} \cdot \vr{b}}{
+%%\vr{y}\in\flin{\row(\vr{A})},\ 
+%%\transpose{\vr{y}}\cdot \vr{A}
+%%\geqslant\transpose{\vr{c}},\
+%%-\transpose{\vr{y}}\cdot \vr{A}
+%%\geqslant -\transpose{\vr{c}},\
+%%\vr{y}\geqslant\vr{0}} \\
+%%&=
+%%&& \min\setof{\transpose{\vr{y}} \cdot \vr{b}}{
+%%\vr{y}\in\flin{\row(\vr{A})},\ 
+%%\transpose{\vr{y}}\cdot \vr{A} = \transpose{\vr{c}}}
+%%\end{aligned}
+%%\]
+%%where the second equality follows from \Cref{thm:duality}.
+%%\end{proof}
+%%%
+%%\section{Farkas' Lemma}\label{sec:farkas}
+%%%
+%%The following theorem, known as the Farkas' Lemma is another important result in linear programming.
+%%%
+%%\begin{theorem}[Farkas' Lemma]\label{thm:farkas classical}
+%%For any $m,n\in\N$,
+%%matrix $A\in \Q^{m\times n}$
+%%and vector $b \in \Q^m$ the following are equivalent:
+%%\begin{enumerate}
+%%\item There is no vector $x\in\Q^n$ such that $x\geqslant \vr{0}$ and $A\cdot x = b$.
+%%\item There exists a vector $z\in\Q^m$ such that $\transpose{z}\cdot A \geqslant \vr{0}$ and $\transpose{z}\cdot b < 0$.
+%%\end{enumerate}
+%%\end{theorem}
+%%%
+%%Having settled the issue of duality in orbit-finite linear programming we now investigate whether Farkas' Lemma can be extended to the orbit-finite setting. 
+%%%
+%%\begin{question}\label{ques:farkas}
+%%Given an orbit-finite $B\times C$-matrix $\vr{A}$ and vector $\vr{b}\in\lin{B}$ are the following are the equivalent?
+%%%
+%%\begin{enumerate}
+%%\item There is no vector $\vr{x}\in\lin{C}$ such that $\vr{x}\geqslant \vr{0}$ and $\vr{A}\cdot \vr{x} = \vr{b}$.
+%%\item There exists a vector $\vr{z}\in\lin{B}$ such that $\transpose{\vr{z}}\cdot \vr{A} \geqslant \vr{0}$ and $\transpose{\vr{z}}\cdot \vr{b} < 0$.
+%%\end{enumerate}
+%%%
+%%\end{question}
+%%%
+%%We will show that as in the case for duality,
+%%Farkas' Lemma also does not extend to the orbit-finite setting, but can be regained if we restrict out attention to either column-finite or row-finite systems.
+%%%
+%%\subsection{Counterexample to Orbit-finite Farkas' Lemma}
+%%%
+%%Consider $B$, $C$, $\vr{A}$ and $\vr{b}$ as defined in \Cref{sec:lost}.
+%%We show the following:
+%%\begin{enumerate}
+%%\item There is no vector $\vr{x}\in\lin{C}$ such that $\vr{A}\cdot\vr{x} = \vr{b}$.
+%%\item There is no vector $\vr{z}\in\lin{B}$ such that $\transpose{\vr{z}}\cdot \vr{A} \geqslant \vr{0}$ and $\transpose{\vr{z}}\cdot \vr{b} < 0$.
+%%\end{enumerate}
+%%The first statement can be proven by adapting the proof of \Cref{lem:primal unsat} accordingly.
+%%Now we prove the second statement.
+%%Assume otherwise,
+%%i.e.\ there exists a vector $\vr{z}\in\lin{B}$ such that $\transpose{\vr{z}}\cdot \vr{A} \geqslant \vr{0}$ and $\transpose{\vr{z}}\cdot \vr{b} < 0$.
+%%Then, for every $\a\in\A$, we have $\vr{z}(\a)+\vr{z}(\star)\geqslant 0$.
+%%We also have $-\vr{z}(\star)\geqslant 0$.
+%%Combining the above we get that for every $\a\in\A$
+%%\[
+%%\vr{z}(\a) \geqslant -\vr{z}(\star) \geqslant 0
+%%\]
+%%But then
+%%\[
+%%\transpose{\vr{z}}\cdot\vr{b}
+%%=
+%%\sum_{\a\in\A} \vr{z}(\a) \geqslant 0
+%%\]
+%%and we arrive at a contradiction.
+%%%
+%%\subsection{Column-finite and Row-finite Farkas' Lemma}
+%%%
+%%As a corollary of \Cref{thm:duality} we will show the following.
+%%%
+%%\begin{theorem}[Column finite \farkas Lemma]
+%%%
+%%\label{thm:farkas col fin}
+%%For any orbit-finite column-finite $B\times C$-matrix $\vr{A}$ and vector $\vr{b}\in \flin{B}$,
+%%the following are equivalent.
+%%\begin{enumerate}
+%%\item There exists an vector $\vr{z} \in \lin{B}$ supported by $(\supp{\vr{A}}\cup\supp{\vr{b}})$
+%%such that
+%%\[
+%%\transpose{\vr{z}}\cdot\vr{A} \geqslant \transpose{\vr{0}},
+%%\text{ and }\
+%%\transpose{\vr{z}} \cdot \vr{b} < 0 \, .
+%%\]
+%%\item There exists $\vr{z} : B \to \Q$ such that
+%%\[
+%%\transpose{\vr{z}}\cdot\vr{A} \geqslant \transpose{\vr{0}},
+%%\text{ and }\
+%%\transpose{\vr{z}} \cdot \vr{b} < 0 \, .
+%%\]
+%%\item There is no vector $\vr{x} \in \flin{C}$ such that
+%%\[
+%%\vr{A}\cdot\vr{x} = \vr{b}
+%%\quad
+%%\text{and}
+%%\quad
+%%\vr{x} \geqslant 0 \, .
+%%\]
+%%\end{enumerate}
+%%\end{theorem}
+%%%
+%%\begin{theorem}[Row-finite \farkas Lemma]\label{thm:farkas row fin}
+%%For any orbit-finite row-finite $B\times C$-matrix $\vr{A}$ and vector $\vr{b}\in \lin{B}$,
+%%the following are equivalent.
+%%\begin{enumerate}
+%%\item There exists a vector $\vr{z} \in \flin{B}$ such that
+%%\[
+%%\transpose{\vr{z}}\cdot\vr{A} \geqslant \transpose{\vr{0}},
+%%\text{ and }\
+%%\transpose{\vr{z}} \cdot \vr{b} < 0 \, .
+%%\]
+%%\item There is no vector $\vr{x} : C \to \Q$ such that
+%%\[
+%%\vr{A}\cdot\vr{x} = \vr{b}
+%%\quad
+%%\text{and}
+%%\quad
+%%\vr{x} \geqslant 0
+%%\]
+%%\item There is no vector $\vr{x} \in \lin{C}$ supported by $(\supp{\vr{A}}\cup\supp{\vr{b}})$ such that
+%%\[
+%%\vr{A}\cdot\vr{x} = \vr{b}
+%%\quad
+%%\text{and}
+%%\quad
+%%\vr{x} \geqslant 0
+%%\]
+%%\end{enumerate}
+%%\end{theorem}
+%%%
+%%\Cref{thm:farkas col fin}(\Cref{thm:farkas row fin}) follows from \Cref{thm:duality} (\Cref{cor:duality swapped}) in the same way classical Farkas' lemma follows from classical duality
+%%(cf. \cite[proof of Theorem 3.5]{optbook}).
+%%Which is why we skip the proofs.
+%%\subsection*{Other versions of Farkas' lemma}
+%%%
+%%Farkas' lemma has several equivalent formulations
+%%(cf. \cite{perng17}),
+%%some (and maybe all) of which admits appropriate extension to the settings of column-finite and row-finite matrices.
+%%In fact,\Cref{thm:farkas col fin,thm:farkas row fin} in this draft are extensions of Theorem 5 in \cite{perng17}.
+%%Fortunately, most (and maybe all) of the proofs of equivalences also extend to these settings.
+%%It would be rather monotonous to list all such extensions and prove their equivalence one by one.
+%%Which is why we refrain from doing that.
+%%%
+%%\section{Open Questions}\label{sec:duality open}
+%%%
+%%In \Cref{sec:lost} we have shown that duality does not extend to the orbit-finite setting.
+%%More specifically,
+%%what the counterexample shows is that strong duality does not extend to the orbit-finite setting.
+%%However, our counterexample does not contradict the following extension of weak duality to the orbit-finite setting.
+%%%
+%%\begin{question}\label{ques:weak duality}
+%%For any orbit-finite $B\times C$-matrix $\vr{A}$,
+%%$\vr{b}\in\lin{B}$ and $\vr{c}\in\lin{C}$,
+%%is the following true?
+%%\[
+%%\begin{aligned}
+%%& &\sup\setof{\transpose{\vr{c}} \cdot \vr{x}}{
+%%\vr{x}\in\lin{C},\
+%%\vr{A}\cdot \vr{x} \leqslant \vr{b},\
+%%\vr{x}\geqslant\vr{0},\
+%%\text{$\vr{A}\cdot \vr{x}$ and $\transpose{\vr{c}} \cdot \vr{x}$ are well-defined} } \\
+%%& =
+%%& \inf\setof{\transpose{\vr{y}} \cdot \vr{b}}{
+%%\vr{y}\in\lin{B},\
+%%\transpose{\vr{y}}\cdot \vr{A} \geqslant \transpose{\vr{c}},\
+%%\vr{y}\geqslant\vr{0}
+%%,\ \text{$\transpose{\vr{y}}\cdot \vr{A}$ and $\transpose{\vr{y}} \cdot \vr{b}$ are well-defined}}
+%%\end{aligned}
+%%\]
+%%\end{question}
+%%%
+%%Moreover in our counterexample, the primal system in not satisfiable, which makes the LHS of \eqref{eq:duality gen} $-\infty$.
+%%We do not have a counterexample where both the RHS and LHS are finite but are not the same.
+%%Hence the following question arises.
+%%%
+%%\begin{question}\label{ques:duality fin val}
+%%Let $\vr{A}$ be an orbit-finite $B\times C$-matrix,
+%%$\vr{b}\in\lin{B}$ and $\vr{c}\in\lin{C}$ such that both
+%%\begin{gather}
+%%\sup\setof{\transpose{\vr{c}} \cdot \vr{x}}{
+%%\vr{x}\in\lin{C},\
+%%\vr{A}\cdot \vr{x} \leqslant \vr{b},\
+%%\vr{x}\geqslant\vr{0},\
+%%\text{$\vr{A}\cdot \vr{x}$ and $\transpose{\vr{c}} \cdot \vr{x}$ are well-defined} }\\
+%%\text{ and } \\
+%%\inf\setof{\transpose{\vr{y}} \cdot \vr{b}}{
+%%\vr{y}\in\lin{B},\
+%%\transpose{\vr{y}}\cdot \vr{A} \geqslant \transpose{\vr{c}},\
+%%\vr{y}\geqslant\vr{0}
+%%,\ \text{$\transpose{\vr{y}}\cdot \vr{A}$ and $\transpose{\vr{y}} \cdot \vr{b}$ are well-defined}}
+%%\end{gather}
+%%are finite.
+%%Then, is the following true?
+%%\[
+%%\begin{aligned}
+%%& &\sup\setof{\transpose{\vr{c}} \cdot \vr{x}}{
+%%\vr{x}\in\lin{C},\
+%%\vr{A}\cdot \vr{x} \leqslant \vr{b},\
+%%\vr{x}\geqslant\vr{0},\
+%%\text{$\vr{A}\cdot \vr{x}$ and $\transpose{\vr{c}} \cdot \vr{x}$ are well-defined} } \\
+%%& =
+%%& \inf\setof{\transpose{\vr{y}} \cdot \vr{b}}{
+%%\vr{y}\in\lin{B},\
+%%\transpose{\vr{y}}\cdot \vr{A} \geqslant \transpose{\vr{c}},\
+%%\vr{y}\geqslant\vr{0}
+%%,\ \text{$\transpose{\vr{y}}\cdot \vr{A}$ and $\transpose{\vr{y}} \cdot \vr{b}$ are well-defined}}
+%%\end{aligned}
+%%\]
+%%\end{question}
+%%%
+%%\section{Old versions}
+%%%
+%%\subsection{\farkas Lemma}
+%%%
+%%\arka{TODO(later):add counter example to \farkas Lemma for o.f. lin prog in Paradise lost}
+%%%
+%%\subsubsection*{Proof of \farkas Lemmas (\Cref{thm:farkas col fin,thm:farkas row fin})}
+%%%
+%%We will show $(1) \implies (2) \implies (3) \implies (1)$.
+%%%
+%%\paragraph*{$(1)\implies (2)$} Trivial.
+%%%
+%%\paragraph*{$(2)\implies (3)$}
+%%The proof of this is similar to the proof of the corresponding part of the classical Farkas' Lemma.
+%%Say there exists $\vr{z} : B\to \Q$ (not necessarily equivariant) such that $\transpose{\vr{z}}\cdot \vr{A} \geqslant \transpose{\vr{0}}$ and $\transpose{\vr{z}}\cdot \vr{b} < 0$.
+%%Pick any vector $\vr{x}\in\flin{C}$ such that $\vr{x} \geqslant \vr{0}$.
+%%Say $\vr{A}\cdot \vr{x} = \vr{b}$
+%%Then,
+%%\[
+%%0 > \transpose{\vr{z}}\cdot \vr{b} =
+%%\transpose{\vr{z}}\cdot (\vr{A}\cdot\vr{x}) =
+%%(\transpose{\vr{z}}\cdot \vr{A}) \cdot\vr{x} \geqslant
+%%\transpose{\vr{0}} \cdot \vr{x} \geqslant 0
+%%\]
+%%Which is a contradiction.
+%%
+%%\paragraph*{$(2)\implies (3)$}
+%%Say there does not exists any $\vr{x}\in\flin{B}$ such that $\vr{A}\cdot\vr{x} = \vr{b}$ and $\vr{x}\geqslant \vr{0}$.
+%%Let $G \subseteq \flin{B}$ be the set of columns of $\vr{A}$:
+%%\[
+%%G \defeq \setof{\vr{A}(-,c)}{c\in C}
+%%\]
+%%Then $\vr{b}\notin\cone(G)$.
+%%\Cref{thm:orbsum cone} implies $\orbsum{\vr{b}}\notin\orbsum{G}$.
+%%\Cref{lem:orbsum matrix}	says that there does not exists $x\geqslant \vr{0}$ such that $\orbsum{\vr{A}}\cdot x = \orbsum{\vr{b}}$.
+%%The classical Farkas' Lemma (\Cref{thm:farkas classical}) implies there exists $z\in \Q^{\orbits{B}}$ such that $\transpose{z}\cdot\orbsum{\vr{A}} \geqslant \vr{0}$ and $\transpose{z}\cdot\orbsum{\vr{b}} < 0$
+%%%
+%%Define $\vr{z}\in\lin{B}$ as
+%%\[
+%%\vr{z} = \sum_{K\in\orbits{B}} z(K)\cdot \idvec{K}
+%%\]
+%%Clearly $\vr{z}$ is equivariant and
+%%\[
+%%\orbsum{(\transpose{\vr{z}})} = \transpose{z} 
+%%\]
+%%We finish the proof by showing that $\transpose{\vr{z}} \cdot \vr{A} \geqslant \vr{0}$ and $\transpose{\vr{z}}\cdot\vr{b}< 0$.
+%%Both of these follow easily from \Cref{lem:orbsum prod} since
+%%\[
+%%\transpose{\vr{z}}\cdot\vr{b} = \orbsum{(\transpose{\vr{z}})} \cdot \orbsum{\vr{b}} = \transpose{z}\cdot \orbsum{\vr{b}} < 0
+%%\]
+%%and for any $c\in C$
+%%\[
+%%\transpose{\vr{z}}\cdot\vr{A}(-,c) =
+%%\orbsum{(\transpose{\vr{z}})} \cdot \orbsum{\vr{A}(-,c)} =
+%%\transpose{z}\cdot \orbsum{\vr{A}(-,c)} =
+%%z\cdot \orbsum{\vr{A}}(-,\orbit{c}) \geqslant 0
+%%\]
+%%\subsubsection*{Other versions of \farkas Lemma}
+%%%
+%%The following versions of orbit-finite Farkas' Lemma are equivalent to \Cref{thm:farkas col fin}.
+%%The proof of their equivalence is equivalence is similar to the proof of equivalence of their classical counterparts (\cite{perng17}).
+%%%
+%%\begin{theorem}[\farkas Lemma (version 2)]\label{thm:farkas 2}
+%%For any equivariant column-finite $B\times C$-matrix $\vr{A}$ and equivariant vector $\vr{b}\in \flin{B}$
+%%the following are equivalent
+%%\begin{enumerate}
+%%\item There exists an equivariant vector $\vr{z} \in \lin{B}$ such that
+%%\[
+%%\transpose{\vr{z}}\cdot\vr{A} \geqslant \transpose{\vr{0}},\
+%%\vr{z} \geqslant 0 \text{ and }
+%%\transpose{\vr{b}} \cdot \vr{z} < 0 \ .
+%%\]
+%%\item There exists a vector (not necessarily finitely supported) $\vr{z} : B \to \Q$ such that
+%%\[
+%%\transpose{\vr{z}}\cdot\vr{A} \geqslant \transpose{\vr{0}},\
+%%\vr{z} \geqslant 0 \text{ and }
+%%\transpose{\vr{z}} \cdot \vr{b} < 0
+%%\]
+%%\item There exists no $\vr{x} \in \flin{C}$ such that
+%%\[
+%%\vr{A}\cdot\vr{x} \leqslant \vr{b}
+%%\quad
+%%\text{and}
+%%\quad
+%%\vr{x} \geqslant 0 \ .
+%%\]
+%%\end{enumerate}
+%%\end{theorem}
+%%%
+%%\begin{theorem}[\farkas Lemma, version 3]\label{thm:farkas 3}
+%%For any equivariant column-finite $B\times C$-matrix $\vr{A}$ and equivariant vector $\vr{b}\in \flin{B}$,
+%%the following are equivalent:
+%%\begin{enumerate}
+%%\item There exists an equivariant vector $\vr{z}
+%%\in \lin{B}$ such that
+%%\[
+%%\transpose{\vr{A}}\cdot\vr{z} = \vr{0} \ , \ \
+%%\vr{z} \geqslant 0 \ \text{ and }\
+%%\transpose{\vr{b}} \cdot \vr{z} < 0 \ .
+%%\]
+%%\item There exists a vector (not necessarily finitely supported) $\vr{z} : B \to \Q$ such that
+%%\[
+%%\transpose{\vr{z}}\cdot\vr{A} = \transpose{\vr{0}} \ , \ \
+%%\vr{z} \geqslant 0 \ \text{ and }\
+%%\transpose{\vr{z}} \cdot \vr{b} < 0 \ .
+%%\]
+%%\item There exists no $\vr{x} \in \flin{C}$ such that
+%%\[
+%%\vr{A}\cdot\vr{x} \leqslant \vr{b} \ .
+%%\]
+%%\end{enumerate}
+%%\end{theorem}
+%%
+%\section{Old Introduction}
+%%
+%The following result which is known as the duality theorem is one of the most fundamental results in linear programming.
+%%
+%\begin{theorem}\label{thm:duality classical}
+%For any $m,n\in\N$,
+%matrix $A\in\Q^{m\times n}$,
+%vectors $b\in\Q^m$ and $c\in\Q^n$
+%\begin{align*}
+% & \max\setof{\transpose{c} \cdot x}
+%{A\cdot x \leqslant b,\ x\geqslant0,\
+% x\in\Q^n} \\
+%= &
+%\min\setof{\transpose{y} \cdot b}{\transpose{y}\cdot A \geqslant\transpose{c},\ y\geqslant0,\
+% y\in\Q^m}
+%\end{align*}
+%\end{theorem}
+%%
+%\arka{maybe for finite dimensional vector we should use the notation $x \geqslant 0$ rather than $x\geqslant \vr{0}$?}
+%
+%Given that now we know how to solve orbit-finite linear programming,
+%we are prompted to investigate whether the duality theorem can be extended to the orbit-finite setting.
+%
+%\slawek{Question $\mapsto$ Property}
+%\arka{How about Hypothesis?}
+%\begin{question}\label{ques:duality}
+%Given orbit-finite $B\times C$-matrix $\vr{A}$,
+%vectors $\vr{b} \in \lin{B}$ and $\vr{c}\in \lin{C}$,
+%is the following true?
+%%
+%\begin{align}\label{eq:duality gen}
+%& &\sup\setof{\transpose{\vr{c}} \cdot \vr{x}}{
+%\vr{x}\in\lin{C},\
+%\vr{A}\cdot \vr{x} \leqslant \vr{b},\
+%\vr{x}\geqslant\vr{0},\
+%\text{$\vr{A}\cdot \vr{x}$ and $\transpose{\vr{c}} \cdot \vr{x}$ are well-defined} } \\
+%& =
+%& \inf\setof{\transpose{\vr{y}} \cdot \vr{b}}{
+%\vr{y}\in\lin{B},\
+%\transpose{\vr{y}}\cdot \vr{A} \geqslant \transpose{\vr{c}},\
+%\vr{y}\geqslant\vr{0}
+%,\ \text{$\transpose{\vr{y}}\cdot \vr{A}$ and $\transpose{\vr{y}} \cdot \vr{b}$ are well-defined}}
+%\end{align}
+%%
+%\end{question}
+%%
+%We show that the answer to the above question is negative.
+%That is, duality does not hold for the full class of orbit-finite linear programs.
+%However, we also show that it holds between two natural subclasses.
+%
+%This chapter is divided into five sections.
+%
+%\arka{there will be no section named introduction when we add this chapter to the thesis}
+%
+%In \Cref{sec:lost} we show a counterexample to orbit-finite duality.
+%In \Cref{sec:regained} we define two natural variations of orbit-finite linear programming (\Cref{prob:col fin lp,prob:row fin lp}) and prove duality (\Cref{thm:duality}) between them.
+%Using the results of these two sections we quickly discuss extensions of asymmetric version of the duality theorem and of Farkas' Lemma respectively in \Cref{sec:asym} and \Cref{sec:farkas}.
+%Finally, in \Cref{sec:duality open} we refine \Cref{ques:duality} to give two open questions.
+%%
+%\begin{remark}[Rationality of solutions]\label{rem:rationality}
+%In the usual formulations of the duality in linear programming the matrices, vectors and solutions are assumed to have real entries,
+%whereas we restrict them to have rational entries.
+%The restriction is irrelevant, as a consequence of the simplex algorithm.
+%Since the simplex algorithm only uses field operations,
+%if the entries of a linear program are rational and the optimum value is finite,
+%it returns a rational optimal solution.
+%This implies that if a system of linear inequalities with rational coefficients has a solution,
+%then it has a rational solution.
+%Using standard arguments one can conclude that in \Cref{thm:duality classical} WLOG we can assume $x$ and $y$ to be rational vectors
+%\arka{changed text}.
+%\end{remark}
+%

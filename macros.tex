@@ -1,0 +1,662 @@
+% !TEX root = main.tex
+%
+%\usepackage{amssymb,amsmath,amsthm}
+%\usepackage{mathrsfs}
+%\usepackage[dvipsnames]{xcolor}
+%\usepackage{enumitem}
+\usepackage[shortlabels]{enumitem}
+\usepackage{hyperref}
+\usepackage{cleveref}
+%\usepackage[hyperref,amsthm]{ntheorem} %use either this or ntheorem
+\usepackage{thmtools}
+\addtotheorempostheadhook[thm]{\crefalias{thmlisti}{thm}}
+\addtotheorempostheadhook[lem]{\crefalias{thmlisti}{lem}}
+%\usepackage{textcomp}
+%\usepackage{nicematrix}
+\usepackage{blkarray}
+\usepackage{tabularx,lipsum,environ}
+%\usepackage{ragged2e}
+\usepackage{mathrsfs}
+%\usepackage{xspace}
+\usepackage[normalem]{ulem} % for strikethroughing text using \sout{}
+\usepackage{color,soul} %for underlining
+\setul{}{1pt}
+\usepackage[all]{xy}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,petri}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode} %for algorithm environment
+\usepackage{etoolbox}
+\usepackage{chngcntr}
+%\usepackage{todonotes}
+\usepackage{leftindex}
+\usepackage[symbols,nogroupskip,sort=none]{glossaries-extra}
+
+\usepackage{tikz-cd}
+\usepackage[nonewpage]{imakeidx}
+%\usepackage[numbib,notindex]{tocbibind}
+
+\usepackage{titletoc}
+\usepackage[toctitles]{titlesec}
+
+\allowdisplaybreaks
+
+% For having only the figure number in caption
+\usepackage{caption}
+\DeclareCaptionFormat{empty}{#1}
+\renewcommand*\figurename{Figure}
+%
+%
+\newglossary[slg]{symbolslist}{syi}{syg}{List of commonly used symbols}
+%
+%
+%\renewcommand{\emph}[1]{\textcolor{purple}{\textit{#1}}} %to make emphs more noticeable since we use them to define things outside definition environment
+%
+%\sethlcolor{olive}
+\newcommand{\emphdef}[1]{\textcolor{purple}{\emph{#1}}}
+\newcommand{\defind}[2]{\emphdef{#1}{\index[terms]{#2}}}
+\newcommand{\defindS}[1]{\defind{#1}{#1}}
+\newcommand{\defindKey}[2]{\defind{#1}{#2@#1}}
+\newcommand{\defindSym}[2]{\emphdef{#1}{\index[symbols]{#2}}}
+\newcommand{\defindSymS}[1]{\defindSym{#1}{#1}}
+%\newcommand{\emphdef}[1]{\text{\hl{#1}}}
+\newcommand{\orbsumlp}[1]{#1^{\Sigma}}
+\colorlet{Mycolor1}{red!50!blue}
+\newcommand{\indexcolor}[1]{\textcolor{Mycolor1}{#1}}
+%
+\usepackage[flushmargin,ragged]{footmisc} % this removes indentation from footnotes and makes them left aligned
+%
+%\usepackage{lineno}
+%\linenumbers
+\crefname{section}{§}{§§}
+\Crefname{section}{§}{§§}
+%
+%
+% Trying to add a line beside proofs
+%
+%\usepackage[most]{tcolorbox}
+%\renewenvironment{proof}[1][Proof]
+%{\begin{tcolorbox}[freelance,
+%breakable,
+%width=\dimexpr\textwidth+28pt\relax,
+%before=\par\vspace{\bigskipamount}\noindent,
+%colback=white,
+%enlarge left by=-14pt,
+%%overlay unbroken and first={
+%%%  \node[
+%%%  anchor=north east,
+%%%  inner xsep=8pt,
+%%%  xshift=8pt,
+%%%  rounded corners=5pt,
+%%%  font=\bfseries,
+%%%  fill=white] at ([xshift=-0.2cm]frame.north west) (tit) {\strut Example:};
+%%  \draw[
+%%  line width=3pt,
+%%  rounded corners=5pt,gray
+%%  ] ([xshift=4pt]frame.north west) -- ([xshift=4pt]frame.south west);
+%%},
+%%overlay middle and last={
+%%  \draw[
+%%  line width=3pt,
+%%  rounded corners=5pt,gray
+%%  ] ([xshift=4pt]frame.north west) -- ([xshift=4pt]frame.south west);
+%%},
+%frame code={},
+%interior code={},
+%top=0pt,
+%bottom=0pt,
+%title=#1,
+%borderline west={1pt}{0pt}{black},
+%coltitle = black,
+%opacityframe=0,
+%opacityfill=0]
+%}
+%{\qed\end{tcolorbox}}
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%   symbols   %%%%%%%%%%%%%%%%%%%%%
+%
+\renewcommand{\a}{\alpha}
+\renewcommand{\b}{\beta}
+\newcommand{\g}{\gamma}
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\X}{\mathbb{X}}
+\newcommand{\sS}{\mathcal{S}}
+\newcommand{\cU}{\mathcal{U}}
+\newcommand{\W}{\mathbb{W}}
+\newcommand{\id}{\textnormal{Id}}
+\newcommand{\ptime}{\textsc{Ptime}}
+\newcommand{\dlo}{\mathbb{D}}
+\newcommand{\subseteqfin}{\subseteq_{\textsc{fin}}}
+\newcommand{\supseteqfin}{\supseteq_{\textsc{fin}}}
+
+\newglossaryentry{symb:fin sub}{
+ 	name=$\subseteqfin$,
+ 	description={``is a finite subset of''},
+ 	sort=subseteqfin,
+ 	type=symbolslist
+}
+%
+\newglossaryentry{symb:fin sup}{
+ 	name=$\supseteqfin$,
+ 	description={``is a finite superset of''},
+ 	sort=supseteqfin,
+ 	type=symbolslist
+}
+
+\newglossaryentry{symb:disun}{
+ 	name=$\uplus$,
+ 	description={disjoint union},
+ 	sort=disun,
+ 	type=symbolslist
+}
+
+\newglossaryentry{symb:num real}{
+ 	name=$\R$,
+ 	description={the set of real numbers},
+ 	sort=numreal,
+ 	type=symbolslist
+}
+
+\newglossaryentry{symb:num real pos}{
+ 	name=$\R_+$,
+ 	description={the set of positive real numbers},
+ 	sort=numrealpos,
+ 	type=symbolslist
+}
+
+\newglossaryentry{symb:num real nonneg}{
+ 	name=$\R_{\geqslant 0}$,
+ 	description={the set of non-negative real numbers},
+ 	sort=numrealnonneg,
+ 	type=symbolslist
+}
+
+\newglossaryentry{symb:num nat}{
+ 	name=$\N$,
+ 	description={the set of natural numbers},
+ 	sort=num nat,
+ 	type=symbolslist
+}
+
+\newglossaryentry{symb:num int}{
+ 	name=$\Z$,
+ 	description={the set of integers},
+ 	sort=numint,
+ 	type=symbolslist
+}
+
+\newglossaryentry{symb:num int pos}{
+ 	name=$\Z_+$,
+ 	description={the set of positive integers},
+ 	sort=numintpos,
+ 	type=symbolslist
+}
+\newcommand{\symgr}[1]{\textnormal{\textbf{S}}_{#1}}
+\newglossaryentry{symb:symgr}{
+ 	name=$\symgr{k}$,
+ 	description={symmetric group of degree $k$},
+ 	sort=symgr,
+ 	type=symbolslist
+}
+
+
+
+\newcommand{\otufrom}[2]{#1^{(#2)}}
+%
+\newcommand{\iden}{\textnormal{Id}}
+\newcommand{\sE}{\mathcal{E}}
+%%%%%%%%%%%%%%%%%%%%%%   macros   %%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\aut}[2][]{\textnormal{Aut}_{#1}(#2)}
+\newcommand{\cone}{\textnormal{cone}}
+\newcommand{\col}{\textnormal{col}}
+% the extra set of brackets around \left( and \right) is to prevent the extra space given before \left(
+\newcommand{\flin}[2][]{\textnormal{FinLin}_{#1}{\left(#2\right)}}
+\newcommand{\flinWB}[2][]{\textnormal{FinLin}_{#1}{#2}}
+\newcommand{\fsum}[1]{\textnormal{FinSum}{\left(#1\right)}}
+\newcommand{\lin}[2][]{\textnormal{Lin}_{#1}{\left(#2\right)}}
+\newcommand{\row}{\textnormal{row}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\setwith}[1]{\textnormal{Set}#1}
+%\newcommand{\setof}[2]{\left\{#1 \ \middle| \ #2\right\}}
+\newcommand{\setof}[2]{\left\{#1 \ : \ #2\right\}}
+\newcommand{\vr}[1]{\mathbf{#1}}
+\newcommand{\transpose}[1]{#1^{\mathsf{T}}}
+\newcommand{\supp}[1]{\textnormal{support}\left(#1\right)}
+\newcommand{\orbit}[2][]{\textnormal{orbit}_{#1}{(#2)}}
+\newcommand{\farkas}{Farkas\textquotesingle{ }}
+\newcommand{\defeq}{\overset{\mathrm{def}}{=}}
+\newcommand{\defiff}{\overset{\mathrm{def}}{\iff}}
+\newcommand{\orbits}[2][]{\textnormal{Orbits}_{#1}{(#2)}}
+\newcommand{\orbSum}[1]{\Gamma_{#1}}
+\newcommand{\orbsum}[1]{\gamma_{#1}}
+\newcommand{\orbdis}[2]{\delta^{#1}_{#2}}
+\newcommand{\orbrow}[1]{\delta_{#1}}
+\newcommand{\orbsmt}[2]{\gamma^{#1}_{#2}}
+\newcommand{\orbres}{\zeta}
+\newcommand{\idvec}[1]{\mathbf{1}_{#1}}
+\newcommand{\del}[1]{\textnormal{delete}_{#1}}
+\newcommand{\otu}[2]{(\A\setminus #1)^{(#2)}}
+\newcommand{\otuequiv}[1]{\A^{(#1)}}
+\newcommand{\otuquotient}[3]{(\otu{#1}{#2}/_{#3})}
+\newcommand{\tuple}[1]{\overline{#1}}
+\newcommand{\fadp}{\textsc{FADP}}
+\newcommand{\Wlog}{\textsc{WLOG}}
+\newcommand{\bit}[1]{\textnormal{bit}(#1)}
+\newcommand{\npc}{\textsc{NP}\textnormal{-complete}}
+
+%%%%%%%%%%%% Macros for drawing block matrices %%%%%%
+
+\newcommand{\drawMat}[3]{
+\left[
+\begin{tabular}{#1}
+\color{Mycolor1}#2 \color{black}\\
+#3
+\end{tabular}
+\right]
+}
+%
+%%%%%%%%%%%% Macros for basis %%%%%%
+%
+\newcommand{\dimm}[2]{#1\textnormal{-dim}{\left(#2\right)}}
+\newcommand{\TO}[2]{\textnormal{TO}{\left(#1,#2\right)}}
+\newcommand{\odom}[2]{{#1\textnormal{-orbit-dom}{\left(#2\right)}}}
+\newcommand{\pair}[4]{\leftindex^{#1}_{#2} O^{#3}_{#4}}
+\newcommand{\OaT}{\pair{}{\a}{T}{}}
+\newcommand{\ObT}{\pair{}{\b}{T}{}}
+\newcommand{\OTa}{\pair{T}{}{}{\a}}
+\newcommand{\OTb}{\pair{T}{}{}{\b}}
+\newcommand{\OTT}{\pair{T}{}{T}{}}
+
+%
+%%%%%%%%%%%% Macros for equations %%%%%%
+%
+\newcommand{\Span}[2][]{\textsc{Span}_{#1}(#2)} % note the capitalisation
+\newcommand{\fSpan}[2][]{\textsc{Fin-Span}_{#1}(#2)}
+\newcommand{\fSpanK}[3]{\textsc{Fin-Span}_{#1}^{#2}(#3)}
+\newcommand{\np}{\textsc{NP}}
+\newcommand{\eq}[1]{\textsc{Eq($#1$)}}
+\newcommand{\finEq}[1]{\textsc{Fin-Eq($#1$)}}
+\newcommand{\genEq}[1]{\textsc{Gen-Eq($#1$)}}
+\newcommand{\equivEq}[1]{\textsc{Support-Preserving-Eq($#1$)}}
+\newcommand{\cD}[1]{\mathcal{D}_{#1}}
+%
+\newcommand{\comp}[2]{#1_#2}
+\newcommand{\main}[1]{\widetilde{#1}}
+%\newcommand{\ordsolv}{\text{$<$-equivariant solvability}}
+\newcommand{\ordprob}[1]{$\textsc{Fin-Eq}_{<}(#1)$}
+\newcommand{\ordsolvtext}{order equivariant finitary solvability}
+\newcommand{\Ordsolvtext}{Order equivariant finitary solvability}
+\newcommand{\ordequiv}{order equivariant}
+%
+\newcommand{\maindom}[1]{\widetilde{\textnormal{d}}\textnormal{om}(#1)}
+\newcommand{\lex}[1][]{<_{\ell\textnormal{ex}}^{#1}}
+\newcommand{\lexeq}[1][]{\leqslant_{\ell\textnormal{ex}}^{#1}}
+%%%%%%%%%%%% Macros for equivariant subspaces %%%%%%
+%
+\newcommand{\basis}[2][]{\textsc{Basis}_{#1}{\left(#2\right)}}
+\newcommand{\length}[2][]{\textsc{Length}_{#1}{(#2)}}
+%
+% the brackers around \left( and \right) is to prevent the extra space around them
+\newcommand{\dom}[1]{\textnormal{dom}{\left(#1\right)}}
+\newcommand{\zerovec}{\vr{0}}
+\newcommand{\image}[1]{\textnormal{Im}\left(#1\right)}
+\newcommand{\spread}[1]{\widetilde{#1}}
+\newcommand{\restr}[1]{\arrowvert_{#1}}
+\newcommand{\dimred}[2][]{\textnormal{reduc}^{#1}_{#2}}
+%
+%%%%%%%%%%%%%%%%%%%%%%   environments   %%%%%%%%%%%%%%%%%%%%%
+%
+% No indentation after theorems
+\makeatletter
+\def\@endtheorem{\endtrivlist}
+\makeatother
+
+\renewcommand{\qedsymbol}{\ensuremath{\blacksquare}}
+\makeatletter
+\renewcommand{\paragraph}{%
+	\@startsection{paragraph}{4}%
+	{\z@}{1ex \@plus 1ex \@minus .2ex}{-1em}%
+	{\normalfont\normalsize\bfseries}%
+}
+\makeatother
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{claim}{Claim}[theorem]
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\Crefname{claim}{Claim}{Claims}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\AtBeginEnvironment{example}{%
+  \pushQED{\qed}
+  \renewcommand{\qedsymbol}{$\blacktriangleleft$}%
+}
+\AtEndEnvironment{example}{\popQED\endexample}
+\newtheorem{convention}[theorem]{Convention}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem*{problem}{Problem}
+\newtheorem{remark}[theorem]{Remark}
+
+\newenvironment{subsecproof}[1]{\subsubsection{#1}\pushQED{\qed}}{\popQED\medskip
+
+}
+\newenvironment{secproof}[1]{\subsection{#1}\pushQED{\qed}}{\popQED\medskip
+
+}
+
+\newenvironment{latersecproof}[1]
+{%
+\renewcommand{\theclaim}{\ref{#1}.\arabic{claim}}%
+\begin{secproof}{Proof of \Cref{#1}}%
+}
+{\end{secproof}}
+
+\newenvironment{latersubsecproof}[1]
+{%
+	\renewcommand{\theclaim}{\ref{#1}.\arabic{claim}}%
+	\begin{subsecproof}{Proof of \Cref{#1}}%
+	}
+{\end{subsecproof}}
+
+%\Crefname{theorem}{Theorem}{Theorems}
+%\Crefname{thmenumi}{Theorem}{Theorems}
+%\AtBeginEnvironment{theorem}{%
+%    \crefalias{enumi}{thmenumi}%
+%    \setlist[enumerate,1]{
+%        label={\textit{(\roman*)}},
+%        ref={\thetheorem.(\roman*)}
+%    }%
+%}
+%
+%\Crefname{lemma}{Lemma}{Lemmas}
+%\Crefname{lemmaenumi}{Lemma}{Lemmas}
+%\AtBeginEnvironment{lemma}{%
+%    \crefalias{enumi}{lemmaenumi}%
+%    \setlist[enumerate,1]{
+%        label={\textit{(\roman*)}},
+%        ref={\thelemma.(\roman*)}
+%    }%
+%}
+
+% IMPORTANT NOTES
+%
+% 1. Use \newline instead of \\ inside environment
+% 2. Put \label inside the second argument
+%
+%\newcommand{\prob}[4]
+%{\begin{problem}[\textsc{#1}]#2
+%     $ $\newline
+%     \begin{tabularx}{\textwidth}{l  l}
+%       \textbf{Input:} & #3 \\
+%       \textbf{Question:} & #4 \\
+%     \end{tabularx}
+% \end{problem}}
+
+\newcommand{\probBasic}[4]
+{
+\begin{flalign*}
+\quad
+\begin{tabular}{l  l}
+  \multicolumn{2}{l}{\textsc{#1}}\\
+  \textbf{Input:}    & #2 \\
+  \textbf{#4} & #3
+\end{tabular}
+&&
+\end{flalign*}
+}
+
+\newcommand{\prob}[3]
+{
+\probBasic{#1}{#2}{#3}{Question:}
+}
+
+\newcommand{\probOut}[3]
+{
+\probBasic{#1}{#2}{#3}{Output:}
+}
+%
+\newcommand{\claimQED}{\square}
+\newenvironment{claimproof}[1][\proofname]
+{\renewcommand\qedsymbol{$\claimQED$}\proof[#1]}
+{\endproof}
+%\newenvironment{claimproof}{\paragraph{\textnormal{Proof:}}}{
+%\smallskip
+%
+%\hfill $\square$
+%\medskip
+%
+%}
+%%%%%%%%%%%%%%%%%   new macros for inequalities  %%%%%%%%%%%%%%%%
+
+\newcommand{\ineq}[1]{\textsc{Ineq($#1$)}}
+\newcommand{\finIneq}[1]{\textsc{Fin-Ineq($#1$)}}
+\newcommand{\nNEq}[1]{\textsc{Nonneg-Eq($#1$)}}
+\newcommand{\finNNEq}[1]{\textsc{Fin-Nonneg-Eq($#1$)}}
+\newcommand{\polyineq}{\textsc{Poly-Ineq}}
+\newcommand{\allpolyopt}{\textsc{All-Poly-Opt}}
+\newcommand{\allpolyineq}{\textsc{All-Poly-Ineq}}
+
+\newcommand{\headPar}[2]{\textnormal{\textsc{head}}_{#2}(#1)}
+\newcommand{\head}[1]{\headPar{#1}{}}
+\newcommand{\strictHead}[1]{\headPar{#1}{>}}
+\newcommand{\tail}[1]{\textsc{tail}(#1)}
+\newcommand{\ineqSize}[1]{|#1|}
+\newcommand{\G}{\Gamma}
+\newcommand{\conj}{\cup}
+\newcommand{\ineqal}{\mathcal{E}}
+\newcommand{\aasol}{almost-all-solution}
+\newcommand{\proj}[1]{\Pi_{#1}}
+\newcommand{\orbval}[1]{\dot{#1}}
+\newcommand{\exptime}{\textsc{ExpTime}}
+\newcommand{\nexptime}{\textsc{NExpTime}}
+\newcommand{\twoExptime}{\textsc{2ExpTime}}
+\newcommand{\acker}{\textsc{Ackermann}}
+
+%%%%%%%%%%%%%%%%%%%%%%   new macros for LP  %%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\linProg}{\textsc{Lin-Prog}}
+
+\newcommand{\flinProg}{\textsc{FinLin-Prog}}
+
+\newcommand{\lpMax}[2]
+{
+\begin{tabular}{l l}
+\textnormal{maximise}   & #1\\
+\textnormal{subject to} & #2
+\end{tabular}
+}
+
+\newcommand{\lpMaxMin}[2]
+{
+\begin{tabular}{r l}
+\textnormal{maximise/minimise}   & #1\\
+\textnormal{subject to} & #2
+\end{tabular}
+}
+
+
+\newcommand{\lpMin}[2]
+{
+\begin{tabular}{l l}
+\textnormal{minimise}   & #1\\
+\textnormal{subject to} & #2
+\end{tabular}
+}
+
+%\lpMaxGen{A}{b}{c}{x}{C}
+\newcommand{\lpMaxGen}[5]{
+\lpMax{$\transpose{#3}\cdot #4$}{
+  $#1 \cdot #4 \leqslant #2$ \\
+& $#4\in\lin{#5}$
+}}
+
+%\lpMinGen{A}{b}{c}{x}{C}
+\newcommand{\lpMinGen}[5]{
+\lpMin{$\transpose{#3}\cdot #4$}{
+  $#1 \cdot #4 \geqslant #2$ \\
+& $#4\in\lin{#5}$ 
+}}
+
+\newcommand{\maxGenAbc}{
+\lpMaxGen{\vr{A}}{\vr{b}}{\vr{c}}{\vr{x}}{C}
+}
+%
+\newcommand{\minGenAbc}{
+\lpMinGen{\vr{A}}{\vr{b}}{\vr{c}}{\vr{x}}{C}
+}
+
+\newcommand{\lpMaxFinGen}[5]{
+\lpMax{$\transpose{#3}\cdot #4$}{
+  $#1 \cdot #4 \leqslant #2$ \\
+& $#4\in\flin{#5}$ 
+}
+}
+
+\newcommand{\lpMinFinGen}[5]{
+\lpMin{$\transpose{#3}\cdot #4$}{
+  $#1 \cdot #4 \geqslant #2$ \\
+& $#4\in\flin{#5}$ 
+}
+}
+
+\newcommand{\maxFinGenAbc}{
+\lpMaxFinGen{\vr{A}}{\vr{b}}{\vr{c}}{\vr{x}}{C}
+}
+
+\newcommand{\minFinGenAbc}{
+\lpMinFinGen{\vr{A}}{\vr{b}}{\vr{c}}{\vr{x}}{C}
+}
+
+
+%\lpMaxFin{A}{b}{c}{x}{B}{C}
+\newcommand{\lpMaxFin}[6]{
+\lpMax{$\transpose{#3}\cdot #4$}{
+  $#1 \cdot #4 \leqslant #2$ \\
+& $#4 \geqslant \vr{0}$ \\
+& $#4\in\flin{#6}$ 
+}}
+
+%\lpMinFinStan{A}{b}{c}{x}{B}{C}
+\newcommand{\lpMinFin}[6]{
+\lpMin{$\transpose{#3}\cdot #4$}{
+  $#1 \cdot #4 \geqslant #2$ \\
+& $#4 \geqslant \vr{0}$ \\
+& $#4\in\flin{#6}$ 
+}}
+
+\newcommand{\maxFinAbc}{
+\lpMaxFin{\vr{A}}{\vr{b}}{\vr{c}}{\vr{x}}{B}{C}
+}
+
+\newcommand{\minFinAbc}{
+\lpMinFin{\vr{A}}{\vr{b}}{\vr{c}}{\vr{x}}{B}{C}
+}
+
+%\lpMatPrimal{A}{b}{c}{x}{B}{C}
+\newcommand{\lpMatPrimal}[6]{
+\lpMax{$\transpose{#3}\cdot #4$}{
+  $#1 \cdot #4 \leqslant #2$ \\
+& $#4 \geqslant \vr{0}$ \\
+& $#4\in\lin{#6}$ 
+}}
+
+%\lpMinPrimal{A}{b}{c}{x}{B}{C}
+\newcommand{\lpMinPrimal}[6]{
+\lpMin{$\transpose{#3}\cdot #4$}{
+  $#1 \cdot #4 \geqslant #2$ \\
+& $#4 \geqslant \vr{0}$ \\
+& $#4\in\lin{#6}$ 
+}}
+
+%\lpMatDual{A}{b}{c}{x}{B}{C}
+\newcommand{\lpMatDual}[6]{
+\lpMin{$\transpose{#2}\cdot #4$}{
+  $\transpose{#1} \cdot #4 \geqslant #3$ \\
+& $#4 \geqslant \vr{0}$ \\
+& $#4\in\lin{#5}$ 
+}}
+
+\newcommand{\primalAbc}{\lpMatPrimal{\vr{A}}{\vr{b}}{\vr{c}}{\vr{x}}{B}{C}}
+\newcommand{\minPrimalAbc}{\lpMinPrimal{\vr{A}}{\vr{b}}{\vr{c}}{\vr{x}}{B}{C}}
+\newcommand{\dualAbc}{\lpMatDual{\vr{A}}{\vr{b}}{\vr{c}}{\vr{y}}{B}{C}}
+
+%%%%%%%%%%%%%%   macros for column(row)-finite linear programs  %%%%%%%%%%%%%%%
+
+\newcommand{\colLinProg}{\textsc{Col-Fin-Lin-Prog}}
+
+\newcommand{\rowLinProg}{\textsc{Row-Fin-Lin-Prog}}
+
+\newcommand{\colFinMax}[3]{
+\begin{tabular}{l l}
+\textnormal{Find a vector}  & #1 \\
+\textnormal{that maximises} & #2 \\
+\textnormal{subject to}     & #3
+\end{tabular}
+}
+
+\newcommand{\colFinMaxAbc}{
+\primalAbc
+}
+
+\newcommand{\colFinMinAbc}{
+\lpMin{$\transpose{\vr{c}}\cdot \vr{x}$}{
+  $\vr{A} \cdot \vr{x} \geqslant \vr{b}$ \\
+& $\vr{x}\geqslant\vr{0}$                     \\  
+& $\vr{x}\in\lin{C}$
+}
+}
+
+\newcommand{\rowFinMinAbc}{
+\dualAbc 
+}
+
+\newcommand{\rowFinMaxAbc}{
+\lpMax{$\transpose{\vr{b}}\cdot \vr{y}$}{
+  $\transpose{\vr{A}} \cdot \vr{y} \leqslant \vr{c}$ \\
+& $\vr{y} \geqslant \vr{0}$ \\
+& $\vr{y} : B\to\R$ 
+}}
+
+%%%%%%%%%%%%%%%%%%%%%%   comments   %%%%%%%%%%%%%%%%%%%%%
+
+\newcounter{comment}
+\setcounter{comment}{1}
+\newcommand{\arka}[1]{\noindent\textnormal{\textcolor{red}{\textbf{Arka[\thecomment]:} #1}}\addtocounter{comment}{1}\noindent}
+\newcommand{\slawek}[1]{\textnormal{\textcolor{magenta}{\textbf{S\l awek:} #1}}}
+\newcommand{\piotrek}[1]{\textnormal{\textcolor{blue}{\textbf{Piotrek[\thecomment]:} #1}}\addtocounter{comment}{1}\noindent}
+
+%%%%%%%%%%%%%%%%%%% For underlining %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newcommand{\fixed}[1]{\setulcolor{violet}\ul{#1}\setulcolor{black}}
+%\newcommand{\fixed}[1]{\setulcolor{violet}\ul{#1}\setulcolor{black}}
+%\newcommand{\fixed}[1]{\textbf{#1}}
+\colorlet{fixedcolor}{blue!70!black}
+\newcommand{\fixed}[1]{\textcolor{fixedcolor}{#1}}
+%%%%%%%%%%%%%%%% Alignment command(s) %%%%%%%%%%%%%%%
+
+% The code below is to make the text left aligned,
+% ensuring indententation of paragraphs
+\makeatletter
+\newcommand\iraggedright{%
+  \let\\\@centercr\@rightskip\@flushglue \rightskip\@rightskip
+  \leftskip\z@skip}
+\makeatother
+%
