@@ -114,12 +114,18 @@
 %{\qed\end{tcolorbox}}
 %
 %
+%%%%%%%%%%%%%%%%%%%%%%   homogenous structures   %%%%%%%%%%%%%%%%%%%%%
+\newcommand{\str}{\mathcal{X}}
+\newcommand{\subst}[2]{#1(#2)}
+
 %%%%%%%%%%%%%%%%%%%%%%   symbols   %%%%%%%%%%%%%%%%%%%%%
 %
 \renewcommand{\a}{\alpha}
 \renewcommand{\b}{\beta}
 \newcommand{\g}{\gamma}
-\newcommand{\A}{\mathbb{A}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\dloQ}{\mathcal{Q}}
+\newcommand{\linZ}{\mathcal{Z}}
 \newcommand{\cB}{\mathcal{B}}
 \newcommand{\cC}{\mathcal{C}}
 \newcommand{\N}{\mathbb{N}}
@@ -654,9 +660,11 @@
 
 % The code below is to make the text left aligned,
 % ensuring indententation of paragraphs
-\makeatletter
-\newcommand\iraggedright{%
-  \let\\\@centercr\@rightskip\@flushglue \rightskip\@rightskip
-  \leftskip\z@skip}
-\makeatother
-%
+%\makeatletter
+%\newcommand\iraggedright{%
+%  \let\\\@centercr\@rightskip\@flushglue \rightskip\@rightskip
+%  \leftskip\z@skip}
+%\makeatother
+%%
+
+

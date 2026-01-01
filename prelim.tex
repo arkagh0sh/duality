@@ -1,0 +1,98 @@
+%!TEX root = main.tex
+%
+\section{Homogenous structures}\label{sec:hom}
+%
+\begin{definition}\label{def:rel str}
+\arka{Write definition of a countable relational structure.}
+\end{definition}
+%
+\begin{example}\label{eg:eq atom}
+\arka{Define equality atoms/domain $\A$.}
+\end{example}
+%
+\begin{example}\label{eg:ord atom}
+\arka{Define ordered atoms/domain $\dloQ$}
+\end{example}
+%
+\begin{definition}\label{def:aut}
+\arka{Write definition of automorphism group and orbits}
+\end{definition}
+%
+\begin{example}
+\arka{Illustrate \Cref{def:aut}}
+\end{example}
+%
+\begin{definition}\label{def:homg}
+\arka{Write definition of homogenous relational structure.}
+\end{definition}
+%
+\begin{example}\label{eg:int atom}
+\arka{Define integer atoms/domain $\Z = (Z,<)$ to give example of a structure that is not homogenous}
+\end{example}
+%
+\begin{definition}\label{def:oligo}
+\arka{Write definition of oligomorphicity.}
+\end{definition}
+%
+\begin{remark}
+Homogenous structures with finitely many relations are also oligomorphic \arka{add citation}.
+However, the same is not true when there are infinitely many relations.
+For example, one can define the structure $\Z' = (Z,D_1,D_2,\dots)$ where $D_n(a,b)$ is true if and only if $x - y = n$.
+The structure $\Z'$ is homogenous.
+However, it is not oligomorphic as each of the relations $D_n \subseteq Z^2$ forms disjoint orbit
+\end{remark}
+%
+Throughout the article we use $\str = (X,R_1,R_2,\dots)$ to denote an arbitrary countable homogenous relational structure whose automorphism group is oligomorphic.
+We use $\str^n$ to denote the set $X^n$.
+%
+\begin{definition}\label{def:fin supp orb}
+\arka{Write definition of finitely supported orbits, and of orbit-finiteness}
+\end{definition}
+%
+\begin{remark}
+\arka{orbit-finite subsets of $\str^n$ are exactly the definable ones}
+\end{remark}
+%
+\begin{theorem}
+If $\str$ is oligomorphic then $\str^n$ is orbit-finite under the action of $\aut[S]{\str}$ for every $S\subseteqfin \str$.
+\end{theorem}
+%
+\begin{definition}\label{def:ord prop}
+The structure $\str$ is said to have the \emphdef{order property} if there is an orbit-finite relation $R\subseteq (\str^n \times \str^n)$ and an infinite subset $D \subseteq \str^n$ such that $R$ defines a linear order on $D$.
+\end{definition}
+%
+\begin{example}
+\arka{Illustrate \Cref{def:ord prop}}.
+
+\arka{Example where $n\neq 1$?}
+\end{example}
+%
+For a finite subset $S\subseteq \str$ we use \emphdef{$\subst{S}{\str}$} to denote the relational structure $(S,R_1,R_2,\dots)$.
+The notions of homogeneity, automorphism group and orbits extend to $\subst{S}{\str}$ as well.
+%
+\begin{definition}\label{def:smooth}
+The structure $\str$ is said to be \emphdef{smoothly approximated} if there is a chain $S_0 \subseteq S_1 \subseteq S_2 \subseteq \dots$ of subsets of $\str$ such that $\bigcup_{n\in\N} S_n = X$ and $\subst{S_n}{\str}$ is homogenous for every $n$.
+\end{definition}
+%
+\arka{add citation to above def}
+%
+\begin{example}
+\arka{Write which of the structures mentioned before are smoothly approximated and which are not.}
+\end{example}
+%
+\begin{example}
+\arka{Bit vector atoms}
+\end{example}
+%
+\begin{example}
+\arka{Nestings of smoothly approximated structures are also smoothly approximated.}
+\end{example}
+%
+\begin{theorem}\label{thm:smooth iff}
+The structure $\str$ is smoothly approximated if and only if it does not have the order property.
+\end{theorem}
+%
+\begin{proof}
+\arka{TODO}
+\end{proof}
+%
