@@ -11,7 +11,7 @@ We can also consider the structure \emphdef{$\A = (A,=)$} where $A$ is an counta
 \fixed{From now on we use $\str = (X,R_1,R_2,\dots)$ to denote an arbitrary structure.}
 We use $\str^n$ to denote the set $X^n$.
 An \emphdef{automorphism} $\pi$ of $\str$ is a bijection of $\str$ which preserves and reflects the relations,
-i.e.\ for every relation $R_i$ of arity $n_i$ (say):
+i.e.\ for every relation $R_i$ of arity $n_i$ (say), and $a_1,\dots,a_n\in \X$:
 \[
 R_i(a_1,\dots,a_{n_i}) \iff R_i(\pi(a_1),\dots,
 \pi(a_{n_i})) \ .
@@ -19,12 +19,30 @@ R_i(a_1,\dots,a_{n_i}) \iff R_i(\pi(a_1),\dots,
 The set of all of all automorphisms of $\str$ is denoted as \emphdef{$\aut{\str}$}
 %
 \begin{example}
-\arka{Illustrate \Cref{def:aut}}
+\arka{Illustrate automorphisms}
 \end{example}
 %
-\begin{definition}\label{def:homg}
-\arka{Write definition of homogenous relational structure.}
-\end{definition}
+A subset $S\subseteq \str$ induces the \emphdef{substructure}
+\[
+\emphdef{$\subst{S}{\str}$} = 
+(S,\subst{R_1}{S},\subst{R_2}{S},\dots) \ ,
+\]
+where \emphdef{$\subst{R_n}{S}$} is the restriction of $R_n$ to $S$.
+If $S$ is finite, then $\subst{S}{\str}$ is a \emphdef{finite substructure}.
+For $S,T\subseteq \str$,
+a bijection $f : S\to T$ is called an \emphdef{isomorphism between substructures} $\subst{S}{\str}$ and $\subst{T}{\str}$ if it preserves and reflects all the relations,
+i.e.\ for every relation $R_i$ of arity $n_i$ (say), and $a_1,\dots,a_n\in S$:
+\[
+R_i(a_1,\dots,a_{n_i}) \iff R_i(f(a_1),\dots,
+f(a_{n_i})) \ .
+\]
+
+The structure $\str$ is called \emphdef{homogenous} if every partial isomorphisms between finite substructures of $\str$ extends to an automorphism of $\str$,
+i.e.\ for every partial isomorphism $f : S\to T$ of substructures there exists an automorphism $\pi$ of $\str$ such that $\pi\restr{S} = f$.
+%
+\begin{example}
+\arka{Illustrate substructures and homogeneity}
+\end{example}
 %
 \begin{example}\label{eg:int atom}
 \arka{Define integer atoms/domain $\Z = (Z,<)$ to give example of a structure that is not homogenous}
