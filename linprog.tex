@@ -1,6 +1,31 @@
 %!TEX root = main.tex
 %
+\section{Orbit-finite sets}
+%
 \section{Orbit-finite vectors}\label{sec:ofvec}
+%
+\section{Orbit-finite matrices}\label{sec:ofmat}
+%
+\begin{lemma}\label{A b c lemmas}
+For any matrix $\vr{A}\in\lin[R]{B{\times}C}$,
+$S\subseteqfin \A$ supporting $B$ and $C$ and $\vr{A}$,
+$\pi\in\aut[S]{\A}$,
+$b\in B$ and $c\in C$:
+%
+\begin{enumerate}[(i),ref =\Cref{A b c lemmas}-\roman*]
+%
+\item $\pi(\vr{A}(b,-)) = \vr{A}(\pi(b),-)$ and $\pi(\vr{A}(-,c)) = \vr{A}(-,\pi(c))$.
+%
+\label{lem:perm mat row}
+%
+\item
+$\supp{\vr{A}(b,-)}\subseteq\supp{\vr{A}}\cup\supp{b}$ and \\
+$\supp{\vr{A}(-,c)}\subseteq\supp{\vr{A}}\cup\supp{c}$.
+%
+\label{lem:row col supp}
+%
+\end{enumerate}
+\end{lemma}
 %
 \section{Orbit-finite linear programming}\label{sec:hom}
 %
@@ -8,3 +33,4 @@
 
 \arka{Maybe the structure should be: first homogenous structures, then vector spaces, linear programming and duality, then smooth approximation and order property,
 and in the end theorems}
+

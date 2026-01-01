@@ -2,21 +2,21 @@
 %
 \section{Homogenous structures}\label{sec:hom}
 %
-\begin{definition}\label{def:rel str}
-\arka{Write definition of a countable relational structure.}
-\end{definition}
-%
-\begin{example}\label{eg:eq atom}
-\arka{Define equality atoms/domain $\A$.}
-\end{example}
-%
-\begin{example}\label{eg:ord atom}
-\arka{Define ordered atoms/domain $\dloQ$}
-\end{example}
-%
-\begin{definition}\label{def:aut}
-\arka{Write definition of automorphism group and orbits}
-\end{definition}
+A \emphdef{structure} $\str = (X,R_1,R_2,\dots)$ is given by a countable set $X$ and relations $R_1,R_2,\dots$ defined on it.
+\arka{should we explain the countability assumption?}
+For example,
+we can consider the structure \emphdef{$\dloQ = (Q,<)$} where $Q$ is the set of rational numbers and $<$ is the usual ordering.
+We can also consider the structure \emphdef{$\A = (A,=)$} where $A$ is an countably infinite set and $=$ is the equality relation on $A$.
+
+\fixed{From now on we use $\str = (X,R_1,R_2,\dots)$ to denote an arbitrary structure.}
+We use $\str^n$ to denote the set $X^n$.
+An \emphdef{automorphism} $\pi$ of $\str$ is a bijection of $\str$ which preserves and reflects the relations,
+i.e.\ for every relation $R_i$ of arity $n_i$ (say):
+\[
+R_i(a_1,\dots,a_{n_i}) \iff R_i(\pi(a_1),\dots,
+\pi(a_{n_i})) \ .
+\]
+The set of all of all automorphisms of $\str$ is denoted as \emphdef{$\aut{\str}$}
 %
 \begin{example}
 \arka{Illustrate \Cref{def:aut}}
@@ -61,6 +61,8 @@ If $\str$ is oligomorphic then $\str^n$ is orbit-finite under the action of $\au
 The structure $\str$ is said to have the \emphdef{order property} if there is an orbit-finite relation $R\subseteq (\str^n \times \str^n)$ and an infinite subset $D \subseteq \str^n$ such that $R$ defines a linear order on $D$.
 \end{definition}
 %
+\arka{Possibly the relation $R$ can even be assumed equivariant. We should check.}
+%
 \begin{example}
 \arka{Illustrate \Cref{def:ord prop}}.
 
@@ -72,7 +74,7 @@ The notions of homogeneity, automorphism group and orbits extend to $\subst{S}{\
 %
 \begin{definition}\label{def:smooth}
 The structure $\str$ is said to be \emphdef{smoothly approximated} if there is a chain $S_0 \subseteq S_1 \subseteq S_2 \subseteq \dots$ of subsets of $\str$ such that $\bigcup_{n\in\N} S_n = X$ and $\subst{S_n}{\str}$ is homogenous for every $n$.
-\end{definition}
+\end{definition}  
 %
 \arka{add citation to above def}
 %
@@ -95,4 +97,20 @@ The structure $\str$ is smoothly approximated if and only if it does not have th
 \begin{proof}
 \arka{TODO}
 \end{proof}
+%
+For $S\subseteqfin \str$, let $\str_S$ be the structure where elements of $S$ are declared as constants.
+Formally, for every $x\in S$, we add an unary relation $U_x$ to the signature of $\str$ which is satisfied only by $x$.
+Then $\aut{\str_S} = \aut[S]{\str}$.
+%
+\begin{theorem}\label{thm:equiv wlog}
+The automorphism group of $\str$ is oligomorphic if and only if the automorphism group of $\str_S$ is oligomorphic for any(every) $S\subseteqfin \str$.
+
+The structure $\str$ is smoothly approximated if and only if $\str_S$ is smoothly approximated for any(every) $S\subseteqfin \str$.
+\end{theorem}
+%
+\begin{proof}
+\arka{TODO}
+\end{proof}
+%
+\arka{The above theorem can allow us to assume all systems to be equivariant WLOG}
 %

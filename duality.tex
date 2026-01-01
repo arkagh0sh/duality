@@ -9,12 +9,12 @@
 %\let\endclaimproof\endkillcontents
 %%
 %
-\section{Introduction}
+\section{Weak and strong duality}
 %
 For orbit-finite sets $B$ and $C$,
 matrix $\vr{A}\in\lin{B{\times}C}$, vectors $\vr{b}\in\lin{B}$ and $\vr{c}\in\lin{C}$,
 and an orbit-finite linear program
-
+%
 \begin{equation}\label{eq:primal gen}
 \primalAbc
 \end{equation}
@@ -27,7 +27,7 @@ Every such pair (\eqref{eq:primal gen},\eqref{eq:dual gen}) of linear programs i
 Duals of finite linear programs are clearly finite themselves.
 The \emph{weak duality theorem} states that the optimum of every finite linear program is dominated by the optimum of its dual.
 The \emph{strong duality theorem} states that for every primal-dual pair of finite linear programs, if the optimum of one of the linear programs is finite, then the optimum of the other linear program is also finite and the two optima are equal.
-In this chapter we investigate whether these duality theorems can be extended to orbit-finite linear programs.
+In this article we investigate whether these duality theorems can be extended to orbit-finite linear programs.
 %%
 %\begin{hypothesis}[Weak Orbit-finite Duality]\label{hypo:weak duality}
 %For any primal-dual pair of orbit-finite linear programs,
@@ -42,24 +42,25 @@ In this chapter we investigate whether these duality theorems can be extended to
 %\end{hypothesis}
 %
 %We argue that \Cref{hypo:weak duality} is true and \Cref{hypo:strong duality} is false.
-We show that, weak duality holds for orbit-finite linear programs and strong duality does not.
-However, both weak and strong duality hold between two natural subclasses of orbit-finite linear programs, called \emph{column-finite} and \emph{row-finite} linear programs, respectively.
+We show that, weak duality holds for orbit-finite linear programs.
+Strong duality hold between two natural subclasses of orbit-finite linear programs, called \emph{column-finite} and \emph{row-finite} linear programs, respectively,
+if and only if $\str$ is smoothly approximated.
 %
-\subsection*{Organisation of the chapter}
-%
-In \Cref{sec:weak o.f. duality} we prove weak duality holds for orbit-finite linear programs.
-In \Cref{sec:lost} we show strong duality does not hold for orbit-finite linear programs by constructing a counterexample.
-%At the end of \Cref{sec:lost}, we refine \Cref{hypo:strong duality} to pose a conjecture.
-In \Cref{sec:dual inf} we briefly discuss duality for infinite linear programs,
-which are not necessarily orbit-finite.
-In \Cref{sec:regained} we restrict our attention to orbit-finite linear programs which are \emph{column-finite} or \emph{row-finite}.
-We show that strong duality holds between them (\Cref{thm:col row duality}),
-and that these linear program are more robust than the general class of orbit-finite linear programs (\Cref{thm:col fin opt,thm:row fin opt}).
-In \Cref{sec:strong proof} we give the proofs of these theorems using several facts which are demonstrated in \Cref{sec:orbres,sec:orbsum,sec:orbdis,sec:orbsmt,sec:orbrow}.
-Finally, in \Cref{sec:approx} we answer the question raised in
-\Cref{sec:intro approx}: whether orbit-finite linear programs approximate large linear programs.
-In particular we show that orbit-finite linear programs in general do not,
-however both column-finite and row-finite linear programs do.
+%\subsection*{Organisation of the article}
+%%
+%In \Cref{sec:weak o.f. duality} we prove weak duality holds for orbit-finite linear programs.
+%In \Cref{sec:lost} we show strong duality does not hold for orbit-finite linear programs by constructing a counterexample.
+%%At the end of \Cref{sec:lost}, we refine \Cref{hypo:strong duality} to pose a conjecture.
+%In \Cref{sec:dual inf} we briefly discuss duality for infinite linear programs,
+%which are not necessarily orbit-finite.
+%In \Cref{sec:regained} we restrict our attention to orbit-finite linear programs which are \emph{column-finite} or \emph{row-finite}.
+%We show that strong duality holds between them (\Cref{thm:col row duality}),
+%and that these linear program are more robust than the general class of orbit-finite linear programs (\Cref{thm:col fin opt,thm:row fin opt}).
+%In \Cref{sec:strong proof} we give the proofs of these theorems using several facts which are demonstrated in \Cref{sec:orbres,sec:orbsum,sec:orbdis,sec:orbsmt,sec:orbrow}.
+%Finally, in \Cref{sec:approx} we answer the question raised in
+%\Cref{sec:intro approx}: whether orbit-finite linear programs approximate large linear programs.
+%In particular we show that orbit-finite linear programs in general do not,
+%however both column-finite and row-finite linear programs do.
 %
 %Using the results of two latter sections we quickly discuss extensions of asymmetric version of the duality theorems and of Farkas' Lemma respectively in \Cref{sec:asym} and \Cref{sec:farkas}.
 %
@@ -86,6 +87,7 @@ Consider a primal-dual pair of orbit-finite linear programs $(\cU,\transpose{\cU
 %
 where $\vr{A}\in\lin{B\times C}$, $\vr{b}\in\lin{B}$ and $\vr{c}\in\lin{C}$.
 Let $S$ be the support of the above systems.}
+\arka{TODO:try to prove \Cref{thm:equiv wlog}. Then we can remove $S$.}
 We need to show that the optimum of $\cU$ is dominated by the optimum of $\transpose{\cU}$.
 We fix some notations and prove a few lemmas for future use.
 %
@@ -1284,9 +1286,9 @@ Interestingly, assuming both orbit-finiteness and column-finiteness gives us str
 %That is, duality does not hold for the full class of orbit-finite linear programs.
 %However, we also show that it holds between two natural subclasses.
 %
-%This chapter is divided into five sections.
+%This article is divided into five sections.
 %
-%\arka{there will be no section named introduction when we add this chapter to the thesis}
+%\arka{there will be no section named introduction when we add this article to the thesis}
 %
 %In \Cref{sec:lost} we show a counterexample to orbit-finite duality.
 %In \Cref{sec:regained} we define two natural variations of orbit-finite linear programming (\Cref{prob:col fin lp,prob:row fin lp}) and prove duality (\Cref{thm:duality}) between them.
